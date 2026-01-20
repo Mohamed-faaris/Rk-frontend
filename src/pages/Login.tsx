@@ -157,7 +157,7 @@ export default function Login() {
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder=""
+                      placeholder="••••••••"
                       required
                       disabled={isLoading}
                       className="pl-4 pr-12 h-12 bg-background border-border focus:border-accent transition-all duration-300 hover:border-accent/50"

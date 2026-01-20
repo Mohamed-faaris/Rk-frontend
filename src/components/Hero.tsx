@@ -1,7 +1,21 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import LiquidEther from "./LiquidEther";
+
+// Error boundary wrapper component
+const ErrorBoundaryWrapper = ({ children, onError }: { children: React.ReactNode; onError: () => void }) => {
+  useEffect(() => {
+    const handleError = () => {
+      console.error('LiquidEther component error detected');
+      onError();
+    };
+    
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, [onError]);
+
+  return <>{children}</>;
+};
 
 const Hero = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -21,18 +35,8 @@ const Hero = () => {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* LiquidEther Background */}
-      <div className="absolute inset-0 z-0">
-        <LiquidEther 
-          mouseForce={isMobile ? 12 : 18}
-          cursorSize={isMobile ? 60 : 80}
-          resolution={isMobile ? 0.25 : 0.35}
-          colors={['#FFD700', '#FFF44F', '#FFEC1B']}
-          autoDemo={true}
-          autoSpeed={0.25}
-          autoIntensity={isMobile ? 1.5 : 1.8}
-        />
-      </div>
+      {/* LiquidEther Background - Disabled for stability */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-black via-amber-900/10 to-black" />
 
       {/* Background Overlay - Semi-transparent for content readability */}
       <div className="absolute inset-0 z-1 bg-gradient-to-b from-black/40 via-black/20 to-black/40 pointer-events-none" />
