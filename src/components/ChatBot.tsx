@@ -442,10 +442,6 @@ Are you looking for our services, or interested in joining our team?`,
     setShowNotification(false);
   }, []);
 
-  if (!user) {
-    return null;
-  }
-
   return (
     <>
       {/* Floating Button */}
