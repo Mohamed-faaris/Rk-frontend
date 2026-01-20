@@ -6,13 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { User, Mail, Lock, CheckCircle2, ArrowRight, Sparkles, Moon, Sun } from 'lucide-react';
+import { User, Mail, Lock, CheckCircle2, ArrowRight, Sparkles, Moon, Sun, Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
   const navigate = useNavigate();
   const { register, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
@@ -214,16 +216,30 @@ export default function Register() {
                     <Lock className="w-4 h-4 text-accent" />
                     Password
                   </label>
-                  <Input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    required
-                    disabled={isLoading}
-                    className="h-12 bg-background border-border focus:border-accent transition-all duration-300 hover:border-accent/50"
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      required
+                      disabled={isLoading}
+                      className="pr-12 h-12 bg-background border-border focus:border-accent transition-all duration-300 hover:border-accent/50"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-accent transition-colors duration-200 p-1 hover:bg-accent/10 rounded"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Must be at least 6 characters
                   </p>
@@ -235,16 +251,30 @@ export default function Register() {
                     <Lock className="w-4 h-4 text-accent" />
                     Confirm Password
                   </label>
-                  <Input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    required
-                    disabled={isLoading}
-                    className="h-12 bg-background border-border focus:border-accent transition-all duration-300 hover:border-accent/50"
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="••••••••"
+                      required
+                      disabled={isLoading}
+                      className="pr-12 h-12 bg-background border-border focus:border-accent transition-all duration-300 hover:border-accent/50"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/60 hover:text-accent transition-colors duration-200 p-1 hover:bg-accent/10 rounded"
+                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Submit Button */}
