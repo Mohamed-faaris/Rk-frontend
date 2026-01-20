@@ -39,7 +39,7 @@ import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const AppContent = () => {
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
 
   useEffect(() => {
@@ -53,20 +53,14 @@ const App = () => {
   }, []);
 
   return (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="dark" storageKey="rajkayal-theme-v2">
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AuthPopupModal 
-            isOpen={authPopupOpen} 
-            onClose={() => setAuthPopupOpen(false)}
-          />
-          <BrowserRouter>
-            <Routes>
-              {/* Public Routes - No Login Required */}
-              <Route path="/" element={<Index />} />
+    <>
+      <AuthPopupModal 
+        isOpen={authPopupOpen} 
+        onClose={() => setAuthPopupOpen(false)}
+      />
+      <Routes>
+        {/* Public Routes - No Login Required */}
+        <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/verify-otp" element={<VerifyOTP />} />
@@ -128,12 +122,26 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatBot />
+    </>
+  );
+};
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider defaultTheme="dark" storageKey="rajkayal-theme-v2">
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AppContent />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
-  );
-};
+);
 
 export default App;
