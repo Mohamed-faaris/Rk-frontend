@@ -6,6 +6,9 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  googleLogin: (idToken: string) => Promise<void>;
+  appleLogin: (idToken: string, fullName?: string) => Promise<void>;
+  facebookLogin: (accessToken: string) => Promise<void>;
   register: (name: string, email: string, phone: string, password: string, confirmPassword: string) => Promise<void>;
   logout: () => void;
   setAuthUser: (user: User) => void;
@@ -14,14 +17,31 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Initialize from localStorage immediately to prevent logout on reload
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      const userJson = localStorage.getItem('user');
+      if (token && userJson) {
+        try {
+          return JSON.parse(userJson);
+        } catch (e) {
+          console.error('Failed to parse user from localStorage:', e);
+          return null;
+        }
+      }
+    }
+    return null;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check if user is already logged in
     if (authService.isAuthenticated()) {
       const currentUser = authService.getCurrentUser();
-      setUser(currentUser);
+      if (currentUser) {
+        setUser(currentUser);
+      }
     }
     setIsLoading(false);
   }, []);
@@ -35,6 +55,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw { response: { data: response } };
       }
       
+      if (response.user) {
+        setUser(response.user);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const googleLogin = async (idToken: string) => {
+    try {
+      const response = await authService.googleLogin(idToken);
+      if (response.user) {
+        setUser(response.user);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const appleLogin = async (idToken: string, fullName?: string) => {
+    try {
+      const response = await authService.appleLogin(idToken, fullName);
+      if (response.user) {
+        setUser(response.user);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const facebookLogin = async (accessToken: string) => {
+    try {
+      const response = await authService.facebookLogin(accessToken);
       if (response.user) {
         setUser(response.user);
       }
@@ -62,7 +115,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, isAuthenticated: !!user, login, register, logout, setAuthUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        isAuthenticated: !!user,
+        login,
+        googleLogin,
+        appleLogin,
+        facebookLogin,
+        register,
+        logout,
+        setAuthUser
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

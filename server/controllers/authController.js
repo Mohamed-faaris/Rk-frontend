@@ -1,10 +1,24 @@
 import User from '../models/User.js';
 import OTP from '../models/OTP.js';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import { OAuth2Client } from 'google-auth-library';
+import appleSigninAuth from 'apple-signin-auth';
+import nodeFetch from 'node-fetch';
 import { sendOTPEmail } from '../utils/emailService.js';
+import { generateSecureOTP } from '../utils/otpUtils.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'rajkayal_creative_hub_secret_key_2025';
 const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d';
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID;
+const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
+const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+const FACEBOOK_GRAPH_VERSION = process.env.FACEBOOK_GRAPH_VERSION || 'v19.0';
+
+const httpFetch = typeof globalThis.fetch === 'function' ? globalThis.fetch.bind(globalThis) : nodeFetch;
+
+const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
 
 // Generate JWT Token
 const generateToken = (id, role) => {
@@ -111,58 +125,67 @@ export const login = async (req, res, next) => {
     
     // If admin and OTP not skipped, require OTP verification
     if (user.role === 'admin' && !skipOTP) {
-      console.log('Admin login detected, generating OTP');
+      console.log('Admin login detected, generating OTP for:', user.email);
       
-      // Generate 6-digit OTP
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // Display OTP in terminal with colors and emphasis
-      console.log('\n\n');
-      console.log('═══════════════════════════════════════════════════');
-      console.log('                 🔐 OTP GENERATED 🔐               ');
-      console.log('═══════════════════════════════════════════════════');
-      console.log('');
-      console.log(`   📧 Email: ${user.email}`);
-      console.log('');
-      console.log(`   🔢 OTP CODE: ${otp}`);
-      console.log('');
-      console.log('   ⏰ Valid for: 10 minutes');
-      console.log('');
-      console.log('═══════════════════════════════════════════════════');
-      console.log('\n\n');
+      // Generate cryptographically secure 6-digit OTP
+      const otp = generateSecureOTP();
       
       // Delete any existing OTPs for this email
       await OTP.deleteMany({ email: user.email });
       
-      // Save OTP to database
+      // Save OTP to database (will expire in 5 minutes via TTL)
       await OTP.create({
         email: user.email,
-        otp: otp
+        otp: otp,
+        attempts: 0,
+        verified: false
       });
       
-      // Try to send OTP via email, but don't fail if email service is down
+      // Send OTP via email to admin
       let emailSent = false;
       let previewUrl = null;
       
       try {
-        const emailResult = await sendOTPEmail(user.email, otp);
-        console.log('OTP email sent successfully:', emailResult);
+        const emailResult = await sendOTPEmail(user.email, otp, 'login');
+        console.log('✅ OTP email sent successfully to:', user.email);
         emailSent = true;
         previewUrl = emailResult.previewUrl;
+        
+        // Display OTP in terminal for development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('\n╔═══════════════════════════════════════════╗');
+          console.log('║       🔐 ADMIN LOGIN OTP (DEV MODE)      ║');
+          console.log('╠═══════════════════════════════════════════╣');
+          console.log(`║  Email: ${user.email.padEnd(31)}║`);
+          console.log(`║  OTP: ${otp}                             ║`);
+          console.log(`║  Valid for: 5 minutes                     ║`);
+          console.log('╚═══════════════════════════════════════════╝\n');
+        }
       } catch (emailError) {
-        console.error('Failed to send OTP email (non-critical):', emailError);
-        console.log('⚠️  OTP email failed, but user can still see OTP in console/terminal');
+        console.error('❌ Failed to send OTP email:', emailError);
+        console.log('⚠️  OTP email failed - Check Gmail App Password in .env');
+        
+        // In development, still allow login with console OTP
+        if (process.env.NODE_ENV === 'development') {
+          console.log('\n╔═══════════════════════════════════════════╗');
+          console.log('║       ⚠️  EMAIL FAILED - OTP BELOW        ║');
+          console.log('╠═══════════════════════════════════════════╣');
+          console.log(`║  Email: ${user.email.padEnd(31)}║`);
+          console.log(`║  OTP: ${otp}                             ║`);
+          console.log(`║  Valid for: 5 minutes                     ║`);
+          console.log('╚═══════════════════════════════════════════╝\n');
+        }
       }
       
-      // Return success regardless of email send status
+      // Return success - frontend will show OTP input modal
       return res.status(200).json({
         success: true,
         requiresOTP: true,
         message: emailSent 
-          ? 'OTP has been sent to your email' 
+          ? `OTP has been sent to ${user.email}` 
           : 'OTP generated. Check server console for the code.',
         email: user.email,
-        previewUrl: previewUrl // For testing with ethereal
+        ...(previewUrl && { previewUrl }) // For testing with Ethereal
       });
     }
     
@@ -378,30 +401,40 @@ export const resendOTP = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Generate new OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Display OTP in terminal
-    console.log('\n╔════════════════════════════════════════╗');
-    console.log('║      OTP RESENT                        ║');
-    console.log('╠════════════════════════════════════════╣');
-    console.log(`║  Email: ${email.padEnd(28)} ║`);
-    console.log(`║  OTP Code: ${otp}                       ║`);
-    console.log('╚════════════════════════════════════════╝\n');
+    // Generate new secure OTP
+    const otp = generateSecureOTP();
 
     // Delete old OTPs
     await OTP.deleteMany({ email });
 
     // Save new OTP
-    await OTP.create({ email, otp });
+    await OTP.create({ 
+      email, 
+      otp,
+      attempts: 0,
+      verified: false
+    });
 
     // Send OTP via email
     try {
-      const emailResult = await sendOTPEmail(email, otp);
+      const emailResult = await sendOTPEmail(email, otp, 'login');
+      
+      console.log(`✅ OTP resent successfully to: ${email}`);
+      
+      // Display OTP in development mode
+      if (process.env.NODE_ENV === 'development') {
+        console.log('\n╔═══════════════════════════════════════════╗');
+        console.log('║         🔄 OTP RESENT (DEV MODE)          ║');
+        console.log('╠═══════════════════════════════════════════╣');
+        console.log(`║  Email: ${email.padEnd(31)}║`);
+        console.log(`║  OTP: ${otp}                             ║`);
+        console.log(`║  Valid for: 5 minutes                     ║`);
+        console.log('╚═══════════════════════════════════════════╝\n');
+      }
       
       res.status(200).json({
         success: true,
-        message: 'New OTP has been sent to your email',
+        message: `New OTP has been sent to ${email}`,
         previewUrl: emailResult.previewUrl
       });
     } catch (emailError) {
@@ -411,5 +444,267 @@ export const resendOTP = async (req, res, next) => {
   } catch (error) {
     console.error('Resend OTP error:', error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+// @desc    Google OAuth login
+// @route   POST /api/auth/google
+// @access  Public
+export const googleLogin = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    // Development/Test Mode: Allow mock login for testing UI
+    if (idToken === 'mock-google-token' && process.env.NODE_ENV === 'development') {
+      let user = await User.findOne({ email: 'test-google@rkch.dev' });
+      if (!user) {
+        user = await User.create({
+          name: 'Test Google User',
+          email: 'test-google@rkch.dev',
+          password: crypto.randomBytes(16).toString('hex'),
+          role: 'user'
+        });
+      }
+      const token = generateToken(user._id, user.role);
+      return res.status(200).json({
+        success: true,
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      });
+    }
+
+    if (!googleClient) {
+      return res.status(500).json({ error: 'Google OAuth not configured' });
+    }
+
+    if (!idToken) {
+      return res.status(400).json({ error: 'Missing idToken' });
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: GOOGLE_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    const email = payload?.email;
+    const name = payload?.name || payload?.email?.split('@')[0];
+    const emailVerified = payload?.email_verified;
+
+    if (!email || !emailVerified) {
+      return res.status(401).json({ error: 'Google email not verified' });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      user = await User.create({
+        name,
+        email,
+        password: randomPassword,
+        role: 'user'
+      });
+    }
+
+    const token = generateToken(user._id, user.role);
+
+    return res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    return res.status(401).json({ error: 'Google authentication failed' });
+  }
+};
+
+// @desc    Apple OAuth login
+// @route   POST /api/auth/apple
+// @access  Public
+export const appleLogin = async (req, res) => {
+  try {
+    const { idToken, fullName } = req.body;
+
+    // Development/Test Mode: Allow mock login for testing UI
+    if (idToken === 'mock-apple-token' && process.env.NODE_ENV === 'development') {
+      let user = await User.findOne({ email: 'test-apple@rkch.dev' });
+      if (!user) {
+        user = await User.create({
+          name: 'Test Apple User',
+          email: 'test-apple@rkch.dev',
+          password: crypto.randomBytes(16).toString('hex'),
+          role: 'user'
+        });
+      }
+      const token = generateToken(user._id, user.role);
+      return res.status(200).json({
+        success: true,
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      });
+    }
+
+    if (!APPLE_CLIENT_ID) {
+      return res.status(500).json({ error: 'Apple OAuth not configured' });
+    }
+
+    if (!idToken) {
+      return res.status(400).json({ error: 'Missing idToken' });
+    }
+
+    const appleUser = await appleSigninAuth.verifyIdToken(idToken, {
+      audience: APPLE_CLIENT_ID,
+      ignoreExpiration: false
+    });
+
+    const appleEmail = appleUser?.email;
+    const appleSub = appleUser?.sub;
+
+    if (!appleEmail && !appleSub) {
+      return res.status(401).json({ error: 'Apple authentication failed' });
+    }
+
+    const derivedEmail = (appleEmail || `${appleSub}@appleuser.rkch`).toLowerCase();
+    const sanitizedName = (typeof fullName === 'string' && fullName.trim().length > 0)
+      ? fullName.trim()
+      : (appleUser?.name || appleEmail?.split('@')[0] || 'Apple User');
+
+    let user = await User.findOne({ email: derivedEmail });
+
+    if (!user) {
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      user = await User.create({
+        name: sanitizedName,
+        email: derivedEmail,
+        password: randomPassword,
+        role: 'user'
+      });
+    }
+
+    const token = generateToken(user._id, user.role);
+
+    return res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Apple login error:', error);
+    return res.status(401).json({ error: 'Apple authentication failed' });
+  }
+};
+
+// @desc    Facebook OAuth login
+// @route   POST /api/auth/facebook
+// @access  Public
+export const facebookLogin = async (req, res) => {
+  try {
+    const { accessToken } = req.body;
+
+    // Development/Test Mode: Allow mock login for testing UI
+    if (accessToken === 'mock-facebook-token' && process.env.NODE_ENV === 'development') {
+      let user = await User.findOne({ email: 'test-facebook@rkch.dev' });
+      if (!user) {
+        user = await User.create({
+          name: 'Test Facebook User',
+          email: 'test-facebook@rkch.dev',
+          password: crypto.randomBytes(16).toString('hex'),
+          role: 'user'
+        });
+      }
+      const token = generateToken(user._id, user.role);
+      return res.status(200).json({
+        success: true,
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role
+        }
+      });
+    }
+
+    if (!FACEBOOK_APP_ID || !FACEBOOK_APP_SECRET) {
+      return res.status(500).json({ error: 'Facebook OAuth not configured' });
+    }
+
+    if (!accessToken) {
+      return res.status(400).json({ error: 'Missing accessToken' });
+    }
+
+    const appAccessToken = `${FACEBOOK_APP_ID}|${FACEBOOK_APP_SECRET}`;
+    const graphVersion = FACEBOOK_GRAPH_VERSION || 'v19.0';
+
+    const debugResponse = await httpFetch(
+      `https://graph.facebook.com/${graphVersion}/debug_token?input_token=${accessToken}&access_token=${appAccessToken}`
+    );
+    const debugData = await debugResponse.json();
+
+    if (!debugResponse.ok || !debugData?.data?.is_valid) {
+      return res.status(401).json({ error: 'Invalid Facebook token' });
+    }
+
+    const profileResponse = await httpFetch(
+      `https://graph.facebook.com/${graphVersion}/me?fields=id,name,email&access_token=${accessToken}`
+    );
+    const profileData = await profileResponse.json();
+
+    if (!profileResponse.ok || !profileData?.id) {
+      return res.status(401).json({ error: 'Facebook authentication failed' });
+    }
+
+    const resolvedEmail = (profileData.email || `${profileData.id}@facebookuser.rkch`).toLowerCase();
+    const resolvedName = profileData.name || 'Facebook User';
+
+    let user = await User.findOne({ email: resolvedEmail });
+
+    if (!user) {
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      user = await User.create({
+        name: resolvedName,
+        email: resolvedEmail,
+        password: randomPassword,
+        role: 'user'
+      });
+    }
+
+    const token = generateToken(user._id, user.role);
+
+    return res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Facebook login error:', error);
+    return res.status(401).json({ error: 'Facebook authentication failed' });
   }
 };

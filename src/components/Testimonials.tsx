@@ -36,9 +36,12 @@ const Testimonials = () => {
   };
 
   return (
-    <section id="testimonials" className="py-24 md:py-32">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
+    <section id="testimonials" className="relative py-24 md:py-32 bg-secondary/30 dark:bg-background shadow-sm">
+      {/* Smooth fade from previous section */}
+      <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-words">

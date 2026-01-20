@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Play, Image as ImageIcon, X, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import GradientBlinds from "@/components/GradientBlinds.tsx";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -189,9 +190,10 @@ const BrandingIdentityPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <GradientBlinds />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden z-10">
         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 via-transparent to-transparent" />
         <div className="container mx-auto max-w-7xl relative z-10">
           <Button
@@ -256,7 +258,7 @@ const BrandingIdentityPage = () => {
             {user?.role === 'admin' && (
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-accent text-accent-foreground hover:bg-accent/90">
+                  <Button className="bg-accent hover:bg-accent/90">
                     <Upload className="w-4 h-4 mr-2" />
                     Upload Work
                   </Button>
@@ -445,7 +447,7 @@ const BrandingIdentityPage = () => {
                       {/* Featured Badge */}
                       {item.featured && (
                         <div className="absolute top-4 right-4">
-                          <Badge className="bg-accent text-accent-foreground shadow-gold">
+                          <Badge className="bg-accent shadow-gold">
                             <Sparkles className="w-3 h-3 mr-1" />
                             Featured
                           </Badge>

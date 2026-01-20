@@ -1,6 +1,50 @@
 import { Target, Users, Zap } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const About = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Handle video end event to ensure looping
+    const handleVideoEnd = () => {
+      video.currentTime = 0;
+      video.play().catch(err => console.log('Autoplay prevented:', err));
+    };
+
+    // Ensure video starts playing immediately
+    const playVideo = () => {
+      const promise = video.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => console.log('Video playing'))
+          .catch(err => console.log('Autoplay error:', err));
+      }
+    };
+
+    // Try to play on load
+    playVideo();
+
+    // Play on user interaction (for iOS)
+    const handleInteraction = () => {
+      playVideo();
+      document.removeEventListener('touchstart', handleInteraction);
+      document.removeEventListener('click', handleInteraction);
+    };
+
+    document.addEventListener('touchstart', handleInteraction, { once: true });
+    document.addEventListener('click', handleInteraction, { once: true });
+
+    video.addEventListener('ended', handleVideoEnd);
+
+    return () => {
+      video.removeEventListener('ended', handleVideoEnd);
+      document.removeEventListener('touchstart', handleInteraction);
+      document.removeEventListener('click', handleInteraction);
+    };
+  }, []);
   const values = [
     {
       icon: Target,
@@ -20,8 +64,10 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-24 md:py-32 bg-secondary/30">
-      <div className="container mx-auto px-4">
+    <section id="about" className="relative py-24 md:py-32 bg-secondary/30 dark:bg-background shadow-sm">
+      {/* Smooth fade from Hero section */}
+      <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-background/0 to-background/100 pointer-events-none" />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
@@ -56,17 +102,26 @@ const About = () => {
               <div className="aspect-square rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-sm border border-accent/20 overflow-hidden">
                 {/* Video Background */}
                 <video 
+                  ref={videoRef}
                   className="w-full h-full object-cover"
                   autoPlay 
                   loop 
                   muted 
                   playsInline
-                  preload="auto"
+                  preload="metadata"
+                  controls={false}
+                  webkit-playsinline="true"
+                  x5-playsinline="true"
                   onError={(e) => console.error('Video error:', e)}
-                  onLoadedData={() => console.log('Video loaded successfully')}
+                  onLoadedData={() => {
+                    console.log('Video loaded, attempting autoplay');
+                    const video = videoRef.current;
+                    if (video) {
+                      video.play().catch(err => console.log('Autoplay error:', err));
+                    }
+                  }}
                 >
                   <source src="/rajka.mp4" type="video/mp4" />
-                  <source src="/rajka.mp4" type="video/webm" />
                 </video>
               </div>
             </div>

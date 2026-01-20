@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'rajkayal_creative_hub_secret_key_2025';
 
 export const protect = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
-    
+
     if (!token) {
       console.log('No token provided for route:', req.originalUrl);
       return res.status(401).json({ error: 'Not authorized to access this route - No token provided' });

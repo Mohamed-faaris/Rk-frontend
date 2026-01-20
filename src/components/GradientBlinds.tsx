@@ -19,6 +19,9 @@ export interface GradientBlindsProps {
   distortAmount?: number;
   shineDirection?: 'left' | 'right';
   mixBlendMode?: string;
+  slideDirection?: 'left' | 'right' | 'up' | 'down' | 'none';
+  slideDuration?: number;
+  slideDelay?: number;
 }
 
 const MAX_COLORS = 8;
@@ -55,7 +58,10 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
   spotlightOpacity = 1,
   distortAmount = 0,
   shineDirection = 'left',
-  mixBlendMode = 'lighten'
+  mixBlendMode = 'lighten',
+  slideDirection = 'none',
+  slideDuration = 1.0,
+  slideDelay = 0
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -66,6 +72,7 @@ const GradientBlinds: React.FC<GradientBlindsProps> = ({
   const mouseTargetRef = useRef<[number, number]>([0, 0]);
   const lastTimeRef = useRef<number>(0);
   const firstResizeRef = useRef<boolean>(true);
+  const animationPlayedRef = useRef<boolean>(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -373,14 +380,49 @@ void main() {
     shineDirection
   ]);
 
+  // Handle animation on mount/page visit
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || animationPlayedRef.current || slideDirection === 'none') return;
+
+    // Mark animation as played
+    animationPlayedRef.current = true;
+
+    // Calculate animation duration
+    const animationDuration = (slideDuration + slideDelay) * 1000;
+
+    // Remove animation class after it completes to allow re-triggering on page refresh
+    const timer = setTimeout(() => {
+      const animationClass = `slide-${slideDirection}`;
+      container.classList.remove(animationClass);
+    }, animationDuration);
+
+    return () => clearTimeout(timer);
+  }, [slideDirection, slideDuration, slideDelay]);
+
+  const getAnimationClass = () => {
+    if (slideDirection === 'none') return '';
+    return `slide-${slideDirection}`;
+  };
+
+  const getAnimationStyle = (): React.CSSProperties => {
+    if (slideDirection === 'none') return {};
+    
+    return {
+      animationDuration: `${slideDuration}s`,
+      animationDelay: `${slideDelay}s`
+    };
+  };
+
   return (
     <div
       ref={containerRef}
-      className={`gradient-blinds-container ${className}`}
+      className={`w-full h-full overflow-hidden relative gradient-blinds-container ${getAnimationClass()} ${className}`}
       style={{
         ...(mixBlendMode && {
           mixBlendMode: mixBlendMode as React.CSSProperties['mixBlendMode']
-        })
+        }),
+        ...getAnimationStyle()
       }}
     />
   );

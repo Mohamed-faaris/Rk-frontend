@@ -82,6 +82,28 @@
     </div>
 
     <div class="container">
+        <h2>🔐 Send OTP to Admin Gmail</h2>
+        <div class="flex">
+            <input type="email" id="adminEmail" placeholder="Admin email (rajkayal7281@gmail.com)" value="rajkayal7281@gmail.com">
+            <input type="password" id="adminPassword" placeholder="Admin password" value="rajkayal2025">
+            <button onclick="sendOTPToAdmin()">Send OTP Now</button>
+        </div>
+        <div id="otpStatus"></div>
+        <div id="otpOutput" class="output" style="max-height: 200px;"></div>
+    </div>
+
+    <div class="container">
+        <h2>✅ Verify OTP</h2>
+        <div class="flex">
+            <input type="email" id="verifyEmail" placeholder="Admin email" value="rajkayal7281@gmail.com">
+            <input type="text" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6">
+            <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+        <div id="verifyStatus"></div>
+        <div id="verifyOutput" class="output" style="max-height: 200px;"></div>
+    </div>
+
+    <div class="container">
         <h2>API Tests</h2>
         <button onclick="testHealth()">Test Health</button>
         <button onclick="testUsers()">Test Users API</button>
@@ -104,8 +126,163 @@
             output.scrollTop = output.scrollHeight;
         }
 
+        function logOTP(message, type = 'info') {
+            const output = document.getElementById('otpOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            output.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function logVerify(message, type = 'info') {
+            const output = document.getElementById('verifyOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            output.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
         function clearLog() {
             document.getElementById('output').innerHTML = '';
+        }
+
+        // Send OTP to Admin Gmail
+        async function sendOTPToAdmin() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            
+            if (!email || !password) {
+                document.getElementById('otpStatus').innerHTML = 
+                    '<span class="error">✗ Please enter email and password</span>';
+                return;
+            }
+
+            document.getElementById('otpOutput').innerHTML = '';
+            document.getElementById('otpStatus').innerHTML = 
+                '<span style="color: #007bff;">⏳ Sending OTP...</span>';
+            
+            logOTP('🔐 Initiating OTP request...');
+            logOTP(`📧 Email: ${email}`);
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                logOTP(`📊 Status: ${response.status} ${response.statusText}`);
+                
+                if (response.ok) {
+                    if (data.requiresOTP) {
+                        document.getElementById('otpStatus').innerHTML = 
+                            '<span class="success">✓ OTP sent successfully to Gmail!</span>';
+                        logOTP('✅ OTP sent to your Gmail successfully!', 'success');
+                        logOTP(`📬 Check ${email} inbox`, 'success');
+                        
+                        if (data.previewUrl) {
+                            logOTP(`🔗 Preview URL: ${data.previewUrl}`, 'success');
+                        }
+                        
+                        // Pre-fill verify email
+                        document.getElementById('verifyEmail').value = email;
+                        
+                        // Show alert
+                        alert(`✅ OTP sent to ${email}!\n\nCheck your Gmail inbox and enter the 6-digit code below to verify.`);
+                    } else {
+                        document.getElementById('otpStatus').innerHTML = 
+                            '<span class="error">✗ OTP not required (user may not be admin)</span>';
+                        logOTP('❌ OTP not required for this user', 'error');
+                    }
+                } else {
+                    document.getElementById('otpStatus').innerHTML = 
+                        '<span class="error">✗ Failed to send OTP</span>';
+                    logOTP(`❌ Error: ${data.error || data.message}`, 'error');
+                    logOTP(JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                document.getElementById('otpStatus').innerHTML = 
+                    '<span class="error">✗ Network error</span>';
+                logOTP(`❌ Network Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Verify OTP
+        async function verifyOTP() {
+            const email = document.getElementById('verifyEmail').value.trim();
+            const otp = document.getElementById('otpCode').value.trim();
+            
+            if (!email || !otp) {
+                document.getElementById('verifyStatus').innerHTML = 
+                    '<span class="error">✗ Please enter email and OTP code</span>';
+                return;
+            }
+
+            if (otp.length !== 6) {
+                document.getElementById('verifyStatus').innerHTML = 
+                    '<span class="error">✗ OTP must be 6 digits</span>';
+                return;
+            }
+
+            document.getElementById('verifyOutput').innerHTML = '';
+            document.getElementById('verifyStatus').innerHTML = 
+                '<span style="color: #007bff;">⏳ Verifying OTP...</span>';
+            
+            logVerify('🔍 Verifying OTP...');
+            logVerify(`📧 Email: ${email}`);
+            logVerify(`🔢 OTP: ${otp}`);
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/verify-otp`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, otp })
+                });
+
+                const data = await response.json();
+                
+                logVerify(`📊 Status: ${response.status} ${response.statusText}`);
+                
+                if (response.ok && data.success) {
+                    document.getElementById('verifyStatus').innerHTML = 
+                        '<span class="success">✓ OTP verified! Login successful!</span>';
+                    logVerify('✅ OTP verified successfully!', 'success');
+                    logVerify(`👤 User: ${data.user.name}`, 'success');
+                    logVerify(`📧 Email: ${data.user.email}`, 'success');
+                    logVerify(`🎭 Role: ${data.user.role}`, 'success');
+                    
+                    // Save token
+                    if (data.token) {
+                        authToken = data.token;
+                        localStorage.setItem('token', data.token);
+                        document.getElementById('tokenInput').value = data.token;
+                        document.getElementById('tokenStatus').innerHTML = 
+                            '<span class="success">✓ Token saved automatically!</span>';
+                        logVerify('🔑 Auth token saved to localStorage', 'success');
+                    }
+                    
+                    // Clear OTP input
+                    document.getElementById('otpCode').value = '';
+                    
+                    // Show success alert
+                    alert(`✅ Login Successful!\n\nWelcome ${data.user.name}!\n\nYou can now use the API test buttons below.`);
+                } else {
+                    document.getElementById('verifyStatus').innerHTML = 
+                        '<span class="error">✗ Invalid or expired OTP</span>';
+                    logVerify(`❌ Error: ${data.error || data.message}`, 'error');
+                    logVerify(JSON.stringify(data, null, 2), 'error');
+                }
+            } catch (error) {
+                document.getElementById('verifyStatus').innerHTML = 
+                    '<span class="error">✗ Network error</span>';
+                logVerify(`❌ Network Error: ${error.message}`, 'error');
+            }
         }
 
         function saveToken() {

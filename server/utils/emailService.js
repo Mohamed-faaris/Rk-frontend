@@ -34,14 +34,24 @@ const createTransporter = async () => {
 };
 
 // Send OTP email
-export const sendOTPEmail = async (email, otp) => {
+export const sendOTPEmail = async (email, otp, purpose = 'verification') => {
   try {
     const transporter = await createTransporter();
+    
+    // Determine subject based on purpose
+    const subjects = {
+      'login': 'Your Admin Login OTP - RajKayal Creative Hub',
+      'registration': 'Verify Your Email - RajKayal Creative Hub',
+      'verification': 'Your Verification OTP - RajKayal Creative Hub',
+      'password-reset': 'Password Reset OTP - RajKayal Creative Hub'
+    };
+    
+    const subject = subjects[purpose] || subjects['verification'];
     
     const mailOptions = {
       from: process.env.EMAIL_FROM || '"RajKayal Creative Hub" <noreply@rajkayal.com>',
       to: email,
-      subject: 'Your Admin Login OTP - RajKayal Creative Hub',
+      subject,
       html: `
         <!DOCTYPE html>
         <html>
@@ -115,17 +125,17 @@ export const sendOTPEmail = async (email, otp) => {
             </div>
             
             <div class="content">
-              <h2 style="color: #D4AF37; margin-top: 0;">Admin Login Verification</h2>
+              <h2 style="color: #D4AF37; margin-top: 0;">Email Verification</h2>
               
               <p class="message">
-                You are attempting to log in to your admin account.<br>
-                Please use the following OTP to complete your login:
+                Please use the following OTP to verify your action:
               </p>
               
               <div class="otp-box">${otp}</div>
               
               <p class="message">
-                This code will expire in <strong>5 minutes</strong>.
+                This code will expire in <strong>5 minutes</strong>.<br>
+                Do not share this code with anyone.
               </p>
               
               <p class="warning">

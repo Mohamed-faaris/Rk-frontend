@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Mail, Phone, MapPin, Send, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 import { contactService } from "@/lib/contactService";
 import {
   Select,
@@ -24,6 +26,8 @@ import { applicationService } from "@/lib/applicationService";
 
 const Contact = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [applicationDialogOpen, setApplicationDialogOpen] = useState(false);
   const [isApplyingSubmitting, setIsApplyingSubmitting] = useState(false);
@@ -61,6 +65,18 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to send a message.",
+        variant: "destructive",
+      });
+      navigate('/login');
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -178,8 +194,11 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-24 md:py-32 bg-secondary/30">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="relative py-24 md:py-32 bg-secondary/30 dark:bg-background shadow-sm">
+      {/* Smooth fade from previous section */}
+      <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
@@ -283,7 +302,7 @@ const Contact = () => {
                   type="submit"
                   size="lg"
                   disabled={isSubmitting}
-                  className="w-full bg-accent text-black hover:bg-accent/90 shadow-gold group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-accent hover:bg-accent/90 shadow-gold group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                   <Send className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -304,9 +323,32 @@ const Contact = () => {
               </div>
 
               {/* Apply for Employee Button */}
+              <Button 
+                className="w-full bg-accent hover:bg-accent/90 shadow-gold group"
+                onClick={() => navigate('/apply-employee')}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Apply for Employee Position
+              </Button>
+
+              {/* Hidden Dialog for backward compatibility */}
+              {false && (
               <Dialog open={applicationDialogOpen} onOpenChange={setApplicationDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="w-full bg-accent hover:bg-accent/90 text-black shadow-gold group">
+                  <Button 
+                    className="w-full bg-accent hover:bg-accent/90 shadow-gold group"
+                    onClick={(e) => {
+                      if (!user) {
+                        e.preventDefault();
+                        toast({
+                          title: "Login Required",
+                          description: "Please log in to apply for an employee position.",
+                          variant: "destructive",
+                        });
+                        navigate('/login');
+                      }
+                    }}
+                  >
                     <FileText className="w-4 h-4 mr-2" />
                     Apply for Employee Position
                   </Button>
@@ -517,7 +559,7 @@ const Contact = () => {
                       <Button
                         type="submit"
                         disabled={isApplyingSubmitting}
-                        className="flex-1 bg-accent text-black hover:bg-accent/90 disabled:opacity-50"
+                        className="flex-1 bg-accent hover:bg-accent/90 disabled:opacity-50"
                       >
                         {isApplyingSubmitting ? "Submitting..." : "Submit Application"}
                       </Button>
@@ -525,6 +567,7 @@ const Contact = () => {
                   </form>
                 </DialogContent>
               </Dialog>
+              )}
 
               <div className="space-y-6">
                 {contactInfo.map((info) => (

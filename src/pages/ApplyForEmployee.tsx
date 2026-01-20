@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
+import DragDropUpload from '@/components/DragDropUpload';
 import {
   Select,
   SelectContent,
@@ -15,15 +17,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { applicationService } from '@/lib/applicationService';
 
 const ApplyForEmployee = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    address1: '',
+    address2: '',
     phone: '',
     position: '',
     department: '',
@@ -36,11 +42,19 @@ const ApplyForEmployee = () => {
     expectedSalary: '',
     workPreference: 'Full-time'
   });
+  const [resumeFile, setResumeFile] = useState<File[]>([]);
+  const [profilePhotoFile, setProfilePhotoFile] = useState<File[]>([]);
 
   const positions = ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Other'];
   const departments = ['Development', 'Design', '3D Animation', 'UI/UX', 'Management', 'Marketing', 'Sales', 'HR', 'Operations'];
   const experiences = ['0-1 years', '1-3 years', '3-5 years', '5-10 years', '10+ years'];
   const workPreferences = ['Full-time', 'Part-time', 'Contract', 'Remote', 'On-site', 'Hybrid'];
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,21 +71,27 @@ const ApplyForEmployee = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/applications/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      const formDataToSend = new FormData();
+      
+      // Add text fields
+      Object.keys(formData).forEach(key => {
+        formDataToSend.append(key, formData[key as keyof typeof formData]);
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Application submission failed');
+      // Add files
+      if (resumeFile.length > 0) {
+        formDataToSend.append('resumeFile', resumeFile[0]);
+      }
+      if (profilePhotoFile.length > 0) {
+        formDataToSend.append('profilePhoto', profilePhotoFile[0]);
       }
 
+      await applicationService.submitApplication(formDataToSend);
       setSuccess('Application submitted successfully! Our team will review your application shortly.');
       setTimeout(() => navigate('/'), 2000);
     } catch (err: any) {
-      setError(err.message || 'Failed to submit application');
+      console.error('Application submission error:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to submit application');
     } finally {
       setIsLoading(false);
     }
@@ -86,42 +106,42 @@ const ApplyForEmployee = () => {
           <Button
             variant="outline"
             onClick={() => navigate(-1)}
-            className="mb-8 gap-2"
+            className="mb-6 md:mb-8 gap-2 text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
             Back
           </Button>
 
           <Card className="border-border bg-card">
-            <CardHeader>
-              <CardTitle className="text-3xl">Apply for Employee Position</CardTitle>
-              <CardDescription>
+            <CardHeader className="pb-4 md:pb-6">
+              <CardTitle className="text-2xl md:text-3xl">Apply for Employee Position</CardTitle>
+              <CardDescription className="text-xs md:text-sm">
                 Join RajKayal Creative Hub team. Fill in all your details below.
               </CardDescription>
             </CardHeader>
 
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                 {error && (
                   <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-xs md:text-sm">{error}</AlertDescription>
                   </Alert>
                 )}
 
                 {success && (
                   <Alert className="bg-green-900/20 border-green-500/50">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <AlertDescription className="text-green-500">{success}</AlertDescription>
+                    <CheckCircle2 className="h-3 h-3 md:h-4 md:w-4 text-green-500" />
+                    <AlertDescription className="text-green-500 text-xs md:text-sm">{success}</AlertDescription>
                   </Alert>
                 )}
 
                 {/* Personal Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Personal Information</h3>
+                <div className="space-y-3 md:space-y-4">
+                  <h3 className="text-base md:text-lg font-semibold">Personal Information</h3>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Full Name *</label>
+                      <label className="text-xs md:text-sm font-medium mb-1 md:mb-2 block">Full Name *</label>
                       <Input
                         type="text"
                         name="name"
@@ -130,18 +150,49 @@ const ApplyForEmployee = () => {
                         placeholder="John Doe"
                         required
                         disabled={isLoading}
+                        className="text-xs md:text-sm h-8 md:h-10"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Email *</label>
+                      <label className="text-xs md:text-sm font-medium mb-1 md:mb-2 block">Email *</label>
                       <Input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="your@email.com"
+                        className="text-xs md:text-sm h-8 md:h-10"
                         required
                         disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Address Fields - Full Width */}
+                  <div className="space-y-3 md:space-y-4">
+                    <div>
+                      <label className="text-xs md:text-sm font-medium mb-1 md:mb-2 block">Address 1 *</label>
+                      <Input
+                        type="text"
+                        name="address1"
+                        value={formData.address1}
+                        onChange={handleChange}
+                        placeholder="Street, Area, City, State, PIN Code"
+                        required
+                        disabled={isLoading}
+                        className="text-xs md:text-sm h-10 md:h-12"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs md:text-sm font-medium mb-1 md:mb-2 block">Address 2</label>
+                      <Input
+                        type="text"
+                        name="address2"
+                        value={formData.address2}
+                        onChange={handleChange}
+                        placeholder="Apartment, Landmark, Additional details (optional)"
+                        disabled={isLoading}
+                        className="text-xs md:text-sm h-10 md:h-12"
                       />
                     </div>
                   </div>
@@ -250,6 +301,22 @@ const ApplyForEmployee = () => {
                   </div>
                 </div>
 
+                {/* Profile Photo */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Profile Information</h3>
+
+                  <DragDropUpload
+                    label="Profile Photo *"
+                    description="Upload a professional profile photo"
+                    acceptedFormats={['.jpg', '.jpeg', '.png', '.webp']}
+                    maxSize={2 * 1024 * 1024} // 2MB for photos
+                    type="photo"
+                    onFilesSelected={setProfilePhotoFile}
+                    value={profilePhotoFile}
+                    disabled={isLoading}
+                  />
+                </div>
+
                 {/* Skills and Experience */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Skills & Experience</h3>
@@ -279,8 +346,19 @@ const ApplyForEmployee = () => {
                     />
                   </div>
 
+                  <DragDropUpload
+                    label="Resume/CV *"
+                    description="Upload your resume or CV as PDF"
+                    acceptedFormats={['.pdf', '.doc', '.docx']}
+                    maxSize={5 * 1024 * 1024} // 5MB for documents
+                    type="resume"
+                    onFilesSelected={setResumeFile}
+                    value={resumeFile}
+                    disabled={isLoading}
+                  />
+
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Resume URL</label>
+                    <label className="text-sm font-medium mb-2 block">Resume URL (Optional)</label>
                     <Input
                       type="url"
                       name="resume"
@@ -315,7 +393,7 @@ const ApplyForEmployee = () => {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 bg-accent text-black hover:bg-accent/90"
+                    className="flex-1 bg-accent hover:bg-accent/90"
                   >
                     {isLoading ? 'Submitting...' : 'Submit Application'}
                   </Button>

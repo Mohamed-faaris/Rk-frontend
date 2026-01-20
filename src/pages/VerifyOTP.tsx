@@ -51,8 +51,12 @@ export default function VerifyOTP() {
         // Update auth context immediately
         setAuthUser(response.user);
         
-        // Redirect to home page without reload
-        navigate('/', { replace: true });
+        // Redirect based on user role
+        if (response.user.role === 'admin') {
+          navigate('/management', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Invalid OTP. Please try again.');

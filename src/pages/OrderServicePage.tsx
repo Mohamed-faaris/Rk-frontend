@@ -41,32 +41,44 @@ const OrderServicePage = () => {
   const services = [
     {
       title: "Web Design & Development",
-      startingPrice: 207500,
+      startingPrice: 5000,
+      priceRange: "₹5,000 - ₹6,00,000",
+      pricingUnit: "",
       features: ["Responsive Design", "SEO Optimized", "Fast Loading", "Mobile First"]
     },
     {
       title: "Branding & Identity",
-      startingPrice: 124500,
+      startingPrice: 1000,
+      priceRange: "₹1,000 - ₹1,00,000",
+      pricingUnit: "",
       features: ["Logo Design", "Brand Guidelines", "Color Palette", "Typography"]
     },
     {
       title: "3D Animation",
-      startingPrice: 249000,
+      startingPrice: 2111,
+      priceRange: "₹2,111 - ₹8,00,000",
+      pricingUnit: "per Minute",
       features: ["3D Modeling", "Motion Graphics", "Product Visualization", "Character Animation"]
     },
     {
       title: "Video Production",
-      startingPrice: 166000,
+      startingPrice: 5000,
+      priceRange: "₹5,000 - ₹15,000",
+      pricingUnit: "per Hour",
       features: ["Script Writing", "HD Video", "Editing", "Sound Design"]
     },
     {
       title: "UI/UX Design",
-      startingPrice: 149400,
+      startingPrice: 5000,
+      priceRange: "₹5,000 - ₹50,000",
+      pricingUnit: "per Screen",
       features: ["User Research", "Wireframing", "Prototyping", "Usability Testing"]
     },
     {
       title: "Digital Strategy",
-      startingPrice: 99600,
+      startingPrice: 10000,
+      priceRange: "₹10,000 - ₹2,00,000",
+      pricingUnit: "per Month",
       features: ["Market Analysis", "Content Strategy", "Social Media", "Performance Tracking"]
     }
   ];
@@ -176,9 +188,14 @@ const OrderServicePage = () => {
               <CardContent className="space-y-4">
                 {currentService && (
                   <>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Starting Price</span>
-                      <span className="text-2xl font-bold text-foreground">₹{currentService.startingPrice.toLocaleString('en-IN')}</span>
+                    <div className="flex items-start justify-between">
+                      <span className="text-muted-foreground">Pricing</span>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-foreground">{(currentService as any).priceRange}</div>
+                        {(currentService as any).pricingUnit && (
+                          <div className="text-xs text-muted-foreground mt-1">{(currentService as any).pricingUnit}</div>
+                        )}
+                      </div>
                     </div>
 
                     <div>
@@ -425,7 +442,7 @@ const OrderServicePage = () => {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r bg-accent hover:bg-accent/90 text-black font-semibold py-3"
+                    className="w-full bg-gradient-to-r bg-accent hover:bg-accent/90 font-semibold py-3"
                     disabled={isLoading}
                   >
                     {isLoading ? (

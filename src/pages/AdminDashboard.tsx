@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { contactService } from '@/lib/contactService';
 import userService, { User } from '@/lib/userService';
 import Navbar from '@/components/Navbar';
@@ -17,6 +17,12 @@ export default function AdminDashboard() {
   const [contacts, setContacts] = useState<any[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
+
+  // Load data on component mount
+  useEffect(() => {
+    loadContacts();
+    loadUsers();
+  }, []);
 
   const loadContacts = async () => {
     setIsLoading(true);
@@ -98,9 +104,9 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 pt-24 pb-12">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+      <div className="container mx-auto px-4 pt-20 md:pt-24 pb-8 md:pb-12">
+        <div className="mb-4 md:mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">Admin Dashboard</h1>
         </div>
 
       {message && (
@@ -110,38 +116,38 @@ export default function AdminDashboard() {
       )}
 
       <Tabs defaultValue="contacts" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="contacts">Contact Management</TabsTrigger>
-          <TabsTrigger value="users">User Management</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 text-xs md:text-sm">
+          <TabsTrigger value="contacts" className="text-xs md:text-sm py-2 md:py-3">Contact Management</TabsTrigger>
+          <TabsTrigger value="users" className="text-xs md:text-sm py-2 md:py-3">User Management</TabsTrigger>
         </TabsList>
 
         <TabsContent value="contacts" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">Contact Messages</h2>
-            <Button onClick={loadContacts} disabled={isLoading}>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
+            <h2 className="text-lg md:text-2xl font-semibold">Contact Messages</h2>
+            <Button onClick={loadContacts} disabled={isLoading} className="w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
               {isLoading ? 'Loading...' : 'Load Contacts'}
             </Button>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-3 md:gap-4">
             {contacts.map((contact) => (
               <Card key={contact._id}>
-                <CardHeader>
-                  <CardTitle className="flex justify-between items-start">
-                    <span>{contact.name}</span>
+                <CardHeader className="pb-2 md:pb-4">
+                  <CardTitle className="flex justify-between items-start gap-2 text-base md:text-lg">
+                    <span className="line-clamp-2">{contact.name}</span>
                     <Badge variant={
                       contact.status === 'new' ? 'default' : 
                       contact.status === 'read' ? 'secondary' : 
                       'outline'
-                    }>
+                    } className="text-xs md:text-sm flex-shrink-0">
                       {contact.status}
                     </Badge>
                   </CardTitle>
-                  <CardDescription>{contact.email}</CardDescription>
+                  <CardDescription className="text-xs md:text-sm">{contact.email}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2 mb-4">
-                    <p><strong>Subject:</strong> {contact.subject}</p>
+                    <p className="text-xs md:text-sm"><strong>Subject:</strong> {contact.subject}</p>
                     <p><strong>Message:</strong> {contact.message}</p>
                     {contact.phone && <p><strong>Phone:</strong> {contact.phone}</p>}
                   </div>
@@ -204,7 +210,7 @@ export default function AdminDashboard() {
                   <CardTitle className="text-sm font-medium">Admin Users</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-blue-600">{userStats.adminUsers}</div>
+                  <div className="text-2xl font-bold text-slate-300">{userStats.adminUsers}</div>
                 </CardContent>
               </Card>
               <Card>

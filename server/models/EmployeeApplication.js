@@ -16,6 +16,15 @@ const employeeApplicationSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
+  address1: {
+    type: String,
+    trim: true,
+    default: 'Not provided'
+  },
+  address2: {
+    type: String,
+    trim: true
+  },
   phone: {
     type: String,
     required: [true, 'Please provide your phone number']
@@ -29,6 +38,14 @@ const employeeApplicationSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please select a department'],
     enum: ['Development', 'Design', '3D Animation', 'UI/UX', 'Management', 'Marketing', 'Sales', 'HR', 'Operations']
+  },
+  positionId: {
+    type: String,
+    trim: true
+  },
+  positionTitle: {
+    type: String,
+    trim: true
   },
   experience: {
     type: String,
@@ -50,6 +67,10 @@ const employeeApplicationSchema = new mongoose.Schema({
     trim: true
   },
   resume: {
+    type: String,
+    trim: true
+  },
+  profilePhoto: {
     type: String,
     trim: true
   },

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TrendingUp, Award, Users, Target, ArrowRight, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import GradientBlinds from "@/components/GradientBlinds.tsx";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -125,9 +126,10 @@ const CaseStudiesPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <GradientBlinds gradientColors={['#C6A345', '#8B7520', '#D4AF6A']} />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4 bg-gradient-to-b from-secondary/30 to-background">
+      <section className="pt-32 pb-16 px-4 bg-gradient-to-b from-secondary/30 to-background relative z-10">
         <div className="container mx-auto max-w-6xl">
           <Button
             onClick={() => navigate('/')}
@@ -138,7 +140,7 @@ const CaseStudiesPage = () => {
             Back to Home
           </Button>
           <div className="text-center">
-            <Badge className="mb-4 bg-accent/10 text-accent border-accent/20 hover:bg-accent/20">
+            <Badge className="mb-4 bg-accent shadow-gold">
               Success Stories
             </Badge>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 break-words">
@@ -161,7 +163,7 @@ const CaseStudiesPage = () => {
                 variant={selectedIndustry === industry ? "default" : "outline"}
                 onClick={() => setSelectedIndustry(industry)}
                 className={selectedIndustry === industry 
-                  ? "bg-accent text-black hover:bg-accent/90" 
+                  ? "bg-accent hover:bg-accent/90" 
                   : "border-border hover:border-accent hover:text-accent"}
               >
                 {industry.charAt(0).toUpperCase() + industry.slice(1)}
@@ -195,7 +197,7 @@ const CaseStudiesPage = () => {
                   <div className="p-8 md:p-12 space-y-6">
                     {/* Header */}
                     <div>
-                      <Badge className="mb-3 bg-accent/10 text-accent border-accent/20">
+                      <Badge className="mb-3 bg-accent shadow-gold">
                         {study.industry}
                       </Badge>
                       <h2 className="text-3xl font-bold mb-2 break-words">{study.title}</h2>
@@ -258,7 +260,7 @@ const CaseStudiesPage = () => {
           <p className="text-lg text-muted-foreground mb-8 break-words">
             Let's discuss how we can help you achieve similar results for your business.
           </p>
-          <Button asChild className="bg-accent text-black hover:bg-accent/90 shadow-gold group">
+          <Button asChild className="bg-accent hover:bg-accent/90 shadow-gold group">
             <a href="#contact">
               Start Your Project
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

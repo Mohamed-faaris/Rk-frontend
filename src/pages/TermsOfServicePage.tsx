@@ -178,7 +178,7 @@ const TermsOfServicePage = () => {
             <p className="text-lg text-muted-foreground mb-4 break-words">
               Please read these terms carefully before using our services. These terms govern your use of RajKayal Digital Studio's services.
             </p>
-            <Badge className="bg-accent/10 text-accent border-accent/20">
+            <Badge className="bg-accent shadow-gold">
               Effective Date: November 2024
             </Badge>
           </div>

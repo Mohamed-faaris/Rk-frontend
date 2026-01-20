@@ -1,48 +1,55 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-bg.jpg";
-import LiquidEther from "@/components/LiquidEther";
+import { useState, useEffect } from "react";
+import LiquidEther from "./LiquidEther";
 
 const Hero = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect mobile
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
   return (
     <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* Background Overlay */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/95 via-background/80 to-background" />
-
-      {/* Liquid Ether Interactive Background */}
-      <div className="absolute inset-0 z-[1] pointer-events-auto">
-        <LiquidEther
-          colors={['#FFD700', '#F4D03F', '#F9E79F', '#F7DC6F', '#F4C542']}
-          mouseForce={22}
-          cursorSize={110}
-          isViscous={false}
-          viscous={30}
-          iterationsViscous={32}
-          iterationsPoisson={32}
-          resolution={0.5}
-          isBounce={false}
+      {/* LiquidEther Background */}
+      <div className="absolute inset-0 z-0">
+        <LiquidEther 
+          mouseForce={isMobile ? 12 : 18}
+          cursorSize={isMobile ? 60 : 80}
+          resolution={isMobile ? 0.25 : 0.35}
+          colors={['#FFD700', '#FFF44F', '#FFEC1B']}
           autoDemo={true}
-          autoSpeed={0.55}
-          autoIntensity={2.3}
-          takeoverDuration={0.25}
-          autoResumeDelay={3000}
-          autoRampDuration={0.6}
+          autoSpeed={0.25}
+          autoIntensity={isMobile ? 1.5 : 1.8}
         />
       </div>
 
-      {/* Floating Particles Effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
-        {[...Array(20)].map((_, i) => (
+      {/* Background Overlay - Semi-transparent for content readability */}
+      <div className="absolute inset-0 z-1 bg-gradient-to-b from-black/40 via-black/20 to-black/40 pointer-events-none" />
+
+      {/* Smooth fade to background at bottom */}
+      <div className="absolute bottom-0 inset-x-0 h-32 z-2 bg-gradient-to-b from-transparent to-background pointer-events-none" />
+
+      {/* Floating Particles Effect - Static twinkling background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-[3]">
+        {[...Array(isMobile ? 4 : 10)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-accent rounded-full opacity-30 animate-pulse"
+            className="absolute w-0.5 h-0.5 bg-accent rounded-full opacity-20 animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
+              animationDelay: `${Math.random() * 4}s`,
               animationDuration: `${3 + Math.random() * 2}s`,
             }}
           />
@@ -50,18 +57,12 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="w-full px-4 sm:px-6 md:px-8 z-20 relative">{/* NOTE: pointer-events-none will stop auto-resume of LiquidEther */}
+      <div className="w-full px-4 sm:px-6 md:px-8 z-20 relative">
         <div className="max-w-5xl mx-auto text-center space-y-3 animate-fade-in-up flex flex-col items-center justify-center">
           {/* RK Badge Featured */}
-          {/* Featured Badge */}
           <div className="flex justify-center items-center animate-fade-in w-full px-4">
             <div className="relative flex items-center justify-center">
-              <img 
-                src="/rajkayal-hd.png" 
-                alt="RajKayal Premium Badge" 
-                className="h-56 w-56 sm:h-72 sm:w-72 md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] object-contain mx-auto"
-                style={{ imageRendering: '-webkit-optimize-contrast' }}
-              />
+              <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] drop-shadow-[0_0_20px_rgba(255,215,0,0.8)] hover:drop-shadow-[0_0_30px_rgba(255,215,0,1)] transition-all duration-300" style={{ willChange: 'filter' }} />
             </div>
           </div>
 
@@ -75,16 +76,15 @@ const Hero = () => {
 
           {/* Main Heading */}
           <div className="w-full px-4 flex justify-center items-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-center whitespace-nowrap" style={{ wordBreak: 'keep-all', overflowWrap: 'normal' }}>
-              <span className="bg-gradient-to-r from-[#D4AF37] to-[#C9A961] bg-clip-text text-transparent"> RajKayal</span>
-              {" "}
-              <span className="gradient-text">Creative Hub</span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center whitespace-nowrap" style={{ filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5))' }}>
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#C9A961] bg-clip-text text-transparent">RajKayal</span>
+              <span className="gradient-text mx-2">Creative Hub</span>
             </h1>
           </div>
 
           {/* Subheading */}
           <div className="w-full px-4">
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed text-center">
               Where creativity meets technology. We craft exceptional digital
               experiences that inspire and transform.
             </p>
@@ -94,7 +94,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 w-full">
             <Button
               size="lg"
-              className="bg-accent text-black hover:bg-accent/90 shadow-gold group min-w-[200px]"
+              className="bg-accent hover:bg-accent/90 shadow-gold group min-w-[200px]"
               asChild
             >
               <a href="#portfolio" className="flex items-center justify-center">

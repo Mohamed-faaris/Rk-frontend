@@ -3,6 +3,7 @@ import {
   getEmployees,
   getEmployee,
   createEmployee,
+  createEmployeeFromApplication,
   updateEmployee,
   deleteEmployee,
   getEmployeeStats
@@ -17,6 +18,9 @@ router.use(admin);
 
 // Stats route must come before :id route
 router.get('/stats', getEmployeeStats);
+
+// Create employee from application
+router.post('/from-application/:applicationId', createEmployeeFromApplication);
 
 router.route('/')
   .get(getEmployees)

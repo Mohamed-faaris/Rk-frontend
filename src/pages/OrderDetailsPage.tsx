@@ -90,7 +90,7 @@ const OrderDetailsPage = () => {
       case 'pending':
         return <Clock className="w-5 h-5 text-yellow-500" />;
       case 'in-progress':
-        return <RefreshCw className="w-5 h-5 text-blue-500" />;
+        return <RefreshCw className="w-5 h-5 text-slate-400" />;
       case 'review':
         return <AlertCircle className="w-5 h-5 text-orange-500" />;
       case 'completed':
@@ -105,7 +105,7 @@ const OrderDetailsPage = () => {
   const getStatusBadge = (status: Order['status']) => {
     const variants = {
       pending: 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30',
-      'in-progress': 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30',
+      'in-progress': 'bg-slate-700/20 text-slate-300 dark:text-slate-200 border-slate-700/30',
       review: 'bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30',
       completed: 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30',
       cancelled: 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30'

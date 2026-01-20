@@ -231,7 +231,7 @@ const AccountPage = () => {
                       </p>
                       <Button
                         onClick={() => navigate("/admin")}
-                        className="w-full bg-accent hover:bg-accent/90 text-black"
+                        className="w-full bg-accent hover:bg-accent/90"
                       >
                         Admin Dashboard
                       </Button>
@@ -326,7 +326,7 @@ const AccountPage = () => {
                         <div className="flex gap-3 pt-4">
                           <Button
                             type="submit"
-                            className="flex-1 bg-accent hover:bg-accent/90 text-black"
+                            className="flex-1 bg-accent hover:bg-accent/90"
                           >
                             <Save className="w-4 h-4 mr-2" />
                             Save Changes
@@ -428,7 +428,7 @@ const AccountPage = () => {
                             <div className="flex gap-3 pt-4">
                               <Button
                                 type="submit"
-                                className="flex-1 bg-accent hover:bg-accent/90 text-black"
+                                className="flex-1 bg-accent hover:bg-accent/90"
                               >
                                 Update Password
                               </Button>
@@ -508,7 +508,7 @@ const AccountPage = () => {
                             <div className="flex gap-3">
                               <Button
                                 onClick={handleToggle2FA}
-                                className="flex-1 bg-accent hover:bg-accent/90 text-black"
+                                className="flex-1 bg-accent hover:bg-accent/90"
                               >
                                 Enable 2FA
                               </Button>

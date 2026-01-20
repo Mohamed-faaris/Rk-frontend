@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Play, Image as ImageIcon, X, Code2, ExternalLink } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import GradientBlinds from "@/components/GradientBlinds.tsx";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -184,8 +185,9 @@ const WebDevelopmentPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <GradientBlinds />
       
-      <main className="pt-24 pb-16">
+      <main className="pt-24 pb-16 relative z-10">
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="max-w-6xl mx-auto mb-12">
@@ -444,7 +446,7 @@ const WebDevelopmentPage = () => {
                           />
                         )}
                         {project.featured && (
-                          <Badge className="absolute top-4 right-4 bg-accent/90 backdrop-blur-sm">
+                          <Badge className="absolute top-4 right-4 bg-accent shadow-gold">
                             Featured
                           </Badge>
                         )}

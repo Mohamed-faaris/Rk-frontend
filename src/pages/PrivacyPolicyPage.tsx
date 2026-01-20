@@ -107,7 +107,7 @@ const PrivacyPolicyPage = () => {
             <p className="text-lg text-muted-foreground mb-4 break-words">
               Your privacy is important to us. This policy outlines how RajKayal Digital Studio collects, uses, and protects your information.
             </p>
-            <Badge className="bg-accent/10 text-accent border-accent/20">
+            <Badge className="bg-accent shadow-gold">
               Last Updated: November 2024
             </Badge>
           </div>

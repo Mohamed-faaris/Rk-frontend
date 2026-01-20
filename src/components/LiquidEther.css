@@ -4,4 +4,39 @@
   width: 100%;
   height: 100%;
   touch-action: none;
+  background: linear-gradient(135deg, #1a1a1a 0%, #1a1a1a 50%, #1a1a1a 100%);
+  opacity: 1;
+  will-change: auto;
 }
+
+.liquid-ether-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  opacity: 1;
+  filter: brightness(1.8) contrast(1.4) saturate(1.5);
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .liquid-ether-container {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  .liquid-ether-container canvas {
+    filter: brightness(1.9) contrast(1.4) saturate(1.5);
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* Performance optimization for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-ether-container canvas {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+

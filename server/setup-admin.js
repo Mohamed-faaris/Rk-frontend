@@ -1,10 +1,16 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import User from './models/User.js';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/golden-creative-hub';
+// Load .env from parent directory
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/rkch-hub';
 
 // Admin user details
 const ADMIN_EMAIL = 'rajkayal7281@gmail.com';

@@ -84,8 +84,21 @@ export default function LiquidEther({
   const isVisibleRef = useRef<boolean>(true);
   const resizeRafRef = useRef<number | null>(null);
 
+  // Safety check - only initialize if WebGL is available
   useEffect(() => {
     if (!mountRef.current) return;
+    
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      if (!gl) {
+        console.warn('WebGL not supported, LiquidEther will be disabled');
+        return;
+      }
+    } catch (e) {
+      console.warn('WebGL check failed:', e);
+      return;
+    }
 
     function makePaletteTexture(stops: string[]): THREE.DataTexture {
       let arr: string[];
@@ -1084,69 +1097,77 @@ export default function LiquidEther({
     }
 
     const container = mountRef.current;
-    container.style.position = container.style.position || 'relative';
-    container.style.overflow = container.style.overflow || 'hidden';
+    if (!container) return;
+    
+    try {
+      container.style.position = container.style.position || 'relative';
+      container.style.overflow = container.style.overflow || 'hidden';
 
-    const webgl = new WebGLManager({
-      $wrapper: container,
-      autoDemo,
-      autoSpeed,
-      autoIntensity,
-      takeoverDuration,
-      autoResumeDelay,
-      autoRampDuration
-    });
-    webglRef.current = webgl;
-
-    const applyOptionsFromProps = () => {
-      if (!webglRef.current) return;
-      const sim = webglRef.current.output?.simulation;
-      if (!sim) return;
-      const prevRes = sim.options.resolution;
-      Object.assign(sim.options, {
-        mouse_force: mouseForce,
-        cursor_size: cursorSize,
-        isViscous,
-        viscous,
-        iterations_viscous: iterationsViscous,
-        iterations_poisson: iterationsPoisson,
-        dt,
-        BFECC,
-        resolution,
-        isBounce
+      const webgl = new WebGLManager({
+        $wrapper: container,
+        autoDemo,
+        autoSpeed,
+        autoIntensity,
+        takeoverDuration,
+        autoResumeDelay,
+        autoRampDuration
       });
-      if (resolution !== prevRes) sim.resize();
-    };
-    applyOptionsFromProps();
-    webgl.start();
+      webglRef.current = webgl;
 
-    const io = new IntersectionObserver(
-      entries => {
-        const entry = entries[0];
-        const isVisible = entry.isIntersecting && entry.intersectionRatio > 0;
-        isVisibleRef.current = isVisible;
+      const applyOptionsFromProps = () => {
         if (!webglRef.current) return;
-        if (isVisible && !document.hidden) {
-          webglRef.current.start();
-        } else {
-          webglRef.current.pause();
-        }
-      },
-      { threshold: [0, 0.01, 0.1] }
-    );
-    io.observe(container);
-    intersectionObserverRef.current = io;
+        const sim = webglRef.current.output?.simulation;
+        if (!sim) return;
+        const prevRes = sim.options.resolution;
+        Object.assign(sim.options, {
+          mouse_force: mouseForce,
+          cursor_size: cursorSize,
+          isViscous,
+          viscous,
+          iterations_viscous: iterationsViscous,
+          iterations_poisson: iterationsPoisson,
+          dt,
+          BFECC,
+          resolution,
+          isBounce
+        });
+        if (resolution !== prevRes) sim.resize();
+      };
+      applyOptionsFromProps();
+      webgl.start();
 
-    const ro = new ResizeObserver(() => {
-      if (!webglRef.current) return;
-      if (resizeRafRef.current) cancelAnimationFrame(resizeRafRef.current);
-      resizeRafRef.current = requestAnimationFrame(() => {
+      const io = new IntersectionObserver(
+        entries => {
+          const entry = entries[0];
+          const isVisible = entry.isIntersecting && entry.intersectionRatio > 0;
+          isVisibleRef.current = isVisible;
+          if (!webglRef.current) return;
+          if (isVisible && !document.hidden) {
+            webglRef.current.start();
+          } else {
+            webglRef.current.pause();
+          }
+        },
+        { threshold: [0, 0.01, 0.1] }
+      );
+      io.observe(container);
+      intersectionObserverRef.current = io;
+
+      const ro = new ResizeObserver(() => {
         if (!webglRef.current) return;
-        webglRef.current.resize();
+        if (resizeRafRef.current) cancelAnimationFrame(resizeRafRef.current);
+        resizeRafRef.current = requestAnimationFrame(() => {
+          if (!webglRef.current) return;
+          webglRef.current.resize();
+        });
       });
-    });
-    ro.observe(container);
-    resizeObserverRef.current = ro;
+      ro.observe(container);
+      resizeObserverRef.current = ro;
+    } catch (error) {
+      console.error('LiquidEther initialization failed:', error);
+      webglRef.current = null;
+      // Component will still render, just without the WebGL animation
+    }
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);

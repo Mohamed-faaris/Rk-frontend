@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/components/ui/theme-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { User, Mail, Lock, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+import { User, Mail, Lock, CheckCircle2, ArrowRight, Sparkles, Moon, Sun } from 'lucide-react';
 
 export default function Register() {
   const navigate = useNavigate();
   const { register, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -24,7 +26,8 @@ export default function Register() {
   // Clear authentication when visiting register page
   useEffect(() => {
     logout();
-  }, []);
+  }, [logout]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -98,6 +101,20 @@ export default function Register() {
         ))}
       </div>
 
+      {/* Theme Toggle Button */}
+      <div className="absolute top-6 right-6 z-50">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="rounded-full hover:bg-accent/10"
+          aria-label="Toggle theme"
+        >
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        </Button>
+      </div>
+
       {/* Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md animate-fade-in-up">
@@ -107,12 +124,7 @@ export default function Register() {
               <div className="flex justify-center animate-scale-in">
                 <div className="relative">
                   <div className="absolute inset-0 bg-accent/20 blur-3xl rounded-full animate-pulse-slow" />
-                  <img 
-                    src="/rajkayal-hd.png" 
-                    alt="RajKayal Logo" 
-                    className="h-40 w-40 relative z-10 drop-shadow-[0_0_25px_rgba(212,175,55,0.6)] object-contain"
-                    style={{ imageRendering: '-webkit-optimize-contrast' }}
-                  />
+                  <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-40 w-40 relative z-10 drop-shadow-[0_0_25px_rgba(253,185,19,0.6)]" />
                 </div>
               </div>
               
@@ -238,7 +250,7 @@ export default function Register() {
                 {/* Submit Button */}
                 <Button 
                   type="submit" 
-                  className="w-full h-12 bg-accent hover:bg-accent/90 text-black font-semibold shadow-gold group relative overflow-hidden transition-all duration-300"
+                  className="w-full h-12 bg-accent hover:bg-accent/90 font-semibold shadow-gold group relative overflow-hidden transition-all duration-300"
                   disabled={isLoading}
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">

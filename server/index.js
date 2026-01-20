@@ -18,12 +18,19 @@ import userRoutes from './routes/user.js';
 import revenueRoutes from './routes/revenue.js';
 import uploadRoutes from './routes/upload.js';
 import applicationRoutes from './routes/applicationRoutes.js';
+import dnsRoutes from './routes/dns.js';
+import chatbotRoutes from './routes/chatbot.js';
+import otpRoutes from './routes/otp.js';
+import configRoutes from './routes/config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load .env from parent directory
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
+
+console.log('Environment loaded. JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
+console.log('JWT_SECRET value:', process.env.JWT_SECRET);
 
 const app = express();
 const PORT = process.env.PORT || 5002;
@@ -86,6 +93,7 @@ mongoose.connect(MONGODB_URI)
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/otp', otpRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/orders', orderRoutes);
@@ -99,6 +107,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/revenue', revenueRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/dns', dnsRoutes);
+app.use('/api/chat', chatbotRoutes);
+app.use('/api/config', configRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

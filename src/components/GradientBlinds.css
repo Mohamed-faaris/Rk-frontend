@@ -1,6 +1,82 @@
 .gradient-blinds-container {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  min-height: 100%;
   overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+  will-change: contents;
+  contain: paint;
+  background: transparent;
 }
+
+.gradient-blinds-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: auto;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* Slide animations */
+@keyframes slideFromLeft {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideFromTop {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideFromBottom {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Animation classes */
+.gradient-blinds-container.slide-left canvas {
+  animation: slideFromLeft ease-out forwards;
+}
+
+.gradient-blinds-container.slide-right canvas {
+  animation: slideFromRight ease-out forwards;
+}
+
+.gradient-blinds-container.slide-up canvas {
+  animation: slideFromTop ease-out forwards;
+}
+
+.gradient-blinds-container.slide-down canvas {
+  animation: slideFromBottom ease-out forwards;
+}
+

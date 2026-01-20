@@ -1,4 +1,5 @@
 import Employee from '../models/Employee.js';
+import EmployeeApplication from '../models/EmployeeApplication.js';
 
 // @desc    Get all employees
 // @route   GET /api/employees
@@ -49,7 +50,68 @@ export const getEmployee = async (req, res) => {
   }
 };
 
-// @desc    Create employee
+// @desc    Create employee from application
+// @route   POST /api/employees/from-application/:applicationId
+// @access  Private/Admin
+export const createEmployeeFromApplication = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const { salary, joiningDate } = req.body;
+
+    // Find the application
+    const application = await EmployeeApplication.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    // Check if employee already exists with this email
+    const existingEmployee = await Employee.findOne({ email: application.email });
+    if (existingEmployee) {
+      return res.status(400).json({ error: 'Employee with this email already exists' });
+    }
+
+    // Parse address from address1 and address2
+    const address = {
+      street: application.address1,
+      city: application.address2 || '',
+      state: '',
+      zipCode: '',
+      country: 'India'
+    };
+
+    // Create employee from application data
+    const employee = await Employee.create({
+      name: application.name,
+      email: application.email,
+      phone: application.phone,
+      position: application.position,
+      department: application.department,
+      salary: salary || application.expectedSalary,
+      joiningDate: joiningDate || new Date(),
+      status: 'Active',
+      skills: application.skills ? application.skills.split(',').map(skill => skill.trim()) : [],
+      address: address
+    });
+
+    // Update application status to accepted
+    await EmployeeApplication.findByIdAndUpdate(applicationId, {
+      status: 'accepted',
+      reviewedBy: req.user?.id,
+      updatedAt: new Date()
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Employee created successfully from application',
+      data: employee
+    });
+  } catch (error) {
+    console.error('Create employee from application error:', error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// @desc    Create new employee
 // @route   POST /api/employees
 // @access  Private/Admin
 export const createEmployee = async (req, res) => {

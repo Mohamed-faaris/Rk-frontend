@@ -97,6 +97,7 @@ export default function ManagementDashboard() {
   const [editingUser, setEditingUser] = useState<any>(null);
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [editingApplication, setEditingApplication] = useState<any>(null);
+  const [newEmployeeData, setNewEmployeeData] = useState<any>(null);
 
   // Form data
   const [employeeForm, setEmployeeForm] = useState({
@@ -137,7 +138,13 @@ export default function ManagementDashboard() {
   });
 
   const [applicationStatusForm, setApplicationStatusForm] = useState({
-    adminNotes: ''
+    adminNotes: '',
+    salary: '',
+    joiningDate: ''
+  });
+
+  const [employeeConfirmationForm, setEmployeeConfirmationForm] = useState({
+    salary: ''
   });
 
   // Redirect if not admin
@@ -301,22 +308,115 @@ export default function ManagementDashboard() {
   const handleApplicationAction = async (id: string, action: 'accept' | 'reject') => {
     try {
       setLoading(true);
+      setError(''); // Clear any previous errors
+
       const notes = applicationStatusForm.adminNotes;
-      
+
       if (action === 'accept') {
-        await applicationService.acceptApplication(id, notes);
-        setSuccess('Application accepted successfully');
+        let salary = undefined;
+        const joiningDate = applicationStatusForm.joiningDate && applicationStatusForm.joiningDate.trim() !== '' ? applicationStatusForm.joiningDate : undefined;
+
+        // Parse salary safely
+        if (applicationStatusForm.salary && applicationStatusForm.salary.trim() !== '') {
+          const parsedSalary = parseInt(applicationStatusForm.salary.trim());
+          if (!isNaN(parsedSalary) && parsedSalary > 0) {
+            salary = parsedSalary;
+          } else {
+            setError('Please enter a valid salary amount');
+            return;
+          }
+        }
+
+        console.log('Accepting application with data:', { id, notes, salary, joiningDate });
+
+        const result = await applicationService.acceptApplication(id, notes, salary, joiningDate);
+
+        console.log('Application acceptance result:', result);
+
+        if (result.data && result.data.employee) {
+          // Employee was created, show confirmation within the same dialog
+          console.log('Employee created:', result.data.employee);
+          setNewEmployeeData(result.data.employee);
+          setEmployeeConfirmationForm({ salary: result.data.employee.salary.toString() });
+          // Don't close the application dialog - show confirmation within it
+          setSuccess('Employee created successfully. Please confirm the details below.');
+        } else {
+          console.log('No employee data in response, but application accepted');
+          setSuccess('Application accepted successfully');
+          // Close the application dialog since no confirmation needed
+          setApplicationDialog(false);
+          setEditingApplication(null);
+          setApplicationStatusForm({ adminNotes: '', salary: '', joiningDate: '' });
+          loadApplications();
+        }
+
+        // Refresh employees list after accepting application
+        await loadEmployees();
+        await loadEmployeeStats();
       } else {
+        console.log('Rejecting application:', id);
         await applicationService.rejectApplication(id, notes);
         setSuccess('Application rejected');
+
+        // Close the application dialog
+        setApplicationDialog(false);
+        setEditingApplication(null);
+        setApplicationStatusForm({ adminNotes: '', salary: '', joiningDate: '' });
+        loadApplications();
+      }
+
+    } catch (err: any) {
+      console.error('Application action error:', err);
+      const errorMessage = err.response?.data?.error || err.message || 'Action failed';
+      setError(errorMessage);
+      // Don't close the dialog on error so user can try again
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmployeeConfirmation = async (action: 'confirm' | 'cancel') => {
+    console.log('Handling employee confirmation:', action, newEmployeeData);
+    try {
+      setLoading(true);
+      
+      if (!newEmployeeData || !newEmployeeData._id) {
+        console.error('Employee data not available:', newEmployeeData);
+        setError('Employee data not available');
+        return;
       }
       
+      if (action === 'confirm') {
+        // Update employee salary if changed
+        const newSalary = parseInt(employeeConfirmationForm.salary);
+        const currentSalary = parseInt(newEmployeeData.salary);
+        
+        if (!isNaN(newSalary) && newSalary !== currentSalary) {
+          await employeeService.update(newEmployeeData._id, { salary: newSalary });
+          setSuccess('Employee salary updated successfully');
+        } else {
+          setSuccess('Employee confirmed successfully');
+        }
+      } else {
+        // Cancel: delete the employee
+        await employeeService.delete(newEmployeeData._id);
+        setSuccess('Employee creation cancelled');
+      }
+      
+      // Refresh data
+      loadEmployees();
+      loadEmployeeStats();
+      
+      // Close dialogs and refresh
       setApplicationDialog(false);
       setEditingApplication(null);
-      setApplicationStatusForm({ adminNotes: '' });
+      setApplicationStatusForm({ adminNotes: '', salary: '', joiningDate: '' });
+      setNewEmployeeData(null);
+      setEmployeeConfirmationForm({ salary: '' });
       loadApplications();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Action failed');
+      console.error('Employee confirmation error:', err);
+      setError(err.response?.data?.error || 'Failed to process employee confirmation');
     } finally {
       setLoading(false);
     }
@@ -567,9 +667,9 @@ export default function ManagementDashboard() {
       'Active': 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30',
       'On Leave': 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border-yellow-500/30',
       'Inactive': 'bg-red-500/20 text-red-600 dark:text-red-400 border-red-500/30',
-      'Planning': 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30',
-      'In Progress': 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30',
-      'in-progress': 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30',
+      'Planning': 'bg-slate-700/20 text-slate-300 dark:text-slate-200 border-slate-700/30',
+      'In Progress': 'bg-slate-700/20 text-slate-300 dark:text-slate-200 border-slate-700/30',
+      'in-progress': 'bg-slate-700/20 text-slate-300 dark:text-slate-200 border-slate-700/30',
       'Completed': 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30',
       'completed': 'bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30',
       'On Hold': 'bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30',
@@ -618,26 +718,27 @@ export default function ManagementDashboard() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <Button
             onClick={() => navigate('/')}
             variant="outline"
-            className="mb-8 gap-2"
+            className="mb-4 md:mb-8 gap-2 text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            <ArrowLeft className="w-3 h-3 md:w-4 md:h-4" />
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </Button>
           
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2 md:gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">
+              <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">
                 Management <span className="gradient-text">Dashboard</span>
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-xs md:text-base text-muted-foreground">
                 Manage employees, projects, and orders
               </p>
             </div>
-            <LayoutDashboard className="w-12 h-12 text-accent" />
+            <LayoutDashboard className="w-8 h-8 md:w-12 md:h-12 text-accent flex-shrink-0" />
           </div>
         </div>
 
@@ -657,48 +758,48 @@ export default function ManagementDashboard() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-card">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <LayoutDashboard className="w-4 h-4 mr-2" />
-              Overview
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-7 gap-1 md:gap-0 bg-black p-1 md:p-0 h-auto md:h-auto">
+            <TabsTrigger value="overview" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <LayoutDashboard className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Overview</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <UserCog className="w-4 h-4 mr-2" />
-              Users
+            <TabsTrigger value="users" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <UserCog className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Users</span>
             </TabsTrigger>
-            <TabsTrigger value="employees" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <Users className="w-4 h-4 mr-2" />
-              Employees
+            <TabsTrigger value="employees" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <Users className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Employees</span>
             </TabsTrigger>
-            <TabsTrigger value="applications" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <FileText className="w-4 h-4 mr-2" />
-              Applications
+            <TabsTrigger value="applications" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <FileText className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Apps</span>
             </TabsTrigger>
-            <TabsTrigger value="projects" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <FolderKanban className="w-4 h-4 mr-2" />
-              Projects
+            <TabsTrigger value="projects" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <FolderKanban className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Projects</span>
             </TabsTrigger>
-            <TabsTrigger value="orders" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              Orders
+            <TabsTrigger value="orders" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Orders</span>
             </TabsTrigger>
-            <TabsTrigger value="revenue" className="data-[state=active]:bg-accent data-[state=active]:text-black">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Revenue
+            <TabsTrigger value="revenue" className="text-xs md:text-sm text-[#D4AF37] data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black py-2 md:py-3 px-1 md:px-4">
+              <TrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-0 md:mr-2" />
+              <span className="hidden md:inline">Revenue</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <TabsContent value="overview" className="space-y-4 md:space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               {/* Employee Stats */}
               <Card className="border-border bg-card hover:shadow-gold transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
-                  <Users className="h-4 w-4 text-accent" />
+                <CardHeader className="flex flex-row items-center justify-between pb-2 py-3 md:py-4">
+                  <CardTitle className="text-xs md:text-sm font-medium">Total Employees</CardTitle>
+                  <Users className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.employees.totalEmployees || 0}</div>
+                <CardContent className="pb-2 md:pb-4">
+                  <div className="text-xl md:text-2xl font-bold">{stats.employees.totalEmployees || 0}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {stats.employees.activeEmployees || 0} active, {stats.employees.onLeave || 0} on leave
                   </p>
@@ -707,12 +808,12 @@ export default function ManagementDashboard() {
 
               {/* Project Stats */}
               <Card className="border-border bg-card hover:shadow-gold transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-                  <FolderKanban className="h-4 w-4 text-accent" />
+                <CardHeader className="flex flex-row items-center justify-between pb-2 py-3 md:py-4">
+                  <CardTitle className="text-xs md:text-sm font-medium">Total Projects</CardTitle>
+                  <FolderKanban className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.projects.totalProjects || 0}</div>
+                <CardContent className="pb-2 md:pb-4">
+                  <div className="text-xl md:text-2xl font-bold">{stats.projects.totalProjects || 0}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {stats.projects.activeProjects || 0} active, {stats.projects.completedProjects || 0} completed
                   </p>
@@ -720,13 +821,13 @@ export default function ManagementDashboard() {
               </Card>
 
               {/* Order Stats */}
-              <Card className="border-border bg-card hover:shadow-gold transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-                  <ShoppingCart className="h-4 w-4 text-accent" />
+              <Card className="border-border bg-card hover:shadow-gold transition-shadow sm:col-span-2 lg:col-span-1">
+                <CardHeader className="flex flex-row items-center justify-between pb-2 py-3 md:py-4">
+                  <CardTitle className="text-xs md:text-sm font-medium">Total Orders</CardTitle>
+                  <ShoppingCart className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.orders.total || 0}</div>
+                <CardContent className="pb-2 md:pb-4">
+                  <div className="text-xl md:text-2xl font-bold">{stats.orders.total || 0}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {stats.orders.pending || 0} pending, {stats.orders.completed || 0} completed
                   </p>
@@ -737,32 +838,30 @@ export default function ManagementDashboard() {
             {/* Revenue Card */}
             {stats.projects.budget && (
               <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <IndianRupee className="w-5 h-5 text-accent" />
+                <CardHeader className="py-3 md:py-4">
+                  <CardTitle className="flex items-center gap-2 text-sm md:text-base">
+                    <IndianRupee className="w-4 h-4 md:w-5 md:h-5 text-accent" />
                     Revenue Overview
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Total Budget</span>
-                      <span className="text-2xl font-bold gradient-text">
-                        ₹{stats.projects.budget.total?.toLocaleString() || 0}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Amount Paid</span>
-                      <span className="text-xl font-semibold text-green-500">
-                        ₹{stats.projects.budget.paid?.toLocaleString() || 0}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Pending Payment</span>
-                      <span className="text-xl font-semibold text-yellow-500">
-                        ₹{((stats.projects.budget.total || 0) - (stats.projects.budget.paid || 0)).toLocaleString()}
-                      </span>
-                    </div>
+                <CardContent className="space-y-2 md:space-y-4">
+                  <div className="flex justify-between items-center text-xs md:text-sm">
+                    <span className="text-muted-foreground">Total Budget</span>
+                    <span className="text-lg md:text-2xl font-bold gradient-text">
+                      ₹{stats.projects.budget.total?.toLocaleString() || 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs md:text-sm">
+                    <span className="text-muted-foreground">Amount Paid</span>
+                    <span className="text-base md:text-xl font-semibold text-green-500">
+                      ₹{stats.projects.budget.paid?.toLocaleString() || 0}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs md:text-sm">
+                    <span className="text-muted-foreground">Pending Payment</span>
+                    <span className="text-base md:text-xl font-semibold text-yellow-500">
+                      ₹{((stats.projects.budget.total || 0) - (stats.projects.budget.paid || 0)).toLocaleString()}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -770,20 +869,21 @@ export default function ManagementDashboard() {
           </TabsContent>
 
           {/* Employees Tab */}
-          <TabsContent value="employees" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Employee Management</h2>
+          <TabsContent value="employees" className="space-y-4 md:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
+              <h2 className="text-xl md:text-2xl font-bold">Employee Management</h2>
               <Dialog open={employeeDialog} onOpenChange={(open) => {
                 setEmployeeDialog(open);
                 if (!open) resetEmployeeForm();
               }}>
                 <DialogTrigger asChild>
-                  <Button className="bg-accent hover:bg-accent/90 text-black">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Employee
+                  <Button className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
+                    <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Add Employee</span>
+                    <span className="sm:hidden">Add</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
+                <DialogContent className="max-w-2xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto bg-card border-border">
                   <DialogHeader>
                     <DialogTitle>{editingEmployee ? 'Edit Employee' : 'Add New Employee'}</DialogTitle>
                     <DialogDescription>
@@ -791,71 +891,74 @@ export default function ManagementDashboard() {
                     </DialogDescription>
                   </DialogHeader>
                   
-                  <div className="grid grid-cols-2 gap-4 py-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 py-3 md:py-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name *</Label>
+                      <Label htmlFor="name" className="text-xs md:text-sm">Full Name *</Label>
                       <Input
                         id="name"
                         value={employeeForm.name}
                         onChange={(e) => setEmployeeForm({ ...employeeForm, name: e.target.value })}
                         placeholder="John Doe"
+                        className="text-xs md:text-sm h-8 md:h-10"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email" className="text-xs md:text-sm">Email *</Label>
                       <Input
                         id="email"
                         type="email"
                         value={employeeForm.email}
                         onChange={(e) => setEmployeeForm({ ...employeeForm, email: e.target.value })}
                         placeholder="john@example.com"
+                        className="text-xs md:text-sm h-8 md:h-10"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone *</Label>
+                      <Label htmlFor="phone" className="text-xs md:text-sm">Phone *</Label>
                       <Input
                         id="phone"
                         value={employeeForm.phone}
                         onChange={(e) => setEmployeeForm({ ...employeeForm, phone: e.target.value })}
                         placeholder="+1 234 567 8900"
+                        className="text-xs md:text-sm h-8 md:h-10"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="position">Position *</Label>
+                      <Label htmlFor="position" className="text-xs md:text-sm">Position *</Label>
                       <Select value={employeeForm.position} onValueChange={(value) => setEmployeeForm({ ...employeeForm, position: value })}>
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs md:text-sm h-8 md:h-10">
                           <SelectValue placeholder="Select position" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Developer">Developer</SelectItem>
-                          <SelectItem value="Designer">Designer</SelectItem>
-                          <SelectItem value="3D Artist">3D Artist</SelectItem>
-                          <SelectItem value="UI/UX Designer">UI/UX Designer</SelectItem>
-                          <SelectItem value="Project Manager">Project Manager</SelectItem>
-                          <SelectItem value="Marketing">Marketing</SelectItem>
-                          <SelectItem value="Sales">Sales</SelectItem>
-                          <SelectItem value="HR">HR</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
+                          <SelectItem value="Developer" className="text-xs md:text-sm">Developer</SelectItem>
+                          <SelectItem value="Designer" className="text-xs md:text-sm">Designer</SelectItem>
+                          <SelectItem value="3D Artist" className="text-xs md:text-sm">3D Artist</SelectItem>
+                          <SelectItem value="UI/UX Designer" className="text-xs md:text-sm">UI/UX Designer</SelectItem>
+                          <SelectItem value="Project Manager" className="text-xs md:text-sm">Project Manager</SelectItem>
+                          <SelectItem value="Marketing" className="text-xs md:text-sm">Marketing</SelectItem>
+                          <SelectItem value="Sales" className="text-xs md:text-sm">Sales</SelectItem>
+                          <SelectItem value="HR" className="text-xs md:text-sm">HR</SelectItem>
+                          <SelectItem value="Other" className="text-xs md:text-sm">Other</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="department">Department *</Label>
+                      <Label htmlFor="department" className="text-xs md:text-sm">Department *</Label>
                       <Select value={employeeForm.department} onValueChange={(value) => setEmployeeForm({ ...employeeForm, department: value })}>
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs md:text-sm h-8 md:h-10">
                           <SelectValue placeholder="Select department" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Development">Development</SelectItem>
-                          <SelectItem value="Design">Design</SelectItem>
-                          <SelectItem value="3D Animation">3D Animation</SelectItem>
-                          <SelectItem value="UI/UX">UI/UX</SelectItem>
-                          <SelectItem value="Management">Management</SelectItem>
-                          <SelectItem value="Marketing">Marketing</SelectItem>
+                          <SelectItem value="Development" className="text-xs md:text-sm">Development</SelectItem>
+                          <SelectItem value="Design" className="text-xs md:text-sm">Design</SelectItem>
+                          <SelectItem value="3D Animation" className="text-xs md:text-sm">3D Animation</SelectItem>
+                          <SelectItem value="UI/UX" className="text-xs md:text-sm">UI/UX</SelectItem>
+                          <SelectItem value="Management" className="text-xs md:text-sm">Management</SelectItem>
+                          <SelectItem value="Marketing" className="text-xs md:text-sm">Marketing</SelectItem>
                           <SelectItem value="Sales">Sales</SelectItem>
                           <SelectItem value="HR">HR</SelectItem>
                           <SelectItem value="Operations">Operations</SelectItem>
@@ -896,7 +999,7 @@ export default function ManagementDashboard() {
                     <Button 
                       onClick={handleCreateEmployee}
                       disabled={loading}
-                      className="bg-accent hover:bg-accent/90 text-black"
+                      className="bg-accent hover:bg-accent/90"
                     >
                       {loading ? 'Saving...' : editingEmployee ? 'Update Employee' : 'Create Employee'}
                     </Button>
@@ -911,37 +1014,37 @@ export default function ManagementDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Position</TableHead>
-                        <TableHead>Department</TableHead>
-                        <TableHead>Salary</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="text-xs md:text-sm">Name</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden sm:table-cell">Email</TableHead>
+                        <TableHead className="text-xs md:text-sm">Position</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden md:table-cell">Department</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden lg:table-cell">Salary</TableHead>
+                        <TableHead className="text-xs md:text-sm">Status</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {employees.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={7} className="text-center text-muted-foreground py-6 md:py-8 text-xs md:text-sm">
                             No employees found. Add your first employee to get started.
                           </TableCell>
                         </TableRow>
                       ) : (
                         employees.map((employee: any) => (
                           <TableRow key={employee._id}>
-                            <TableCell className="font-medium">{employee.name}</TableCell>
-                            <TableCell className="text-muted-foreground">{employee.email}</TableCell>
-                            <TableCell>{employee.position}</TableCell>
-                            <TableCell>{employee.department}</TableCell>
-                            <TableCell>₹{employee.salary.toLocaleString()}</TableCell>
+                            <TableCell className="font-medium text-xs md:text-sm">{employee.name}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs md:text-sm hidden sm:table-cell">{employee.email}</TableCell>
+                            <TableCell className="text-xs md:text-sm">{employee.position}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden md:table-cell">{employee.department}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">₹{employee.salary.toLocaleString()}</TableCell>
                             <TableCell>
-                              <Badge className={getStatusColor(employee.status)}>
+                              <Badge className={`${getStatusColor(employee.status)} text-xs md:text-sm`}>
                                 {employee.status}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
+                              <div className="flex justify-end gap-1 md:gap-2">
                                 <Button
                                   variant="ghost"
                                   size="sm"
@@ -970,11 +1073,11 @@ export default function ManagementDashboard() {
           </TabsContent>
 
           {/* Applications Tab */}
-          <TabsContent value="applications" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Job Applications</h2>
+          <TabsContent value="applications" className="space-y-4 md:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
+              <h2 className="text-xl md:text-2xl font-bold">Job Applications</h2>
               <div className="flex gap-2">
-                <Badge variant="outline" className="py-2 px-3">
+                <Badge variant="outline" className="py-1 md:py-2 px-2 md:px-3 text-xs md:text-sm">
                   Total: {applications.length}
                 </Badge>
               </div>
@@ -986,45 +1089,47 @@ export default function ManagementDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>Position</TableHead>
-                        <TableHead>Experience</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="text-xs md:text-sm">Name</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden sm:table-cell">Email</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden md:table-cell">Phone</TableHead>
+                        <TableHead className="text-xs md:text-sm">Position</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden lg:table-cell">Experience</TableHead>
+                        <TableHead className="text-xs md:text-sm">Status</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {applications.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={7} className="text-center text-muted-foreground py-6 md:py-8 text-xs md:text-sm">
                             No applications yet.
                           </TableCell>
                         </TableRow>
                       ) : (
                         applications.map((app: any) => (
                           <TableRow key={app._id}>
-                            <TableCell className="font-medium">{app.name}</TableCell>
-                            <TableCell className="text-muted-foreground">{app.email}</TableCell>
-                            <TableCell>{app.phone}</TableCell>
+                            <TableCell className="font-medium text-xs md:text-sm">{app.name}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs md:text-sm hidden sm:table-cell">{app.email}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden md:table-cell">{app.phone}</TableCell>
                             <TableCell>
-                              <Badge variant="secondary">{app.position}</Badge>
+                              <Badge variant="secondary" className="text-xs md:text-sm">{app.position}</Badge>
                             </TableCell>
-                            <TableCell>{app.experience}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">{app.experience}</TableCell>
                             <TableCell>
-                              <Badge className={getStatusColor(app.status)}>
+                              <Badge className={`${getStatusColor(app.status)} text-xs md:text-sm`}>
                                 {app.status}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
+                              <div className="flex justify-end gap-1 md:gap-2">
                                 <Dialog open={applicationDialog && editingApplication?._id === app._id} onOpenChange={(open) => {
                                   if (open) {
                                     setEditingApplication(app);
                                   } else {
                                     setApplicationDialog(false);
                                     setEditingApplication(null);
+                                    setNewEmployeeData(null);
+                                    setEmployeeConfirmationForm({ salary: '' });
                                   }
                                 }}>
                                   <DialogTrigger asChild>
@@ -1035,11 +1140,12 @@ export default function ManagementDashboard() {
                                         setEditingApplication(app);
                                         setApplicationDialog(true);
                                       }}
+                                      className="h-7 md:h-8 px-2"
                                     >
-                                      <Eye className="w-4 h-4" />
+                                      <Eye className="w-3 h-3 md:w-4 md:h-4" />
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-card border-border">
+                                  <DialogContent className="max-w-3xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto bg-card border-border">
                                     <DialogHeader>
                                       <DialogTitle>Application Details</DialogTitle>
                                       <DialogDescription>
@@ -1070,6 +1176,22 @@ export default function ManagementDashboard() {
                                               <p className="mt-1 font-medium">{editingApplication.education}</p>
                                             </div>
                                           </div>
+                                          {/* Profile Photo */}
+                                          {editingApplication.profilePhoto && (
+                                            <div className="mt-4">
+                                              <Label className="text-muted-foreground">Profile Photo</Label>
+                                              <div className="mt-2">
+                                                <img
+                                                  src={`http://localhost:5002${editingApplication.profilePhoto}`}
+                                                  alt={`${editingApplication.name}'s profile`}
+                                                  className="w-24 h-24 rounded-full object-cover border-2 border-border"
+                                                  onError={(e) => {
+                                                    e.currentTarget.style.display = 'none';
+                                                  }}
+                                                />
+                                              </div>
+                                            </div>
+                                          )}
                                         </div>
 
                                         {/* Position Details */}
@@ -1181,9 +1303,38 @@ export default function ManagementDashboard() {
                                                 rows={4}
                                               />
                                             </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                              <div className="space-y-2">
+                                                <Label htmlFor="salary">Salary (₹)</Label>
+                                                <Input
+                                                  id="salary"
+                                                  type="number"
+                                                  placeholder={editingApplication.expectedSalary?.toString() || "50000"}
+                                                  value={applicationStatusForm.salary}
+                                                  onChange={(e) => setApplicationStatusForm({
+                                                    ...applicationStatusForm,
+                                                    salary: e.target.value
+                                                  })}
+                                                  className="bg-background border-border"
+                                                />
+                                              </div>
+                                              <div className="space-y-2">
+                                                <Label htmlFor="joiningDate">Joining Date</Label>
+                                                <Input
+                                                  id="joiningDate"
+                                                  type="date"
+                                                  value={applicationStatusForm.joiningDate}
+                                                  onChange={(e) => setApplicationStatusForm({
+                                                    ...applicationStatusForm,
+                                                    joiningDate: e.target.value
+                                                  })}
+                                                  className="bg-background border-border"
+                                                />
+                                              </div>
+                                            </div>
                                             <div className="flex gap-3">
                                               <Button
-                                                onClick={() => handleApplicationAction(editingApplication._id, 'accepted')}
+                                                onClick={() => handleApplicationAction(editingApplication._id, 'accept')}
                                                 disabled={loading}
                                                 className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                                               >
@@ -1191,13 +1342,95 @@ export default function ManagementDashboard() {
                                                 Accept Application
                                               </Button>
                                               <Button
-                                                onClick={() => handleApplicationAction(editingApplication._id, 'rejected')}
+                                                onClick={() => handleApplicationAction(editingApplication._id, 'reject')}
                                                 disabled={loading}
                                                 variant="destructive"
                                                 className="flex-1"
                                               >
                                                 <ThumbsDown className="w-4 h-4 mr-2" />
                                                 Reject Application
+                                              </Button>
+                                            </div>
+                                          </div>
+                                        )}
+
+                                        {/* Employee Confirmation (if employee was created) */}
+                                        {newEmployeeData && (
+                                          <div className="border-t pt-4 space-y-4">
+                                            <h3 className="text-lg font-semibold text-green-600">Employee Created Successfully!</h3>
+                                            <p className="text-sm text-muted-foreground">Please review and confirm the employee salary package.</p>
+                                            
+                                            {/* Employee Details */}
+                                            <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+                                              {/* Profile Photo */}
+                                              {newEmployeeData.avatar && (
+                                                <div className="flex justify-center mb-4">
+                                                  <img
+                                                    src={`http://localhost:5002${newEmployeeData.avatar}`}
+                                                    alt={`${newEmployeeData.name}'s profile`}
+                                                    className="w-20 h-20 rounded-full object-cover border-2 border-border"
+                                                    onError={(e) => {
+                                                      e.currentTarget.style.display = 'none';
+                                                    }}
+                                                  />
+                                                </div>
+                                              )}
+                                              <div className="flex justify-between items-center">
+                                                <span className="font-medium">Name:</span>
+                                                <span>{newEmployeeData.name || 'N/A'}</span>
+                                              </div>
+                                              <div className="flex justify-between items-center">
+                                                <span className="font-medium">Email:</span>
+                                                <span className="text-sm">{newEmployeeData.email || 'N/A'}</span>
+                                              </div>
+                                              <div className="flex justify-between items-center">
+                                                <span className="font-medium">Position:</span>
+                                                <span>{newEmployeeData.position || 'N/A'}</span>
+                                              </div>
+                                              <div className="flex justify-between items-center">
+                                                <span className="font-medium">Department:</span>
+                                                <span>{newEmployeeData.department || 'N/A'}</span>
+                                              </div>
+                                              <div className="flex justify-between items-center">
+                                                <span className="font-medium">Joining Date:</span>
+                                                <span>{newEmployeeData.joiningDate ? new Date(newEmployeeData.joiningDate).toLocaleDateString() : 'N/A'}</span>
+                                              </div>
+                                            </div>
+
+                                            {/* Salary Input */}
+                                            <div className="space-y-2">
+                                              <Label htmlFor="confirmSalary" className="text-sm font-medium">
+                                                Salary Package (₹)
+                                              </Label>
+                                              <Input
+                                                id="confirmSalary"
+                                                type="number"
+                                                value={employeeConfirmationForm.salary || (newEmployeeData.salary ? newEmployeeData.salary.toString() : '')}
+                                                onChange={(e) => setEmployeeConfirmationForm({ 
+                                                  salary: e.target.value 
+                                                })}
+                                                placeholder="Enter salary amount"
+                                                className="text-center text-lg font-semibold bg-background border-border"
+                                                min="0"
+                                              />
+                                            </div>
+
+                                            {/* Confirmation Buttons */}
+                                            <div className="flex gap-3">
+                                              <Button
+                                                onClick={() => handleEmployeeConfirmation('confirm')}
+                                                disabled={loading}
+                                                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                                              >
+                                                {loading ? 'Confirming...' : 'Confirm Employee'}
+                                              </Button>
+                                              <Button
+                                                onClick={() => handleEmployeeConfirmation('cancel')}
+                                                disabled={loading}
+                                                variant="outline"
+                                                className="flex-1 border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                                              >
+                                                Cancel & Delete
                                               </Button>
                                             </div>
                                           </div>
@@ -1219,20 +1452,21 @@ export default function ManagementDashboard() {
           </TabsContent>
 
           {/* Projects Tab */}
-          <TabsContent value="projects" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Project Management</h2>
+          <TabsContent value="projects" className="space-y-4 md:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
+              <h2 className="text-xl md:text-2xl font-bold">Project Management</h2>
               <Dialog open={projectDialog} onOpenChange={(open) => {
                 setProjectDialog(open);
                 if (!open) resetProjectForm();
               }}>
                 <DialogTrigger asChild>
-                  <Button className="bg-accent hover:bg-accent/90 text-black">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Project
+                  <Button className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
+                    <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Add Project</span>
+                    <span className="sm:hidden">Add</span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-card border-border">
+                <DialogContent className="max-w-3xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto bg-card border-border">
                   <DialogHeader>
                     <DialogTitle>{editingProject ? 'Edit Project' : 'Add New Project'}</DialogTitle>
                     <DialogDescription>
@@ -1240,41 +1474,42 @@ export default function ManagementDashboard() {
                     </DialogDescription>
                   </DialogHeader>
                   
-                  <div className="grid grid-cols-2 gap-4 py-4">
-                    <div className="space-y-2 col-span-2">
-                      <Label htmlFor="title">Project Title *</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 py-3 md:py-4">
+                    <div className="space-y-2 col-span-1 sm:col-span-2">
+                      <Label htmlFor="title" className="text-xs md:text-sm">Project Title *</Label>
                       <Input
                         id="title"
                         value={projectForm.title}
                         onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
                         placeholder="E-commerce Website Redesign"
+                        className="text-xs md:text-sm h-8 md:h-10"
                       />
                     </div>
                     
-                    <div className="space-y-2 col-span-2">
-                      <Label htmlFor="description">Description *</Label>
+                    <div className="space-y-2 col-span-1 sm:col-span-2">
+                      <Label htmlFor="description" className="text-xs md:text-sm">Description *</Label>
                       <textarea
                         id="description"
                         value={projectForm.description}
                         onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
                         placeholder="Project description..."
-                        className="w-full min-h-[100px] px-3 py-2 bg-background border border-border rounded-md"
+                        className="w-full min-h-[80px] md:min-h-[100px] px-3 py-2 text-xs md:text-sm bg-background border border-border rounded-md"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="category">Category *</Label>
+                      <Label htmlFor="category" className="text-xs md:text-sm">Category *</Label>
                       <Select value={projectForm.category} onValueChange={(value) => setProjectForm({ ...projectForm, category: value })}>
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs md:text-sm h-8 md:h-10">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Web Development">Web Development</SelectItem>
-                          <SelectItem value="3D Animation">3D Animation</SelectItem>
-                          <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
-                          <SelectItem value="Branding">Branding</SelectItem>
-                          <SelectItem value="Marketing">Marketing</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
+                          <SelectItem value="Web Development" className="text-xs md:text-sm">Web Development</SelectItem>
+                          <SelectItem value="3D Animation" className="text-xs md:text-sm">3D Animation</SelectItem>
+                          <SelectItem value="UI/UX Design" className="text-xs md:text-sm">UI/UX Design</SelectItem>
+                          <SelectItem value="Branding" className="text-xs md:text-sm">Branding</SelectItem>
+                          <SelectItem value="Marketing" className="text-xs md:text-sm">Marketing</SelectItem>
+                          <SelectItem value="Other" className="text-xs md:text-sm">Other</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1385,7 +1620,7 @@ export default function ManagementDashboard() {
                     <Button 
                       onClick={handleCreateProject}
                       disabled={loading}
-                      className="bg-accent hover:bg-accent/90 text-black"
+                      className="bg-accent hover:bg-accent/90"
                     >
                       {loading ? 'Saving...' : editingProject ? 'Update Project' : 'Create Project'}
                     </Button>
@@ -1465,8 +1700,8 @@ export default function ManagementDashboard() {
           </TabsContent>
 
           {/* Orders Tab */}
-          <TabsContent value="orders" className="space-y-6">
-            <h2 className="text-2xl font-bold">Order Management</h2>
+          <TabsContent value="orders" className="space-y-4 md:space-y-6">
+            <h2 className="text-xl md:text-2xl font-bold">Order Management</h2>
 
             <Card className="border-border bg-card">
               <CardContent className="p-0">
@@ -1474,34 +1709,34 @@ export default function ManagementDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Order ID</TableHead>
-                        <TableHead>Service</TableHead>
-                        <TableHead>Customer</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Budget</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="text-xs md:text-sm">Order ID</TableHead>
+                        <TableHead className="text-xs md:text-sm">Service</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden sm:table-cell">Customer</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden md:table-cell">Email</TableHead>
+                        <TableHead className="text-xs md:text-sm">Budget</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden lg:table-cell">Date</TableHead>
+                        <TableHead className="text-xs md:text-sm">Status</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {orders.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={8} className="text-center text-muted-foreground py-6 md:py-8 text-xs md:text-sm">
                             No orders found.
                           </TableCell>
-                        </TableRow>
+                        </TableRow> 
                       ) : (
                         orders.map((order: any) => (
                           <TableRow key={order._id}>
                             <TableCell className="font-mono text-xs">{order._id.slice(-8)}</TableCell>
-                            <TableCell className="font-medium">{order.service}</TableCell>
-                            <TableCell>{order.user?.name}</TableCell>
-                            <TableCell className="text-muted-foreground">{order.user?.email}</TableCell>
-                            <TableCell>₹{order.budget?.toLocaleString()}</TableCell>
-                            <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                            <TableCell className="font-medium text-xs md:text-sm">{order.service}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden sm:table-cell">{order.user?.name}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs md:text-sm hidden md:table-cell">{order.user?.email}</TableCell>
+                            <TableCell className="text-xs md:text-sm">₹{order.budget?.toLocaleString()}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                             <TableCell>
-                              <Badge className={getStatusColor(order.status)}>
+                              <Badge className={`${getStatusColor(order.status)} text-xs md:text-sm`}>
                                 {order.status}
                               </Badge>
                             </TableCell>
@@ -1514,9 +1749,9 @@ export default function ManagementDashboard() {
                                   setOrderStatusForm({ status: order.status, notes: '' });
                                   setOrderStatusDialog(true);
                                 }}
-                                className="border-accent text-accent hover:bg-accent hover:text-black"
+                                className="border-accent text-accent hover:bg-accent h-7 md:h-8 px-2 text-xs md:text-sm"
                               >
-                                <Edit className="w-4 h-4" />
+                                <Edit className="w-3 h-3 md:w-4 md:h-4" />
                               </Button>
                             </TableCell>
                           </TableRow>
@@ -1530,9 +1765,9 @@ export default function ManagementDashboard() {
           </TabsContent>
 
           {/* Users Tab */}
-          <TabsContent value="users" className="space-y-6">
+          <TabsContent value="users" className="space-y-4 md:space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">User Management</h2>
+              <h2 className="text-xl md:text-2xl font-bold">User Management</h2>
             </div>
 
             <Card className="border-border bg-card">
@@ -1541,44 +1776,44 @@ export default function ManagementDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Orders</TableHead>
-                        <TableHead>Total Spent</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Joined</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="text-xs md:text-sm">Name</TableHead>
+                        <TableHead className="text-xs md:text-sm">Email</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden sm:table-cell">Phone</TableHead>
+                        <TableHead className="text-xs md:text-sm">Role</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden md:table-cell">Orders</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden lg:table-cell">Total Spent</TableHead>
+                        <TableHead className="text-xs md:text-sm">Status</TableHead>
+                        <TableHead className="text-xs md:text-sm hidden lg:table-cell">Joined</TableHead>
+                        <TableHead className="text-xs md:text-sm text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {users.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={9} className="text-center text-muted-foreground py-6 md:py-8 text-xs md:text-sm">
                             No users found.
                           </TableCell>
                         </TableRow>
                       ) : (
                         users.map((user: any) => (
                           <TableRow key={user._id}>
-                            <TableCell className="font-medium">{user.name}</TableCell>
-                            <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                            <TableCell>{user.phone || '-'}</TableCell>
+                            <TableCell className="font-medium text-xs md:text-sm">{user.name}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs md:text-sm">{user.email}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden sm:table-cell">{user.phone || '-'}</TableCell>
                             <TableCell>
-                              <Badge className={user.role === 'admin' ? 'bg-purple-500' : 'bg-blue-500'}>
+                              <Badge className={`${user.role === 'admin' ? 'bg-purple-500' : 'bg-blue-500'} text-xs md:text-sm`}>
                                 {user.role}
                               </Badge>
                             </TableCell>
-                            <TableCell>{user.ordersCount || 0}</TableCell>
-                            <TableCell>₹{(user.totalSpent || 0).toLocaleString()}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden md:table-cell">{user.ordersCount || 0}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">₹{(user.totalSpent || 0).toLocaleString()}</TableCell>
                             <TableCell>
-                              <Badge className={user.isActive ? 'bg-green-500' : 'bg-red-500'}>
+                              <Badge className={`${user.isActive ? 'bg-green-500' : 'bg-red-500'} text-xs md:text-sm`}>
                                 {user.isActive ? 'Active' : 'Inactive'}
                               </Badge>
                             </TableCell>
-                            <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
-                            <TableCell className="text-right space-x-2">
+                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                            <TableCell className="text-right space-x-1 md:space-x-2">
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -1593,9 +1828,9 @@ export default function ManagementDashboard() {
                                   });
                                   setUserDialog(true);
                                 }}
-                                className="border-accent text-accent hover:bg-accent hover:text-black"
+                                className="h-7 md:h-8 px-2 text-xs md:text-sm border-accent text-accent hover:bg-accent"
                               >
-                                <Edit className="w-4 h-4" />
+                                <Edit className="w-3 h-3 md:w-4 md:h-4" />
                               </Button>
                               <Button
                                 variant="outline"
@@ -1617,9 +1852,9 @@ export default function ManagementDashboard() {
           </TabsContent>
 
           {/* Revenue Tab */}
-          <TabsContent value="revenue" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Revenue Overview</h2>
+          <TabsContent value="revenue" className="space-y-4 md:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
+              <h2 className="text-xl md:text-2xl font-bold">Revenue Overview</h2>
               <Button
                 onClick={async () => {
                   try {
@@ -1634,22 +1869,23 @@ export default function ManagementDashboard() {
                   }
                 }}
                 disabled={loading}
-                className="bg-accent text-black hover:bg-accent/90"
+                className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10"
               >
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Refresh Data
+                <TrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Refresh Data</span>
+                <span className="sm:hidden">Refresh</span>
               </Button>
             </div>
 
             {/* Revenue Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               <Card className="border-border bg-card hover:shadow-gold transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Today's Revenue</CardTitle>
-                  <IndianRupee className="h-4 w-4 text-accent" />
+                <CardHeader className="flex flex-row items-center justify-between pb-2 py-3 md:py-4">
+                  <CardTitle className="text-xs md:text-sm font-medium">Today's Revenue</CardTitle>
+                  <IndianRupee className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">₹{(revenueData?.today?.revenue || 0).toLocaleString()}</div>
+                <CardContent className="pb-2 md:pb-4">
+                  <div className="text-lg md:text-2xl font-bold">₹{(revenueData?.today?.revenue || 0).toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {revenueData?.today?.orders || 0} orders
                   </p>
@@ -1657,25 +1893,25 @@ export default function ManagementDashboard() {
               </Card>
 
               <Card className="border-border bg-card hover:shadow-gold transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">This Week</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-accent" />
+                <CardHeader className="flex flex-row items-center justify-between pb-2 py-3 md:py-4">
+                  <CardTitle className="text-xs md:text-sm font-medium">This Week</CardTitle>
+                  <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">₹{(revenueData?.week?.revenue || 0).toLocaleString()}</div>
+                <CardContent className="pb-2 md:pb-4">
+                  <div className="text-lg md:text-2xl font-bold">₹{(revenueData?.week?.revenue || 0).toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {revenueData?.week?.orders || 0} orders
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="border-border bg-card hover:shadow-gold transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">This Month</CardTitle>
-                  <IndianRupee className="h-4 w-4 text-accent" />
+              <Card className="border-border bg-card hover:shadow-gold transition-shadow sm:col-span-2 lg:col-span-1">
+                <CardHeader className="flex flex-row items-center justify-between pb-2 py-3 md:py-4">
+                  <CardTitle className="text-xs md:text-sm font-medium">This Month</CardTitle>
+                  <IndianRupee className="h-3 w-3 md:h-4 md:w-4 text-accent" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">₹{(revenueData?.month?.revenue || 0).toLocaleString()}</div>
+                <CardContent className="pb-2 md:pb-4">
+                  <div className="text-lg md:text-2xl font-bold">₹{(revenueData?.month?.revenue || 0).toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground mt-1">
                     {revenueData?.month?.orders || 0} orders
                   </p>
@@ -1685,12 +1921,12 @@ export default function ManagementDashboard() {
 
             {/* Revenue Chart */}
             <Card className="border-border bg-card">
-              <CardHeader>
-                <CardTitle>Last 30 Days Revenue</CardTitle>
+              <CardHeader className="py-3 md:py-4">
+                <CardTitle className="text-sm md:text-base">Last 30 Days Revenue</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0 md:p-6">
                 <div className="overflow-x-auto pb-4">
-                  <div className="min-w-[1200px]">
+                  <div className="min-w-[800px] md:min-w-[1200px]">
                     {revenueChart.length === 0 ? (
                       <div className="h-[400px] flex items-center justify-center text-muted-foreground">
                         No revenue data available
@@ -1839,7 +2075,7 @@ export default function ManagementDashboard() {
               <Button
                 onClick={handleUpdateOrderStatus}
                 disabled={loading || !orderStatusForm.status}
-                className="bg-accent text-black hover:bg-accent/90"
+                className="bg-accent hover:bg-accent/90"
               >
                 Update Status
               </Button>
@@ -1935,7 +2171,7 @@ export default function ManagementDashboard() {
               <Button
                 onClick={handleUpdateUser}
                 disabled={loading || !userForm.name || !userForm.email}
-                className="bg-accent text-black hover:bg-accent/90"
+                className="bg-accent hover:bg-accent/90"
               >
                 Update User
               </Button>

@@ -38,7 +38,8 @@ const Navbar = () => {
   // Handle hash navigation on page load
   useEffect(() => {
     const hash = window.location.hash;
-    if (hash) {
+    // Only scroll to hash if we're on the home page (path is /)
+    if (hash && window.location.pathname === '/') {
       // Wait for page to load, then scroll to element
       setTimeout(() => {
         const element = document.querySelector(hash);
@@ -98,13 +99,9 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#home" onClick={handleLogoClick} className="flex items-center space-x-3 group cursor-pointer">
-            <img 
-              src="/rajkayal-navbar.png" 
-              alt="RajKayal Logo" 
-              className="h-12 w-12 transition-transform group-hover:scale-110 drop-shadow-[0_0_6px_rgba(212,175,55,0.25)]"
-            />
-            <span className="font-bold text-lg bg-gradient-to-r from-[#D4AF37] to-[#C9A961] bg-clip-text text-transparent hidden md:inline">
+          <a href="#home" onClick={handleLogoClick} className="flex items-center space-x-2 md:space-x-3 group cursor-pointer min-w-0">
+            <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-10 w-10 md:h-12 md:w-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(253,185,19,0.3)] transition-all duration-300" />
+            <span className="font-bold text-xs sm:text-sm md:text-lg bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent whitespace-nowrap">
               RajKayal Creative Hub
             </span>
           </a>

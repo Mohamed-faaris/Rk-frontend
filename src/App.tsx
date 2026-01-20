@@ -28,24 +28,25 @@ import BlogPage from "./pages/BlogPage";
 import CaseStudiesPage from "./pages/CaseStudiesPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
+import ContactPage from "./pages/ContactPage";
 import ApplyForEmployee from "./pages/ApplyForEmployee";
+import ApplyForPosition from "./pages/ApplyForPosition";
+import EmployeeDetailsPage from "./pages/EmployeeDetailsPage";
+import ChatBot from "./components/ChatBot";
+import ChatbotDashboard from "./pages/ChatbotDashboard";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="dark" storageKey="rajkayal-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="rajkayal-theme-v2">
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
+              <Route path="/" element={<Index />} />
               <Route path="/admin" element={
                 <AdminRoute>
                   <AdminDashboard />
@@ -64,8 +65,16 @@ const App = () => (
                   <AccountPage />
                 </ProtectedRoute>
               } />
-              <Route path="/services" element={<AllServicesPage />} />
-              <Route path="/services-overview" element={<ServicesPage />} />
+              <Route path="/services" element={
+                <ProtectedRoute>
+                  <AllServicesPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/services-overview" element={
+                <ProtectedRoute>
+                  <ServicesPage />
+                </ProtectedRoute>
+              } />
               <Route path="/services/order/:serviceName" element={
                 <ProtectedRoute>
                   <OrderServicePage />
@@ -81,19 +90,72 @@ const App = () => (
                   <OrderDetailsPage />
                 </ProtectedRoute>
               } />
-              <Route path="/branding-identity" element={<BrandingIdentityPage />} />
-              <Route path="/branding-identity/:id" element={<BrandingDetailPage />} />
-              <Route path="/web-development" element={<WebDevelopmentPage />} />
-              <Route path="/3d-animation" element={<Animation3DPage />} />
-              <Route path="/uiux-design" element={<UIUXDesignPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/case-studies" element={<CaseStudiesPage />} />
+              <Route path="/branding-identity" element={
+                <ProtectedRoute>
+                  <BrandingIdentityPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/branding-identity/:id" element={
+                <ProtectedRoute>
+                  <BrandingDetailPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/web-development" element={
+                <ProtectedRoute>
+                  <WebDevelopmentPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/3d-animation" element={
+                <ProtectedRoute>
+                  <Animation3DPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/uiux-design" element={
+                <ProtectedRoute>
+                  <UIUXDesignPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/blog" element={
+                <ProtectedRoute>
+                  <BlogPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/case-studies" element={
+                <ProtectedRoute>
+                  <CaseStudiesPage />
+                </ProtectedRoute>
+              } />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-              <Route path="/apply-employee" element={<ApplyForEmployee />} />
+              <Route path="/contact" element={
+                <ProtectedRoute>
+                  <ContactPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/apply-employee" element={
+                <ProtectedRoute>
+                  <ApplyForEmployee />
+                </ProtectedRoute>
+              } />
+              <Route path="/apply-position/:positionId" element={
+                <ProtectedRoute>
+                  <ApplyForPosition />
+                </ProtectedRoute>
+              } />
+              <Route path="/employee/:id" element={
+                <ProtectedRoute>
+                  <EmployeeDetailsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/chatbot-dashboard" element={
+                <AdminRoute>
+                  <ChatbotDashboard />
+                </AdminRoute>
+              } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <ChatBot />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

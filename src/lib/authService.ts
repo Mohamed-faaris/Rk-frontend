@@ -16,6 +16,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: 'user' | 'admin';
 }
 
@@ -57,6 +58,54 @@ export const authService = {
       return response.data;
     } catch (error: any) {
       console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  googleLogin: async (idToken: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/google', { idToken });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      throw error;
+    }
+  },
+
+  appleLogin: async (idToken: string, fullName?: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/apple', { idToken, fullName });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error: any) {
+      console.error('Apple login error:', error);
+      throw error;
+    }
+  },
+
+  facebookLogin: async (accessToken: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/facebook', { accessToken });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error: any) {
+      console.error('Facebook login error:', error);
       throw error;
     }
   },
