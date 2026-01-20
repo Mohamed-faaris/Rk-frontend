@@ -337,30 +337,6 @@ Are you looking for our services, or interested in joining our team?`,
     const messageText = (text || inputValue).trim();
     if (!messageText) return;
 
-    // Check if user is authenticated
-    if (!user) {
-      // Show login message in chat
-      const userMsg: Message = {
-        id: Date.now().toString(),
-        text: messageText,
-        sender: 'user',
-        timestamp: new Date()
-      };
-
-      const botMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        text: '🔐 To continue chatting with me and access all services, please sign in or create an account. It only takes a minute and unlocks exclusive benefits!\n\n✨ Sign in to:\n• Access personalized recommendations\n• Place service orders\n• Track your projects\n• Get exclusive offers',
-        sender: 'bot',
-        timestamp: new Date(),
-        suggestedLink: '/login',
-        suggestedLinkText: '🔐 Sign In / Create Account'
-      };
-
-      setMessages(prev => [...prev, userMsg, botMsg]);
-      setInputValue('');
-      return;
-    }
-
     const userMsg: Message = {
       id: Date.now().toString(),
       text: messageText,
@@ -388,6 +364,13 @@ Are you looking for our services, or interested in joining our team?`,
         suggestedLink: link,
         suggestedLinkText: linkText
       };
+
+      // If user is not authenticated, add login suggestion to response
+      if (!user) {
+        botMsg.text = `${response}\n\n✨ **Want personalized recommendations and to place orders?** Sign in to unlock full features!`;
+        botMsg.suggestedLink = '/login';
+        botMsg.suggestedLinkText = '🔐 Sign In / Create Account';
+      }
       
       // Send to backend if authenticated
       if (user && user.id && user.email) {
@@ -569,8 +552,7 @@ Are you looking for our services, or interested in joining our team?`,
                   </div>
                 </div>
 
-                {/* Quick Questions - Only for logged in users */}
-                {user && (
+                {/* Quick Questions - Visible to all users */}
                 <div className="flex flex-col gap-2 mt-4 sm:mt-6">
                   <p className="text-xs text-muted-foreground font-semibold px-1">Quick questions:</p>
                   {QUICK_QUESTIONS.map((q) => (
@@ -584,17 +566,13 @@ Are you looking for our services, or interested in joining our team?`,
                     </button>
                   ))}
                 </div>
-                )}
 
-                {/* Sign In Prompt - Only for non-logged in users */}
+                {/* Sign In Prompt - Optional helper for non-logged in users */}
                 {!user && (
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={handleOpenChat}
-                    className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:shadow-lg active:scale-95"
-                  >
-                    🔐 Sign In to Chat
-                  </button>
+                <div className="flex justify-center mt-4 p-3 bg-accent/10 rounded-lg border border-accent/20">
+                  <p className="text-xs text-muted-foreground text-center">
+                    💡 <span className="font-medium">Tip:</span> Sign in to place orders and get personalized help!
+                  </p>
                 </div>
                 )}
               </>
@@ -644,27 +622,21 @@ Are you looking for our services, or interested in joining our team?`,
 
           {/* Input Area */}
           <div className="border-t border-border/40 p-4 bg-card/50 backdrop-blur-sm flex-shrink-0">
-            {!user && (
-              <div className="text-center text-sm text-muted-foreground mb-3 p-3 bg-muted/50 rounded-lg border border-border/30">
-                <p className="font-medium">🔐 Sign in to send messages</p>
-              </div>
-            )}
             <div className="flex gap-2">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && !isLoading && user && handleSendMessage()}
-                placeholder={user ? "Type your message..." : "Sign in to chat..."}
-                disabled={isLoading || !user}
+                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
+                placeholder="Type your message..."
+                disabled={isLoading}
                 className="flex-1 px-4 py-2.5 border border-border/50 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 bg-background text-foreground text-sm placeholder-muted-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 onClick={() => handleSendMessage()}
-                disabled={isLoading || !inputValue.trim() || !user}
+                disabled={isLoading || !inputValue.trim()}
                 className="bg-accent hover:bg-accent/90 disabled:bg-muted text-accent-foreground disabled:text-muted-foreground p-2.5 rounded-xl transition-all duration-200 hover:shadow-lg disabled:shadow-none flex-shrink-0"
                 aria-label="Send message"
-                title={!user ? "Sign in to send messages" : "Send message"}
               >
                 <Send size={18} />
               </button>
