@@ -11,33 +11,46 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import AdminDashboard from "./pages/AdminDashboard";
-import ServicesPage from "./pages/ServicesPage";
-import AllServicesPage from "./pages/AllServicesPage";
-import OrderServicePage from "./pages/OrderServicePage";
-import OrdersPage from "./pages/OrdersPage";
-import OrderDetailsPage from "./pages/OrderDetailsPage";
-import BrandingIdentityPage from "./pages/BrandingIdentityPage";
-import BrandingDetailPage from "./pages/BrandingDetailPage";
-import WebDevelopmentPage from "./pages/WebDevelopmentPage";
-import Animation3DPage from "./pages/Animation3DPage";
-import UIUXDesignPage from "./pages/UIUXDesignPage";
-import AccountPage from "./pages/AccountPage";
-import VerifyOTP from "./pages/VerifyOTP";
-import ManagementDashboard from "./pages/ManagementDashboard";
-import BlogPage from "./pages/BlogPage";
-import CaseStudiesPage from "./pages/CaseStudiesPage";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
-import TermsOfServicePage from "./pages/TermsOfServicePage";
-import ContactPage from "./pages/ContactPage";
-import ApplyForEmployee from "./pages/ApplyForEmployee";
-import ApplyForPosition from "./pages/ApplyForPosition";
-import EmployeeDetailsPage from "./pages/EmployeeDetailsPage";
-import ChatBot from "./components/ChatBot";
-import ChatbotDashboard from "./pages/ChatbotDashboard";
 import { useState, useEffect } from "react";
 
+// Lazy load other pages to prevent loading all at once
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const ServicesPage = lazy(() => import("./pages/ServicesPage"));
+const AllServicesPage = lazy(() => import("./pages/AllServicesPage"));
+const OrderServicePage = lazy(() => import("./pages/OrderServicePage"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage"));
+const OrderDetailsPage = lazy(() => import("./pages/OrderDetailsPage"));
+const BrandingIdentityPage = lazy(() => import("./pages/BrandingIdentityPage"));
+const BrandingDetailPage = lazy(() => import("./pages/BrandingDetailPage"));
+const WebDevelopmentPage = lazy(() => import("./pages/WebDevelopmentPage"));
+const Animation3DPage = lazy(() => import("./pages/Animation3DPage"));
+const UIUXDesignPage = lazy(() => import("./pages/UIUXDesignPage"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
+const VerifyOTP = lazy(() => import("./pages/VerifyOTP"));
+const ManagementDashboard = lazy(() => import("./pages/ManagementDashboard"));
+const BlogPage = lazy(() => import("./pages/BlogPage"));
+const CaseStudiesPage = lazy(() => import("./pages/CaseStudiesPage"));
+const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const ApplyForEmployee = lazy(() => import("./pages/ApplyForEmployee"));
+const ApplyForPosition = lazy(() => import("./pages/ApplyForPosition"));
+const EmployeeDetailsPage = lazy(() => import("./pages/EmployeeDetailsPage"));
+const ChatbotDashboard = lazy(() => import("./pages/ChatbotDashboard"));
+import ChatBot from "./components/ChatBot";
+import { Suspense, lazy } from "react";
+
 const queryClient = new QueryClient();
+
+// Loading component for lazy loaded pages
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-accent mx-auto mb-4" />
+      <p className="text-muted-foreground">Loading...</p>
+    </div>
+  </div>
+);
 
 const AppContent = () => {
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
@@ -63,59 +76,73 @@ const AppContent = () => {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/verify-otp" element={<VerifyOTP />} />
-        <Route path="/services" element={<AllServicesPage />} />
-        <Route path="/services-overview" element={<ServicesPage />} />
-        <Route path="/branding-identity" element={<BrandingIdentityPage />} />
-        <Route path="/branding-identity/:id" element={<BrandingDetailPage />} />
-        <Route path="/web-development" element={<WebDevelopmentPage />} />
-        <Route path="/3d-animation" element={<Animation3DPage />} />
-        <Route path="/uiux-design" element={<UIUXDesignPage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/case-studies" element={<CaseStudiesPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/apply-employee" element={<ApplyForEmployee />} />
-        <Route path="/apply-position/:positionId" element={<ApplyForPosition />} />
-        <Route path="/employee/:id" element={<EmployeeDetailsPage />} />
+        <Route path="/verify-otp" element={<Suspense fallback={<PageLoader />}><VerifyOTP /></Suspense>} />
+        <Route path="/services" element={<Suspense fallback={<PageLoader />}><AllServicesPage /></Suspense>} />
+        <Route path="/services-overview" element={<Suspense fallback={<PageLoader />}><ServicesPage /></Suspense>} />
+        <Route path="/branding-identity" element={<Suspense fallback={<PageLoader />}><BrandingIdentityPage /></Suspense>} />
+        <Route path="/branding-identity/:id" element={<Suspense fallback={<PageLoader />}><BrandingDetailPage /></Suspense>} />
+        <Route path="/web-development" element={<Suspense fallback={<PageLoader />}><WebDevelopmentPage /></Suspense>} />
+        <Route path="/3d-animation" element={<Suspense fallback={<PageLoader />}><Animation3DPage /></Suspense>} />
+        <Route path="/uiux-design" element={<Suspense fallback={<PageLoader />}><UIUXDesignPage /></Suspense>} />
+        <Route path="/blog" element={<Suspense fallback={<PageLoader />}><BlogPage /></Suspense>} />
+        <Route path="/case-studies" element={<Suspense fallback={<PageLoader />}><CaseStudiesPage /></Suspense>} />
+        <Route path="/privacy-policy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicyPage /></Suspense>} />
+        <Route path="/terms-of-service" element={<Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense>} />
+        <Route path="/contact" element={<Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
+        <Route path="/apply-employee" element={<Suspense fallback={<PageLoader />}><ApplyForEmployee /></Suspense>} />
+        <Route path="/apply-position/:positionId" element={<Suspense fallback={<PageLoader />}><ApplyForPosition /></Suspense>} />
+        <Route path="/employee/:id" element={<Suspense fallback={<PageLoader />}><EmployeeDetailsPage /></Suspense>} />
 
         {/* Protected Routes - Login Required */}
         <Route path="/account" element={
           <ProtectedRoute>
-            <AccountPage />
+            <Suspense fallback={<PageLoader />}>
+              <AccountPage />
+            </Suspense>
           </ProtectedRoute>
         } />
         <Route path="/services/order/:serviceName" element={
           <ProtectedRoute>
-            <OrderServicePage />
+            <Suspense fallback={<PageLoader />}>
+              <OrderServicePage />
+            </Suspense>
           </ProtectedRoute>
         } />
         <Route path="/orders" element={
           <ProtectedRoute>
-            <OrdersPage />
+            <Suspense fallback={<PageLoader />}>
+              <OrdersPage />
+            </Suspense>
           </ProtectedRoute>
         } />
         <Route path="/orders/:id" element={
           <ProtectedRoute>
-            <OrderDetailsPage />
+            <Suspense fallback={<PageLoader />}>
+              <OrderDetailsPage />
+            </Suspense>
           </ProtectedRoute>
         } />
 
         {/* Admin Routes */}
         <Route path="/admin" element={
           <AdminRoute>
-            <AdminDashboard />
+            <Suspense fallback={<PageLoader />}>
+              <AdminDashboard />
+            </Suspense>
           </AdminRoute>
         } />
         <Route path="/management" element={
           <AdminRoute>
-            <ManagementDashboard />
+            <Suspense fallback={<PageLoader />}>
+              <ManagementDashboard />
+            </Suspense>
           </AdminRoute>
         } />
         <Route path="/chatbot-dashboard" element={
           <AdminRoute>
-            <ChatbotDashboard />
+            <Suspense fallback={<PageLoader />}>
+              <ChatbotDashboard />
+            </Suspense>
           </AdminRoute>
         } />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
