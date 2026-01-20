@@ -61,72 +61,70 @@ const AppContent = () => {
       <Routes>
         {/* Public Routes - No Login Required */}
         <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/verify-otp" element={<VerifyOTP />} />
-              <Route path="/services" element={<AllServicesPage />} />
-              <Route path="/services-overview" element={<ServicesPage />} />
-              <Route path="/branding-identity" element={<BrandingIdentityPage />} />
-              <Route path="/branding-identity/:id" element={<BrandingDetailPage />} />
-              <Route path="/web-development" element={<WebDevelopmentPage />} />
-              <Route path="/3d-animation" element={<Animation3DPage />} />
-              <Route path="/uiux-design" element={<UIUXDesignPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/case-studies" element={<CaseStudiesPage />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-              <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/apply-employee" element={<ApplyForEmployee />} />
-              <Route path="/apply-position/:positionId" element={<ApplyForPosition />} />
-              <Route path="/employee/:id" element={<EmployeeDetailsPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/services" element={<AllServicesPage />} />
+        <Route path="/services-overview" element={<ServicesPage />} />
+        <Route path="/branding-identity" element={<BrandingIdentityPage />} />
+        <Route path="/branding-identity/:id" element={<BrandingDetailPage />} />
+        <Route path="/web-development" element={<WebDevelopmentPage />} />
+        <Route path="/3d-animation" element={<Animation3DPage />} />
+        <Route path="/uiux-design" element={<UIUXDesignPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/case-studies" element={<CaseStudiesPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/apply-employee" element={<ApplyForEmployee />} />
+        <Route path="/apply-position/:positionId" element={<ApplyForPosition />} />
+        <Route path="/employee/:id" element={<EmployeeDetailsPage />} />
 
-              {/* Protected Routes - Login Required */}
-              <Route path="/account" element={
-                <ProtectedRoute>
-                  <AccountPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/services/order/:serviceName" element={
-                <ProtectedRoute>
-                  <OrderServicePage />
-                </ProtectedRoute>
-              } />
-              <Route path="/orders" element={
-                <ProtectedRoute>
-                  <OrdersPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/orders/:id" element={
-                <ProtectedRoute>
-                  <OrderDetailsPage />
-                </ProtectedRoute>
-              } />
+        {/* Protected Routes - Login Required */}
+        <Route path="/account" element={
+          <ProtectedRoute>
+            <AccountPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/services/order/:serviceName" element={
+          <ProtectedRoute>
+            <OrderServicePage />
+          </ProtectedRoute>
+        } />
+        <Route path="/orders" element={
+          <ProtectedRoute>
+            <OrdersPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/orders/:id" element={
+          <ProtectedRoute>
+            <OrderDetailsPage />
+          </ProtectedRoute>
+        } />
 
-              {/* Admin Routes */}
-              <Route path="/admin" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } />
-              <Route path="/management" element={
-                <AdminRoute>
-                  <ManagementDashboard />
-                </AdminRoute>
-              } />
-              <Route path="/chatbot-dashboard" element={
-                <AdminRoute>
-                  <ChatbotDashboard />
-                </AdminRoute>
-              } />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ChatBot />
+        {/* Admin Routes */}
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        } />
+        <Route path="/management" element={
+          <AdminRoute>
+            <ManagementDashboard />
+          </AdminRoute>
+        } />
+        <Route path="/chatbot-dashboard" element={
+          <AdminRoute>
+            <ChatbotDashboard />
+          </AdminRoute>
+        } />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <ChatBot />
     </>
   );
 };
-
-const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
