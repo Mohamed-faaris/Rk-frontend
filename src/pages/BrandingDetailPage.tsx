@@ -70,8 +70,7 @@ const BrandingDetailPage = () => {
 
   const handleLikeToggle = async () => {
     if (!user) {
-      const { showAuthPopup } = require('@/lib/authPopup');
-      showAuthPopup();
+      window.dispatchEvent(new CustomEvent('showAuthPopup'));
       return;
     }
 

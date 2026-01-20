@@ -78,8 +78,7 @@ const ServicesPage = () => {
 
   const handleOrderService = (serviceTitle: string) => {
     if (!isAuthenticated) {
-      const { showAuthPopup } = require('@/lib/authPopup');
-      showAuthPopup();
+      window.dispatchEvent(new CustomEvent('showAuthPopup'));
       return;
     }
     navigate(`/services/order/${encodeURIComponent(serviceTitle)}`);
