@@ -335,7 +335,31 @@ Are you looking for our services, or interested in joining our team?`,
 
   const handleSendMessage = useCallback(async (text?: string) => {
     const messageText = (text || inputValue).trim();
-    if (!messageText || !user) return;
+    if (!messageText) return;
+
+    // Check if user is authenticated
+    if (!user) {
+      // Show login message in chat
+      const userMsg: Message = {
+        id: Date.now().toString(),
+        text: messageText,
+        sender: 'user',
+        timestamp: new Date()
+      };
+
+      const botMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        text: '🔐 To continue chatting with me and access all services, please sign in or create an account. It only takes a minute and unlocks exclusive benefits!\n\n✨ Sign in to:\n• Access personalized recommendations\n• Place service orders\n• Track your projects\n• Get exclusive offers',
+        sender: 'bot',
+        timestamp: new Date(),
+        suggestedLink: '/login',
+        suggestedLinkText: '🔐 Sign In / Create Account'
+      };
+
+      setMessages(prev => [...prev, userMsg, botMsg]);
+      setInputValue('');
+      return;
+    }
 
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -521,17 +545,32 @@ Are you looking for our services, or interested in joining our team?`,
                 {/* Welcome Message */}
                 <div className="flex justify-start">
                   <div className="bg-accent/10 text-foreground px-4 py-3 rounded-2xl rounded-tl-none max-w-xs sm:max-w-sm border border-accent/20 text-sm sm:text-base">
-                    <p className="font-medium">Welcome {user?.name || 'there'}! 🌟 I'm SIRA</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
-                      I'm your personal AI assistant at RK Creative Hub. I'm here to help you discover our amazing services, answer your questions, and guide you through the perfect creative solution for your needs.
-                    </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-3 leading-relaxed font-medium">
-                      Ready to explore? Ask me anything or try the quick questions below! 🚀
-                    </p>
+                    {user ? (
+                      <>
+                        <p className="font-medium">Welcome {user?.name || 'there'}! 🌟 I'm SIRA</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
+                          I'm your personal AI assistant at RK Creative Hub. I'm here to help you discover our amazing services, answer your questions, and guide you through the perfect creative solution for your needs.
+                        </p>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-3 leading-relaxed font-medium">
+                          Ready to explore? Ask me anything or try the quick questions below! 🚀
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-medium">👋 Welcome to SIRA - AI Assistant</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
+                          I'm your AI assistant at RK Creative Hub! I'm here to help you explore our amazing services and answer your questions.
+                        </p>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-3 leading-relaxed font-medium text-accent">
+                          🔐 To send messages and unlock full features, please sign in or create an account. It's quick and free!
+                        </p>
+                      </>
+                    )}
                   </div>
                 </div>
 
-                {/* Quick Questions */}
+                {/* Quick Questions - Only for logged in users */}
+                {user && (
                 <div className="flex flex-col gap-2 mt-4 sm:mt-6">
                   <p className="text-xs text-muted-foreground font-semibold px-1">Quick questions:</p>
                   {QUICK_QUESTIONS.map((q) => (
@@ -545,6 +584,19 @@ Are you looking for our services, or interested in joining our team?`,
                     </button>
                   ))}
                 </div>
+                )}
+
+                {/* Sign In Prompt - Only for non-logged in users */}
+                {!user && (
+                <div className="flex justify-center mt-6">
+                  <button
+                    onClick={handleOpenChat}
+                    className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 hover:shadow-lg active:scale-95"
+                  >
+                    🔐 Sign In to Chat
+                  </button>
+                </div>
+                )}
               </>
             ) : (
               messages.map((msg) => (
@@ -592,21 +644,27 @@ Are you looking for our services, or interested in joining our team?`,
 
           {/* Input Area */}
           <div className="border-t border-border/40 p-4 bg-card/50 backdrop-blur-sm flex-shrink-0">
+            {!user && (
+              <div className="text-center text-sm text-muted-foreground mb-3 p-3 bg-muted/50 rounded-lg border border-border/30">
+                <p className="font-medium">🔐 Sign in to send messages</p>
+              </div>
+            )}
             <div className="flex gap-2">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
-                placeholder="Type your message..."
-                disabled={isLoading}
+                onKeyPress={(e) => e.key === 'Enter' && !isLoading && user && handleSendMessage()}
+                placeholder={user ? "Type your message..." : "Sign in to chat..."}
+                disabled={isLoading || !user}
                 className="flex-1 px-4 py-2.5 border border-border/50 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 bg-background text-foreground text-sm placeholder-muted-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 onClick={() => handleSendMessage()}
-                disabled={isLoading || !inputValue.trim()}
+                disabled={isLoading || !inputValue.trim() || !user}
                 className="bg-accent hover:bg-accent/90 disabled:bg-muted text-accent-foreground disabled:text-muted-foreground p-2.5 rounded-xl transition-all duration-200 hover:shadow-lg disabled:shadow-none flex-shrink-0"
                 aria-label="Send message"
+                title={!user ? "Sign in to send messages" : "Send message"}
               >
                 <Send size={18} />
               </button>
