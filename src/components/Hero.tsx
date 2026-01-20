@@ -73,7 +73,11 @@ const Hero = () => {
       <ErrorBoundaryWrapper>
         <Suspense fallback={<LiquidEtherFallback />}>
           <div className="absolute inset-0 z-0">
-            <LiquidEther />
+            <LiquidEther 
+              colors={['#FFD700', '#FFC700', '#FFE135']}
+              autoIntensity={1.8}
+              autoSpeed={0.4}
+            />
           </div>
         </Suspense>
       </ErrorBoundaryWrapper>
