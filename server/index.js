@@ -76,6 +76,9 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from public/uploads
 app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
 
+// Serve dist folder at root
+app.use(express.static(path.join(__dirname, '..', 'dist')));
+
 // Log all requests
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`, req.body);

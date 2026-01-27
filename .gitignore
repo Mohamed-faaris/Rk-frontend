@@ -24,3 +24,8 @@ dist-ssr
 *.sln
 *.sw?
 .env
+env.prod
+.env.production
+.envd
+.envd.production
+.env.production
