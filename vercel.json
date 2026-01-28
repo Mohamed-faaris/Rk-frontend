@@ -1,25 +1,10 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/handler.js"
-    },
-    {
-      "src": "/uploads/(.*)",
-      "dest": "/api/handler.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/index.html"
+  "outputDirectory": "dist",
+  "functions": {
+    "dist/server.js": {
+      "runtime": "nodejs20.x"
     }
-  ]
+  }
 }
