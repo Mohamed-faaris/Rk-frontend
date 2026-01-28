@@ -96,27 +96,27 @@ app.use(async (req, res, next) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/otp', otpRoutes);
-app.use('/api/portfolio', portfolioRoutes);
-app.use('/api/contact', contactRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/branding', brandingIdentityRoutes);
-app.use('/api/web-projects', webProjectRoutes);
-app.use('/api/3d-animations', animation3DRoutes);
-app.use('/api/uiux-projects', uiuxProjectRoutes);
-app.use('/api/employees', employeeRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/revenue', revenueRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/dns', dnsRoutes);
-app.use('/api/chat', chatbotRoutes);
-app.use('/api/config', configRoutes);
+app.use('/auth', authRoutes);
+app.use('/otp', otpRoutes);
+app.use('/portfolio', portfolioRoutes);
+app.use('/contact', contactRoutes);
+app.use('/orders', orderRoutes);
+app.use('/branding', brandingIdentityRoutes);
+app.use('/web-projects', webProjectRoutes);
+app.use('/3d-animations', animation3DRoutes);
+app.use('/uiux-projects', uiuxProjectRoutes);
+app.use('/employees', employeeRoutes);
+app.use('/projects', projectRoutes);
+app.use('/users', userRoutes);
+app.use('/revenue', revenueRoutes);
+app.use('/upload', uploadRoutes);
+app.use('/applications', applicationRoutes);
+app.use('/dns', dnsRoutes);
+app.use('/chat', chatbotRoutes);
+app.use('/config', configRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server running on Vercel' });
 });
 
