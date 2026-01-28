@@ -41,10 +41,15 @@ const connectMongo = async () => {
   if (mongoConnection && mongoose.connection.readyState === 1) {
     return mongoConnection;
   }
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI environment variable is required');
+  }
   try {
     await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
+      maxPoolSize: 5,
+      minPoolSize: 1,
     });
     mongoConnection = mongoose.connection;
     console.log('✓ MongoDB connected');

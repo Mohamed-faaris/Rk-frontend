@@ -3,20 +3,30 @@
   "buildCommand": "npm run build",
   "functions": {
     "api/server.js": {
-      "runtime": "nodejs20.x"
+      "runtime": "nodejs20.x",
+      "maxDuration": 60,
+      "memory": 1024
     }
   },
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/.*",
       "dest": "/api/server.js"
+    },
+    {
+      "src": "/uploads/.*",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api.*",
+      "continue": true
     },
     {
       "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/$1"
+      "dest": "/dist/index.html"
     }
   ]
 }
