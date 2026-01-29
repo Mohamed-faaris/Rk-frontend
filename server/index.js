@@ -128,21 +128,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server running' });
 });
 
-// SPA fallback - serve index.html for all non-API routes
-app.get('*', (req, res) => {
-  const indexPath = path.join(__dirname, '../dist/index.html');
-  res.sendFile(indexPath);
-});
-
-// 404
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
-
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ error: err.message || 'Internal Server Error' });
+});
+
+// SPA fallback - serve index.html for all non-API routes (MUST be last)
+app.get('*', (req, res) => {
+  const indexPath = path.join(__dirname, '../dist/index.html');
+  res.sendFile(indexPath);
 });
 
 // ✅ REQUIRED FOR VERCEL
