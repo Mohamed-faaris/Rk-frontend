@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: rk-website-frontend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: https://rk-ras3.onrender.com
