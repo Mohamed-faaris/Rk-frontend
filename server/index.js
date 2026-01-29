@@ -143,8 +143,8 @@ app.use((err, req, res, next) => {
 export default app;
 
 // Start server locally (not on Vercel)
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 5002;
+if (!process.env.VERCEL) {
   const server = app.listen(PORT, () => {
     console.log(`\n✓ Server running on http://localhost:${PORT}`);
     console.log(`✓ API: http://localhost:${PORT}/api`);
