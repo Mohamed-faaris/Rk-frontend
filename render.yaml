@@ -10,7 +10,7 @@ services:
     rootDir: server
 
     buildCommand: npm ci
-    startCommand: node index.js
+    startCommand: node boot.js
 
     envVars:
       - key: NODE_ENV
