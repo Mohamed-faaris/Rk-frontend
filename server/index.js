@@ -125,7 +125,13 @@ app.use('/api/config', configRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server running on Vercel' });
+  res.json({ status: 'OK', message: 'Server running' });
+});
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  const indexPath = path.join(__dirname, '../dist/index.html');
+  res.sendFile(indexPath);
 });
 
 // 404
