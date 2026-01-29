@@ -9,8 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node server/index.js",
-    "server:dev": "nodemon server/index.js",
+    "server": "set NODE_ENV=development && node server/index.js",
+    "server:dev": "set NODE_ENV=development && nodemon server/index.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server:dev\""
   },
   "dependencies": {

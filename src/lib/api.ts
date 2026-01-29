@@ -5,20 +5,18 @@ const getApiBaseUrl = () => {
   // Check if we have a custom API URL from environment
   const envApiUrl = import.meta.env.VITE_API_URL;
   
-  // If running on mobile/different device (not localhost), try to use current host IP
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    
-    // If accessing from a network IP (not localhost), use that IP for API
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      const apiUrl = `http://${hostname}:5002/api`;
-      console.log('Mobile/Network device detected, using API URL:', apiUrl);
-      return apiUrl;
-    }
+  if (envApiUrl) {
+    console.log('Using VITE_API_URL:', envApiUrl);
+    return `${envApiUrl}/api`;
   }
-  
-  // Default to environment variable or localhost
-  return envApiUrl || 'https://rk-backend.vercel.app';
+
+  // Development: use localhost
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5002/api';
+  }
+
+  // Production: use backend URL (should be set via .env.production)
+  return 'https://rk-backend.vercel.app/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();

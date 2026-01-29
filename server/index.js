@@ -5,6 +5,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 
+// Ensure environment is set
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'development';
+}
+
 import authRoutes from './routes/auth.js';
 import portfolioRoutes from './routes/portfolio.js';
 import contactRoutes from './routes/contact.js';
@@ -136,3 +141,15 @@ app.use((err, req, res, next) => {
 
 // ✅ REQUIRED FOR VERCEL
 export default app;
+
+// Start server locally (not on Vercel)
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  const PORT = process.env.PORT || 5002;
+  const server = app.listen(PORT, () => {
+    console.log(`\n✓ Server running on http://localhost:${PORT}`);
+    console.log(`✓ API: http://localhost:${PORT}/api`);
+    if (MONGODB_URI) {
+      connectMongo().then(() => console.log('✓ MongoDB connected')).catch(err => console.error('✗ MongoDB error:', err));
+    }
+  });
+}
