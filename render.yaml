@@ -9,7 +9,7 @@ services:
 
     rootDir: server
 
-    buildCommand: npm install --no-save express
+    buildCommand: npm ci
     startCommand: node boot.js
 
     envVars:
