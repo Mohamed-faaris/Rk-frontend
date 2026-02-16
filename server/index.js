@@ -1,6 +1,19 @@
 // ============================================
-// SINGLE SERVER - SERVES FRONTEND + BACKEND
+// RK CREATIVE HUB - BACKEND API SERVER
 // ============================================
+// 
+// Commands:
+//   npm start        - Start production server
+//   npm run dev:full  - Start dev server (frontend + backend)
+// 
+// Environment Variables Required:
+//   MONGODB_URI      - MongoDB connection string
+//   JWT_SECRET       - JWT signing secret
+//   EMAIL_USER       - Email for sending OTPs
+//   EMAIL_PASS       - Email app password
+// 
+// ============================================
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -11,9 +24,8 @@ import mongoose from 'mongoose';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load env
+// Load environment variables
 dotenv.config({ path: path.join(__dirname, '../.env') });
-dotenv.config({ path: path.join(__dirname, '../.env.production') });
 
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
@@ -27,29 +39,43 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS
+// CORS Configuration
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5002',
+  'https://rkch.tech',
+  'https://www.rkch.tech',
+  'https://preprod.rkch.tech',
+  'https://rk-website-navy.vercel.app',
+  'https://rk-website-mohamed-faaris-projects.vercel.app',
   process.env.CLIENT_URL,
-  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
 ].filter(Boolean);
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    callback(null, true); // Allow all origins
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Health check
+// ============================================
+// HEALTH CHECK ENDPOINTS
+// ============================================
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'Server running',
+    message: 'API Server running',
     timestamp: new Date(),
-    env: process.env.NODE_ENV 
+    env: process.env.NODE_ENV,
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK' });
 });
 
 // ============================================
@@ -87,7 +113,7 @@ app.use(async (req, res, next) => {
 });
 
 // ============================================
-// ROUTES
+// API ROUTES
 // ============================================
 const routes = [
   { path: '/api/auth', file: './routes/auth.js' },
@@ -110,7 +136,7 @@ const routes = [
   { path: '/api/config', file: './routes/config.js' },
 ];
 
-// Load routes
+// Load all routes
 for (const route of routes) {
   try {
     const { default: router } = await import(route.file);
@@ -120,34 +146,19 @@ for (const route of routes) {
   }
 }
 
-// Static uploads
+// Static file uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // ============================================
-// SERVE FRONTEND (Production)
+// ERROR HANDLING
 // ============================================
-const distPath = path.join(__dirname, '../dist');
-
-// Serve static files from dist
-app.use(express.static(distPath));
-
-// SPA fallback - serve index.html for all non-API routes
-app.get('*', (req, res, next) => {
-  // Skip API routes
-  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
-    return next();
-  }
-  res.sendFile(path.join(distPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(404).json({ error: 'Not found' });
-    }
-  });
-});
-
-// Error handler
 app.use((err, req, res, next) => {
   console.error('Server Error:', err.message);
   res.status(500).json({ error: err.message || 'Internal Server Error' });
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // ============================================
@@ -156,9 +167,8 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5002;
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n✅ Server running on port ${PORT}`);
-  console.log(`✅ Environment: ${process.env.NODE_ENV}`);
-  console.log(`✅ Frontend: ${distPath}\n`);
+  console.log(`\n✅ API Server running on port ${PORT}`);
+  console.log(`✅ Environment: ${process.env.NODE_ENV}\n`);
 });
 
 server.on('error', (err) => {
