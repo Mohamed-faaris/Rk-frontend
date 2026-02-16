@@ -1,16 +1,14 @@
 services:
   # =========================
-  # BACKEND – EXPRESS API
+  # FULLSTACK - EXPRESS + REACT
   # =========================
   - type: web
-    name: rk-website-backend
+    name: rk-website
     env: node
     plan: free
 
-    rootDir: server
-
-    buildCommand: npm ci
-    startCommand: node boot.js
+    buildCommand: npm ci && npm run build
+    startCommand: node server/index.js
 
     envVars:
       - key: NODE_ENV
@@ -35,21 +33,3 @@ services:
         sync: false
       - key: APPLE_KEY
         sync: false
-
-  # =========================
-  # FRONTEND – VITE + REACT
-  # =========================
-  - type: static
-    name: rk-website-frontend
-    plan: free
-
-    rootDir: .
-
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
-
-    envVars:
-      - key: NODE_ENV
-        value: development
-      - key: VITE_API_URL
-        value: https://rk-website-backend.onrender.com

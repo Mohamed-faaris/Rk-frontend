@@ -1,10 +1,6 @@
 // ============================================
-// BOOT SEQUENCE - RENDER PORT BINDING FIRST
+// SINGLE SERVER - SERVES FRONTEND + BACKEND
 // ============================================
-console.log('\n🚀 BOOT FILE RUNNING');
-console.log('📍 PORT FROM RENDER:', process.env.PORT);
-console.log('📍 NODE_ENV:', process.env.NODE_ENV || 'not set');
-
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -12,81 +8,60 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 
-// Load env first
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Ensure environment is set
+// Load env
+dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '../.env.production') });
+
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'development';
 }
 
-// Create app IMMEDIATELY
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // ============================================
-// SETUP BASIC MIDDLEWARE (BEFORE LISTEN)
+// MIDDLEWARE
 // ============================================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS config
+// CORS
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5002',
   process.env.CLIENT_URL,
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-  'https://rk-website-frontend.onrender.com'
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  })
-);
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Health check route (INSTANT, no dependencies)
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server running' });
+  res.json({ 
+    status: 'OK', 
+    message: 'Server running',
+    timestamp: new Date(),
+    env: process.env.NODE_ENV 
+  });
 });
 
 // ============================================
-// LISTEN TO PORT FIRST - RENDER REQUIREMENT
-// ============================================
-const PORT = process.env.PORT || 5002;
-
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n✅ SERVER LISTENING ON PORT ${PORT}`);
-  console.log(`✅ Binding address: 0.0.0.0`);
-  console.log(`✅ Server is ready to receive requests\n`);
-});
-
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ PORT ${PORT} IS ALREADY IN USE`);
-  } else {
-    console.error('❌ SERVER ERROR:', err.message);
-  }
-  process.exit(1);
-});
-
-// ============================================
-// SETUP DATABASE (NON-BLOCKING)
+// DATABASE CONNECTION
 // ============================================
 const MONGODB_URI = process.env.MONGODB_URI;
-let mongoConnection = null;
 
-const connectMongo = async () => {
-  if (mongoConnection && mongoose.connection.readyState === 1) {
-    return mongoConnection;
-  }
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) return;
   if (!MONGODB_URI) {
-    console.warn('⚠️  MONGODB_URI not set - skipping DB connection');
-    return null;
+    console.warn('⚠️  MONGODB_URI not set');
+    return;
   }
   try {
     await mongoose.connect(MONGODB_URI, {
@@ -95,132 +70,113 @@ const connectMongo = async () => {
       maxPoolSize: 5,
       minPoolSize: 1,
     });
-    mongoConnection = mongoose.connection;
     console.log('✅ MongoDB connected');
-    return mongoConnection;
   } catch (err) {
     console.warn('⚠️  MongoDB connection failed:', err.message);
-    return null;
   }
 };
 
-// Connect MongoDB in background (async, non-blocking)
-connectMongo().catch(err => console.warn('⚠️  DB error:', err.message));
+connectDB();
 
-// Middleware to ensure DB for each request
-let mongoInitialized = false;
+// Ensure DB connection for each request
 app.use(async (req, res, next) => {
-  if (!mongoInitialized && MONGODB_URI) {
-    try {
-      await connectMongo();
-      mongoInitialized = true;
-    } catch (err) {
-      console.warn('⚠️  MongoDB not available for this request');
-    }
+  if (mongoose.connection.readyState !== 1 && MONGODB_URI) {
+    await connectDB();
   }
   next();
 });
 
 // ============================================
-// SETUP ROUTES (IN BACKGROUND)
+// ROUTES
 // ============================================
-async function setupRoutes() {
+const routes = [
+  { path: '/api/auth', file: './routes/auth.js' },
+  { path: '/api/otp', file: './routes/otp.js' },
+  { path: '/api/portfolio', file: './routes/portfolio.js' },
+  { path: '/api/contact', file: './routes/contact.js' },
+  { path: '/api/orders', file: './routes/order.js' },
+  { path: '/api/branding', file: './routes/brandingIdentity.js' },
+  { path: '/api/web-projects', file: './routes/webProject.js' },
+  { path: '/api/3d-animations', file: './routes/animation3D.js' },
+  { path: '/api/uiux-projects', file: './routes/uiuxProject.js' },
+  { path: '/api/employees', file: './routes/employee.js' },
+  { path: '/api/projects', file: './routes/project.js' },
+  { path: '/api/users', file: './routes/user.js' },
+  { path: '/api/revenue', file: './routes/revenue.js' },
+  { path: '/api/upload', file: './routes/upload.js' },
+  { path: '/api/applications', file: './routes/applicationRoutes.js' },
+  { path: '/api/dns', file: './routes/dns.js' },
+  { path: '/api/chat', file: './routes/chatbot.js' },
+  { path: '/api/config', file: './routes/config.js' },
+];
+
+// Load routes
+for (const route of routes) {
   try {
-    console.log('📦 Loading routes...');
-    
-    const { default: authRoutes } = await import('./routes/auth.js');
-    const { default: portfolioRoutes } = await import('./routes/portfolio.js');
-    const { default: contactRoutes } = await import('./routes/contact.js');
-    const { default: orderRoutes } = await import('./routes/order.js');
-    const { default: brandingIdentityRoutes } = await import('./routes/brandingIdentity.js');
-    const { default: webProjectRoutes } = await import('./routes/webProject.js');
-    const { default: animation3DRoutes } = await import('./routes/animation3D.js');
-    const { default: uiuxProjectRoutes } = await import('./routes/uiuxProject.js');
-    const { default: employeeRoutes } = await import('./routes/employee.js');
-    const { default: projectRoutes } = await import('./routes/project.js');
-    const { default: userRoutes } = await import('./routes/user.js');
-    const { default: revenueRoutes } = await import('./routes/revenue.js');
-    const { default: uploadRoutes } = await import('./routes/upload.js');
-    const { default: applicationRoutes } = await import('./routes/applicationRoutes.js');
-    const { default: dnsRoutes } = await import('./routes/dns.js');
-    const { default: chatbotRoutes } = await import('./routes/chatbot.js');
-    const { default: otpRoutes } = await import('./routes/otp.js');
-    const { default: configRoutes } = await import('./routes/config.js');
-
-    // Static files
-    app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
-    app.use(express.static(path.join(__dirname, '../dist')));
-
-    // API Routes
-    app.use('/api/auth', authRoutes);
-    app.use('/api/otp', otpRoutes);
-    app.use('/api/portfolio', portfolioRoutes);
-    app.use('/api/contact', contactRoutes);
-    app.use('/api/orders', orderRoutes);
-    app.use('/api/branding', brandingIdentityRoutes);
-    app.use('/api/web-projects', webProjectRoutes);
-    app.use('/api/3d-animations', animation3DRoutes);
-    app.use('/api/uiux-projects', uiuxProjectRoutes);
-    app.use('/api/employees', employeeRoutes);
-    app.use('/api/projects', projectRoutes);
-    app.use('/api/users', userRoutes);
-    app.use('/api/revenue', revenueRoutes);
-    app.use('/api/upload', uploadRoutes);
-    app.use('/api/applications', applicationRoutes);
-    app.use('/api/dns', dnsRoutes);
-    app.use('/api/chat', chatbotRoutes);
-    app.use('/api/config', configRoutes);
-
-    // Error handler
-    app.use((err, req, res, next) => {
-      console.error('API Error:', err.message);
-      res.status(500).json({ error: err.message || 'Internal Server Error' });
-    });
-
-    // SPA fallback - serve index.html for all non-API routes (MUST be last)
-    app.get('*', (req, res) => {
-      const indexPath = path.join(__dirname, '../dist/index.html');
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          res.status(404).json({ error: 'Not found' });
-        }
-      });
-    });
-
-    console.log('✅ Routes loaded successfully\n');
+    const { default: router } = await import(route.file);
+    app.use(route.path, router);
   } catch (err) {
-    console.error('❌ Error loading routes:', err.message);
+    console.warn(`⚠️  Could not load route ${route.path}:`, err.message);
   }
 }
 
-// Load routes in background
-setupRoutes();
+// Static uploads
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // ============================================
-// GRACEFUL SHUTDOWN
+// SERVE FRONTEND (Production)
 // ============================================
-process.on('SIGTERM', () => {
-  console.log('📌 SIGTERM received, shutting down gracefully...');
-  server.close(() => {
-    console.log('✅ Server closed');
-    if (mongoConnection) {
-      mongoose.disconnect();
+const distPath = path.join(__dirname, '../dist');
+
+// Serve static files from dist
+app.use(express.static(distPath));
+
+// SPA fallback - serve index.html for all non-API routes
+app.get('*', (req, res, next) => {
+  // Skip API routes
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+    return next();
+  }
+  res.sendFile(path.join(distPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Not found' });
     }
+  });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.message);
+  res.status(500).json({ error: err.message || 'Internal Server Error' });
+});
+
+// ============================================
+// START SERVER
+// ============================================
+const PORT = process.env.PORT || 5002;
+
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n✅ Server running on port ${PORT}`);
+  console.log(`✅ Environment: ${process.env.NODE_ENV}`);
+  console.log(`✅ Frontend: ${distPath}\n`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use`);
+  } else {
+    console.error('❌ Server error:', err.message);
+  }
+  process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('📌 Shutting down...');
+  server.close(() => {
+    mongoose.disconnect();
     process.exit(0);
   });
 });
 
-process.on('uncaughtException', (err) => {
-  console.error('❌ UNCAUGHT EXCEPTION:', err);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ UNHANDLED REJECTION:', reason);
-  process.exit(1);
-});
-
-// ============================================
-// VERCEL EXPORT (for Vercel deployment)
-// ============================================
 export default app;
