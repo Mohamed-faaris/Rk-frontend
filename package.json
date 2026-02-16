@@ -8,8 +8,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "start": "node server/index.js",
-    "dev:full": "concurrently \"npm run dev\" \"nodemon server/index.js\""
+    "server:api": "NODE_ENV=production MODE=api node server/index.js",
+    "server:api:dev": "NODE_ENV=development MODE=api nodemon server/index.js",
+    "server:full": "NODE_ENV=production MODE=full node server/index.js",
+    "server:full:dev": "NODE_ENV=development MODE=full nodemon server/index.js",
+    "dev:full": "concurrently \"npm run dev\" \"npm run server:api:dev\"",
+    "start": "npm run server:api"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

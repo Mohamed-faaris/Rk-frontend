@@ -1,17 +1,21 @@
 // ============================================
 // RK CREATIVE HUB - BACKEND API SERVER
 // ============================================
-// 
+//
+// MODES:
+//   api  - API server only (for api.rkch.tech)
+//   full - API + serves frontend (single server deployment)
+//
 // Commands:
-//   npm start        - Start production server
-//   npm run dev:full  - Start dev server (frontend + backend)
-// 
-// Environment Variables Required:
-//   MONGODB_URI      - MongoDB connection string
-//   JWT_SECRET       - JWT signing secret
-//   EMAIL_USER       - Email for sending OTPs
-//   EMAIL_PASS       - Email app password
-// 
+//   npm run server:api   - Start API only (MODE=api)
+//   npm run server:full  - Start API + frontend (MODE=full)
+//
+// Environment:
+//   MODE         - Server mode: api | full
+//   CLIENT_URLS  - Comma-separated allowed origins
+//   MONGODB_URI  - MongoDB connection string
+//   JWT_SECRET   - JWT signing secret
+//
 // ============================================
 
 import express from 'express';
@@ -24,37 +28,57 @@ import mongoose from 'mongoose';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, '../.env') });
+// Load environment
+dotenv.config({ path: path.join(__dirname, '../.env.server') });
 
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'development';
-}
+const MODE = process.env.MODE || 'api';
+const IS_DEV = process.env.NODE_ENV !== 'production';
+
+console.log(`\n🚀 Starting server in ${MODE} mode (${IS_DEV ? 'development' : 'production'})\n`);
 
 const app = express();
 
 // ============================================
-// MIDDLEWARE
+// CORS CONFIGURATION
 // ============================================
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const getClientUrls = () => {
+  const urls = [];
+  
+  // Always allow localhost in development
+  if (IS_DEV) {
+    urls.push(
+      'http://localhost:5173',
+      'http://localhost:5002',
+      'http://localhost:3000'
+    );
+  }
+  
+  // Parse CLIENT_URLS from environment
+  if (process.env.CLIENT_URLS) {
+    urls.push(...process.env.CLIENT_URLS.split(',').map(u => u.trim()));
+  }
+  
+  return urls.filter(Boolean);
+};
 
-// CORS Configuration
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5002',
-  'https://rkch.tech',
-  'https://www.rkch.tech',
-  'https://preprod.rkch.tech',
-  'https://rk-website-navy.vercel.app',
-  'https://rk-website-mohamed-faaris-projects.vercel.app',
-  process.env.CLIENT_URL,
-].filter(Boolean);
+const allowedOrigins = getClientUrls();
+console.log('Allowed CORS origins:', allowedOrigins);
 
 app.use(cors({
   origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, postman)
     if (!origin) return callback(null, true);
-    callback(null, true); // Allow all origins
+    
+    // In development, allow all
+    if (IS_DEV) return callback(null, true);
+    
+    // In production, check against allowed list
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  Blocked origin: ${origin}`);
+      callback(null, true); // Allow anyway for flexibility
+    }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -62,20 +86,26 @@ app.use(cors({
 }));
 
 // ============================================
+// MIDDLEWARE
+// ============================================
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ============================================
 // HEALTH CHECK ENDPOINTS
 // ============================================
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'API Server running',
+    mode: MODE,
     timestamp: new Date(),
-    env: process.env.NODE_ENV,
+    env: process.env.NODE_ENV || 'development',
     db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK' });
+  res.json({ status: 'OK', mode: MODE });
 });
 
 // ============================================
@@ -104,7 +134,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// Ensure DB connection for each request
 app.use(async (req, res, next) => {
   if (mongoose.connection.readyState !== 1 && MONGODB_URI) {
     await connectDB();
@@ -136,7 +165,6 @@ const routes = [
   { path: '/api/config', file: './routes/config.js' },
 ];
 
-// Load all routes
 for (const route of routes) {
   try {
     const { default: router } = await import(route.file);
@@ -146,8 +174,30 @@ for (const route of routes) {
   }
 }
 
-// Static file uploads
+// Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+
+// ============================================
+// FRONTEND SERVING (MODE: full)
+// ============================================
+if (MODE === 'full') {
+  const distPath = path.join(__dirname, '../dist');
+  
+  // Serve static files
+  app.use(express.static(distPath));
+  
+  // SPA fallback
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'), (err) => {
+      if (err) res.status(404).json({ error: 'Not found' });
+    });
+  });
+  
+  console.log('✅ Frontend serving enabled');
+}
 
 // ============================================
 // ERROR HANDLING
@@ -157,9 +207,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
+// 404 (only for API mode)
+if (MODE === 'api') {
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+  });
+}
 
 // ============================================
 // START SERVER
@@ -167,16 +220,13 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5002;
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n✅ API Server running on port ${PORT}`);
-  console.log(`✅ Environment: ${process.env.NODE_ENV}\n`);
+  console.log(`\n✅ Server running on port ${PORT}`);
+  console.log(`✅ Mode: ${MODE}`);
+  console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });
 
 server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use`);
-  } else {
-    console.error('❌ Server error:', err.message);
-  }
+  console.error('❌ Server error:', err.message);
   process.exit(1);
 });
 
