@@ -30,6 +30,7 @@ const __dirname = path.dirname(__filename);
 
 // Load environment
 dotenv.config({ path: path.join(__dirname, '../.env.server') });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const MODE = process.env.MODE || 'api';
 const IS_DEV = process.env.NODE_ENV !== 'production';
@@ -175,13 +176,13 @@ for (const route of routes) {
 }
 
 // Static uploads
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../web/public/uploads')));
 
 // ============================================
 // FRONTEND SERVING (MODE: full)
 // ============================================
 if (MODE === 'full') {
-  const distPath = path.join(__dirname, '../dist');
+  const distPath = path.join(__dirname, '../web/dist');
   
   // Serve static files
   app.use(express.static(distPath));
