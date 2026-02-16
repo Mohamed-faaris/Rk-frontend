@@ -29,3 +29,4 @@ env.prod
 .envd
 .envd.production
 .env.production
+.vercel
