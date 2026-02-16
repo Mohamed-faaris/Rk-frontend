@@ -1,10 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm install && pnpm build",
+  "buildCommand": "pnpm install && pnpm --filter web build",
   "outputDirectory": "web/dist",
-  "framework": "vite",
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/((?!assets/).*)", "destination": "/index.html" }
-  ]
+  "framework": "vite"
 }
