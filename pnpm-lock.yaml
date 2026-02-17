@@ -9,6 +9,10 @@ importers:
   .: {}
 
   api:
+    dependencies:
+      mongoose:
+        specifier: ^8.0.0
+        version: 8.23.0
     devDependencies:
       '@vercel/node':
         specifier: ^5.1.0
