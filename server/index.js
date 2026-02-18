@@ -143,37 +143,45 @@ app.use(async (req, res, next) => {
 });
 
 // ============================================
-// API ROUTES
+// API ROUTES (Static imports for Vercel compatibility)
 // ============================================
-const routes = [
-  { path: '/api/auth', file: './routes/auth.js' },
-  { path: '/api/otp', file: './routes/otp.js' },
-  { path: '/api/portfolio', file: './routes/portfolio.js' },
-  { path: '/api/contact', file: './routes/contact.js' },
-  { path: '/api/orders', file: './routes/order.js' },
-  { path: '/api/branding', file: './routes/brandingIdentity.js' },
-  { path: '/api/web-projects', file: './routes/webProject.js' },
-  { path: '/api/3d-animations', file: './routes/animation3D.js' },
-  { path: '/api/uiux-projects', file: './routes/uiuxProject.js' },
-  { path: '/api/employees', file: './routes/employee.js' },
-  { path: '/api/projects', file: './routes/project.js' },
-  { path: '/api/users', file: './routes/user.js' },
-  { path: '/api/revenue', file: './routes/revenue.js' },
-  { path: '/api/upload', file: './routes/upload.js' },
-  { path: '/api/applications', file: './routes/applicationRoutes.js' },
-  { path: '/api/dns', file: './routes/dns.js' },
-  { path: '/api/chat', file: './routes/chatbot.js' },
-  { path: '/api/config', file: './routes/config.js' },
-];
+import authRouter from './routes/auth.js';
+import otpRouter from './routes/otp.js';
+import portfolioRouter from './routes/portfolio.js';
+import contactRouter from './routes/contact.js';
+import orderRouter from './routes/order.js';
+import brandingRouter from './routes/brandingIdentity.js';
+import webProjectRouter from './routes/webProject.js';
+import animation3DRouter from './routes/animation3D.js';
+import uiuxProjectRouter from './routes/uiuxProject.js';
+import employeeRouter from './routes/employee.js';
+import projectRouter from './routes/project.js';
+import userRouter from './routes/user.js';
+import revenueRouter from './routes/revenue.js';
+import uploadRouter from './routes/upload.js';
+import applicationRouter from './routes/applicationRoutes.js';
+import dnsRouter from './routes/dns.js';
+import chatbotRouter from './routes/chatbot.js';
+import configRouter from './routes/config.js';
 
-for (const route of routes) {
-  try {
-    const { default: router } = await import(route.file);
-    app.use(route.path, router);
-  } catch (err) {
-    console.warn(`⚠️  Could not load route ${route.path}:`, err.message);
-  }
-}
+app.use('/api/auth', authRouter);
+app.use('/api/otp', otpRouter);
+app.use('/api/portfolio', portfolioRouter);
+app.use('/api/contact', contactRouter);
+app.use('/api/orders', orderRouter);
+app.use('/api/branding', brandingRouter);
+app.use('/api/web-projects', webProjectRouter);
+app.use('/api/3d-animations', animation3DRouter);
+app.use('/api/uiux-projects', uiuxProjectRouter);
+app.use('/api/employees', employeeRouter);
+app.use('/api/projects', projectRouter);
+app.use('/api/users', userRouter);
+app.use('/api/revenue', revenueRouter);
+app.use('/api/upload', uploadRouter);
+app.use('/api/applications', applicationRouter);
+app.use('/api/dns', dnsRouter);
+app.use('/api/chat', chatbotRouter);
+app.use('/api/config', configRouter);
 
 // Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../web/public/uploads')));
