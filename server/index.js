@@ -216,28 +216,33 @@ if (MODE === 'api') {
 }
 
 // ============================================
-// START SERVER
+// START SERVER (only if not running as Vercel serverless)
 // ============================================
 const PORT = process.env.PORT || 5002;
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n✅ Server running on port ${PORT}`);
-  console.log(`✅ Mode: ${MODE}`);
-  console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+// Check if we're running directly (not as a Vercel function)
+const isDirectExecution = import.meta.url === `file://${process.argv[1]}`;
 
-server.on('error', (err) => {
-  console.error('❌ Server error:', err.message);
-  process.exit(1);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('📌 Shutting down...');
-  server.close(() => {
-    mongoose.disconnect();
-    process.exit(0);
+if (isDirectExecution) {
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n✅ Server running on port ${PORT}`);
+    console.log(`✅ Mode: ${MODE}`);
+    console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}\n`);
   });
-});
+
+  server.on('error', (err) => {
+    console.error('❌ Server error:', err.message);
+    process.exit(1);
+  });
+
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('📌 Shutting down...');
+    server.close(() => {
+      mongoose.disconnect();
+      process.exit(0);
+    });
+  });
+}
 
 export default app;

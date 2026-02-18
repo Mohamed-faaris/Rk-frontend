@@ -2,11 +2,5 @@
   "name": "api",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "mongoose": "^8.0.0"
-  },
-  "devDependencies": {
-    "@vercel/node": "^5.1.0",
-    "typescript": "^5.3.0"
-  }
+  "type": "module"
 }
