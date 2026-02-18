@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "pnpm run --parallel dev",
-    "build": "pnpm -r build",
+    "validate-env": "node scripts/validate-env.js",
+    "build": "pnpm run validate-env && pnpm -r build",
     "dev:web": "pnpm --filter web dev",
     "dev:api": "pnpm --filter api dev",
     "start": "pnpm --filter api start"

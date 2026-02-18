@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm install && pnpm --filter web build",
+  "buildCommand": "pnpm install && pnpm run validate-env && pnpm --filter web build",
   "outputDirectory": "web/dist",
   "framework": "vite",
   "routes": [
