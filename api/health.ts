@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   
   try {
     const mongoose = await connectDB();
-    dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    dbStatus = mongoose.connection?.readyState === 1 ? 'connected' : 'disconnected';
   } catch (err: any) {
     dbStatus = 'error';
     dbError = err.message;
