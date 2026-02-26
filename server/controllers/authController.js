@@ -123,77 +123,13 @@ export const login = async (req, res, next) => {
       NODE_ENV: process.env.NODE_ENV 
     });
     
-    // If admin and OTP not skipped, require OTP verification
-    if (user.role === 'admin' && !skipOTP) {
-      console.log('Admin login detected, generating OTP for:', user.email);
-      
-      // Generate cryptographically secure 6-digit OTP
-      const otp = generateSecureOTP();
-      
-      // Delete any existing OTPs for this email
-      await OTP.deleteMany({ email: user.email });
-      
-      // Save OTP to database (will expire in 5 minutes via TTL)
-      await OTP.create({
-        email: user.email,
-        otp: otp,
-        attempts: 0,
-        verified: false
-      });
-      
-      // Send OTP via email to admin
-      let emailSent = false;
-      let previewUrl = null;
-      
-      try {
-        const emailResult = await sendOTPEmail(user.email, otp, 'login');
-        console.log('✅ OTP email sent successfully to:', user.email);
-        emailSent = true;
-        previewUrl = emailResult.previewUrl;
-        
-        // Display OTP in terminal for development
-        if (process.env.NODE_ENV === 'development') {
-          console.log('\n╔═══════════════════════════════════════════╗');
-          console.log('║       🔐 ADMIN LOGIN OTP (DEV MODE)      ║');
-          console.log('╠═══════════════════════════════════════════╣');
-          console.log(`║  Email: ${user.email.padEnd(31)}║`);
-          console.log(`║  OTP: ${otp}                             ║`);
-          console.log(`║  Valid for: 5 minutes                     ║`);
-          console.log('╚═══════════════════════════════════════════╝\n');
-        }
-      } catch (emailError) {
-        console.error('❌ Failed to send OTP email:', emailError);
-        console.log('⚠️  OTP email failed - Check Gmail App Password in .env');
-        
-        // In development, still allow login with console OTP
-        if (process.env.NODE_ENV === 'development') {
-          console.log('\n╔═══════════════════════════════════════════╗');
-          console.log('║       ⚠️  EMAIL FAILED - OTP BELOW        ║');
-          console.log('╠═══════════════════════════════════════════╣');
-          console.log(`║  Email: ${user.email.padEnd(31)}║`);
-          console.log(`║  OTP: ${otp}                             ║`);
-          console.log(`║  Valid for: 5 minutes                     ║`);
-          console.log('╚═══════════════════════════════════════════╝\n');
-        }
-      }
-      
-      // Return success - frontend will show OTP input modal
-      return res.status(200).json({
-        success: true,
-        requiresOTP: true,
-        message: emailSent 
-          ? `OTP has been sent to ${user.email}` 
-          : 'OTP generated. Check server console for the code.',
-        email: user.email,
-        ...(previewUrl && { previewUrl }) // For testing with Ethereal
-      });
-    }
-    
-    // OTP is skipped (development mode) or user is not admin
-    if (skipOTP && user.role === 'admin') {
-      console.log('⚠️  OTP verification SKIPPED for admin (SKIP_OTP=true)');
-    }
 
+    // OTP Verification removed for admin as per request
+    // if (user.role === 'admin' && !skipOTP) {
+    //   console.log('Admin login detected, generating OTP for:', user.email);
+    //   ...
+    // }
+    
     // Generate token and proceed with normal login
     const token = generateToken(user._id, user.role);
 
