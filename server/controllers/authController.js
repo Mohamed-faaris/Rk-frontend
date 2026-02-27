@@ -114,7 +114,7 @@ export const login = async (req, res, next) => {
     }
 
     // Check if user is admin - if yes, check if OTP should be skipped
-    const skipOTP = process.env.SKIP_OTP === 'true' || process.env.NODE_ENV === 'development';
+    const skipOTP = process.env.SKIP_OTP === 'true'; // Allow skipping via ENV
     
     console.log('OTP Check:', { 
       isAdmin: user.role === 'admin', 
@@ -124,11 +124,81 @@ export const login = async (req, res, next) => {
     });
     
 
-    // OTP Verification removed for admin as per request
-    // if (user.role === 'admin' && !skipOTP) {
-    //   console.log('Admin login detected, generating OTP for:', user.email);
-    //   ...
-    // }
+    // OTP Verification for admin
+    if (user.role === 'admin' && !skipOTP) {
+        const { otp } = req.body;
+
+        // If OTP is provided, verify it
+        if (otp) {
+            console.log('Verifying OTP for admin:', user.email);
+            
+            // Find most recent OTP for this email
+            const recentOTP = await OTP.findOne({ email: user.email })
+                .sort({ createdAt: -1 });
+
+            if (!recentOTP) {
+                return res.status(400).json({ error: 'OTP expired or not found. Please request a new one.' });
+            }
+
+            if (recentOTP.verified) {
+                 return res.status(400).json({ error: 'OTP already used' });
+            }
+
+            if (recentOTP.otp !== otp) {
+                // Increment attempts
+            recentOTP.attempts += 1;
+            await recentOTP.save();
+            
+            if (recentOTP.attempts >= 3) {
+                await OTP.deleteOne({ _id: recentOTP._id });
+                return res.status(400).json({ error: 'Too many failed attempts. Please request a new OTP.' });
+            }
+            
+            return res.status(400).json({ error: 'Invalid OTP' });
+        }
+        
+        // Check expiry
+        const expiryTime = new Date(recentOTP.createdAt.getTime() + 5 * 60000); // 5 minutes
+        if (Date.now() > expiryTime) {
+            return res.status(400).json({ error: 'OTP expired. Please request a new one.' });
+        }
+
+        // Mark OTP as verified by deleting it
+        await OTP.deleteOne({ _id: recentOTP._id });
+        console.log('OTP verified successfully');
+        
+        // Allow execution to continue to token generation
+    } else {
+        // No OTP provided, generate and send one
+            console.log('Admin login detected, generating OTP for:', user.email);
+            
+            const generatedOTP = generateSecureOTP();
+            
+            // Delete any existing OTPs for cleanliness
+            await OTP.deleteMany({ email: user.email });
+
+            await OTP.create({
+                email: user.email,
+                otp: generatedOTP,
+                purpose: 'login'
+            });
+
+            // Send email
+            try {
+                const emailResult = await sendOTPEmail(user.email, generatedOTP, 'login');
+                return res.status(200).json({
+                    success: true,
+                    requiresOTP: true,
+                    email: user.email,
+                    message: 'OTP sent to your email',
+                    ...(emailResult && emailResult.previewUrl && { previewUrl: emailResult.previewUrl })
+                });
+            } catch (emailError) {
+                console.error('Failed to send OTP email:', emailError);
+                return res.status(500).json({ error: 'Failed to send verification email' });
+            }
+        }
+    }
     
     // Generate token and proceed with normal login
     const token = generateToken(user._id, user.role);
@@ -282,6 +352,11 @@ export const verifyOTP = async (req, res, next) => {
         error: 'Invalid OTP',
         attemptsLeft: 5 - otpRecord.attempts 
       });
+    }
+    
+    // Check purpose - only allow login if purpose matches or is undefined (legacy)
+    if (otpRecord.purpose && otpRecord.purpose !== 'login' && otpRecord.purpose !== 'verification') {
+       return res.status(401).json({ error: 'Invalid OTP type' });
     }
 
     // Mark OTP as verified

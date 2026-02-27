@@ -6,12 +6,23 @@ const createTransporter = async () => {
   // For production, use a proper email service like SendGrid, AWS SES, etc.
   
   if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_PASSWORD && process.env.EMAIL_PASSWORD !== 'your-app-password-here') {
-    console.log('📧 Using Gmail for sending OTP emails');
+    console.log('📧 Using Gmail SMTP for sending OTP emails');
+    console.log('   Host: smtp.gmail.com');
+    console.log('   Port: 587');
+    console.log('   User:', process.env.EMAIL_USER);
+
+    // Using explicit SMTP configuration as per Java reference
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD // Use App Password for Gmail
+      },
+      tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
       }
     });
   }
@@ -49,7 +60,8 @@ export const sendOTPEmail = async (email, otp, purpose = 'verification') => {
     const subject = subjects[purpose] || subjects['verification'];
     
     const mailOptions = {
-      from: process.env.EMAIL_FROM || '"RajKayal Creative Hub" <noreply@rajkayal.com>',
+      // Use authenticated email as sender for better deliverability with Gmail
+      from: process.env.EMAIL_FROM || `"${process.env.EMAIL_NAME || 'RajKayal Creative Hub'}" <${process.env.EMAIL_USER || 'noreply@rajkayal.com'}>`,
       to: email,
       subject,
       html: `
