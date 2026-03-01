@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = React.useCallback(async (email: string, password: string) => {
     try {
       const response = await authService.login({ email, password });
       
@@ -61,9 +61,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const googleLogin = async (idToken: string) => {
+  const googleLogin = React.useCallback(async (idToken: string) => {
     try {
       const response = await authService.googleLogin(idToken);
       if (response.user) {
@@ -72,9 +72,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const appleLogin = async (idToken: string, fullName?: string) => {
+  const appleLogin = React.useCallback(async (idToken: string, fullName?: string) => {
     try {
       const response = await authService.appleLogin(idToken, fullName);
       if (response.user) {
@@ -83,9 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const facebookLogin = async (accessToken: string) => {
+  const facebookLogin = React.useCallback(async (accessToken: string) => {
     try {
       const response = await authService.facebookLogin(accessToken);
       if (response.user) {
@@ -94,41 +94,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const register = async (name: string, email: string, phone: string, password: string, confirmPassword: string) => {
+  const register = React.useCallback(async (name: string, email: string, phone: string, password: string, confirmPassword: string) => {
     try {
       const response = await authService.register({ name, email, phone, password, confirmPassword });
       setUser(response.user);
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = React.useCallback(() => {
     authService.logout();
     setUser(null);
-  };
+  }, []);
 
-  const setAuthUser = (user: User) => {
+  const setAuthUser = React.useCallback((user: User) => {
     setUser(user);
-  };
+  }, []);
+
+  const value = React.useMemo(() => ({
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+    login,
+    googleLogin,
+    appleLogin,
+    facebookLogin,
+    register,
+    logout,
+    setAuthUser
+  }), [user, isLoading, login, googleLogin, appleLogin, facebookLogin, register, logout, setAuthUser]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        isAuthenticated: !!user,
-        login,
-        googleLogin,
-        appleLogin,
-        facebookLogin,
-        register,
-        logout,
-        setAuthUser
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
