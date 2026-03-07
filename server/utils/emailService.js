@@ -6,7 +6,7 @@ const createTransporter = async () => {
   if (process.env.EMAIL_SERVICE === 'gmail' && 
       process.env.EMAIL_USER && 
       process.env.EMAIL_PASSWORD && 
-      process.env.EMAIL_PASSWORD !== 'your-app-password-here') {
+      process.env.EMAIL_PASSWORD !== 'xgkmtezivaertolf') {
     
     console.log('📧 Using Gmail SMTP for sending OTP emails');
     console.log('   Email:', process.env.EMAIL_USER);
@@ -37,8 +37,8 @@ const createTransporter = async () => {
   console.log('⚠️ Gmail SMTP not configured - Using Ethereal (test email)');
   console.log('💡 To use real Gmail SMTP:');
   console.log('   1. Set EMAIL_SERVICE=gmail in .env');
-  console.log('   2. Set EMAIL_USER=your-email@gmail.com');
-  console.log('   3. Set EMAIL_PASSWORD=your-app-password (NO SPACES)');
+  console.log('   2. Set EMAIL_USER=rajkayal7281@gmail.com');
+  console.log('   3. Set EMAIL_PASSWORD=xgkmtezivaertolf');
   console.log('   4. Enable 2FA and generate App Password at: https://myaccount.google.com/apppasswords');
   
   const testAccount = await nodemailer.createTestAccount();
