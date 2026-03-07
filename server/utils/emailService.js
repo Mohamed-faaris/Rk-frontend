@@ -6,10 +6,11 @@ const createTransporter = async () => {
   if (process.env.EMAIL_SERVICE === 'gmail' && 
       process.env.EMAIL_USER && 
       process.env.EMAIL_PASSWORD && 
-      process.env.EMAIL_PASSWORD !== 'xgkmtezivaertolf') {
+      process.env.EMAIL_PASSWORD !== 'your-app-password-here') {
     
     console.log('📧 Using Gmail SMTP for sending OTP emails');
     console.log('   Email:', process.env.EMAIL_USER);
+    console.log('   Environment:', process.env.VERCEL ? 'Vercel' : 'Local');
     
     // Configure SMTP transport (similar to Java SMTP configuration)
     return nodemailer.createTransport({
@@ -36,10 +37,10 @@ const createTransporter = async () => {
   // Fallback to ethereal for testing (creates fake test account automatically)
   console.log('⚠️ Gmail SMTP not configured - Using Ethereal (test email)');
   console.log('💡 To use real Gmail SMTP:');
-  console.log('   1. Set EMAIL_SERVICE=gmail in .env');
-  console.log('   2. Set EMAIL_USER=rajkayal7281@gmail.com');
-  console.log('   3. Set EMAIL_PASSWORD=xgkmtezivaertolf');
-  console.log('   4. Enable 2FA and generate App Password at: https://myaccount.google.com/apppasswords');
+  console.log('   1. Set EMAIL_SERVICE=gmail');
+  console.log('   2. Set EMAIL_USER=your-email@gmail.com');
+  console.log('   3. Set EMAIL_PASSWORD=your-16-char-app-password');
+  console.log('   4. For Vercel: Add these in Dashboard → Settings → Environment Variables');
   
   const testAccount = await nodemailer.createTestAccount();
   
