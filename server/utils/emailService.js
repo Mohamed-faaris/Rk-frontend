@@ -34,8 +34,18 @@ const createTransporter = async () => {
     });
   }
   
-  // Fallback to ethereal for testing (creates fake test account automatically)
-  console.log('⚠️ Gmail SMTP not configured - Using Ethereal (test email)');
+  // In production/Vercel, don't allow fallback to Ethereal
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+  
+  if (isProduction) {
+    console.error('❌ CRITICAL: Gmail SMTP NOT configured in production!');
+    console.error('   Environment variables missing. Email service disabled.');
+    console.error('   Add EMAIL_SERVICE, EMAIL_USER, EMAIL_PASSWORD in Vercel Dashboard');
+    throw new Error('Email service not configured. Please contact administrator.');
+  }
+  
+  // Fallback to ethereal for LOCAL testing only
+  console.log('⚠️ Gmail SMTP not configured - Using Ethereal (test email - LOCAL DEV ONLY)');
   console.log('💡 To use real Gmail SMTP:');
   console.log('   1. Set EMAIL_SERVICE=gmail');
   console.log('   2. Set EMAIL_USER=your-email@gmail.com');

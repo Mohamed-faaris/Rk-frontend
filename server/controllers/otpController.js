@@ -99,6 +99,15 @@ export const sendOTP = async (req, res) => {
       // Delete the OTP if email fails
       await OTP.deleteMany({ email: sanitizedEmail });
       
+      // Check if it's a configuration error
+      if (emailError.message.includes('not configured')) {
+        return res.status(503).json({
+          success: false,
+          error: 'Email service is not properly configured. Please try again later or contact support.',
+          details: process.env.NODE_ENV === 'development' ? emailError.message : undefined
+        });
+      }
+      
       return res.status(500).json({
         success: false,
         error: 'Failed to send OTP. Please try again later.'
