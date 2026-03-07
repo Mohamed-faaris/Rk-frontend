@@ -24,6 +24,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
+import { verifyEmailConnection } from './utils/emailService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -232,10 +233,14 @@ const PORT = process.env.PORT || 5002;
 const isDirectExecution = import.meta.url === `file://${process.argv[1]}`;
 
 if (isDirectExecution) {
-  const server = app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', async () => {
     console.log(`\n✅ Server running on port ${PORT}`);
     console.log(`✅ Mode: ${MODE}`);
     console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}\n`);
+    
+    // Verify SMTP connection
+    console.log('🔍 Verifying SMTP email connection...');
+    await verifyEmailConnection();
   });
 
   server.on('error', (err) => {

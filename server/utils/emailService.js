@@ -1,24 +1,45 @@
 import nodemailer from 'nodemailer';
 
-// Create transporter
+// Create transporter with SMTP configuration
 const createTransporter = async () => {
-  // For development/testing, you can use Gmail
-  // For production, use a proper email service like SendGrid, AWS SES, etc.
-  
-  if (process.env.EMAIL_SERVICE === 'gmail' && process.env.EMAIL_PASSWORD && process.env.EMAIL_PASSWORD !== 'your-app-password-here') {
-    console.log('📧 Using Gmail for sending OTP emails');
+  // Check if Gmail SMTP is properly configured
+  if (process.env.EMAIL_SERVICE === 'gmail' && 
+      process.env.EMAIL_USER && 
+      process.env.EMAIL_PASSWORD && 
+      process.env.EMAIL_PASSWORD !== 'xgkm tezi vaer tolf') {
+    
+    console.log('📧 Using Gmail SMTP for sending OTP emails');
+    console.log('   Email:', process.env.EMAIL_USER);
+    
+    // Configure SMTP transport (similar to Java SMTP configuration)
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587, // TLS port
+      secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD // Use App Password for Gmail
-      }
+      },
+      tls: {
+        // Do not fail on invalid certificates
+        rejectUnauthorized: false
+      },
+      // Additional settings for reliability
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      rateDelta: 1000,
+      rateLimit: 5
     });
   }
   
   // Fallback to ethereal for testing (creates fake test account automatically)
-  console.log('⚠️ Gmail not configured - Using Ethereal (test email)');
-  console.log('💡 To use real Gmail: Set EMAIL_PASSWORD in .env with your App Password');
+  console.log('⚠️ Gmail SMTP not configured - Using Ethereal (test email)');
+  console.log('💡 To use real Gmail SMTP:');
+  console.log('   1. Set EMAIL_SERVICE=gmail in .env');
+  console.log('   2. Set EMAIL_USER=rajkayal7281@gmail.com');
+  console.log('   3. Set EMAIL_PASSWORD=xgkm tezi vaer tolf (not regular password)');
+  console.log('   4. Enable 2FA and generate App Password at: https://myaccount.google.com/apppasswords');
   
   const testAccount = await nodemailer.createTestAccount();
   
@@ -33,10 +54,34 @@ const createTransporter = async () => {
   });
 };
 
+// Verify SMTP connection
+export const verifyEmailConnection = async () => {
+  try {
+    const transporter = await createTransporter();
+    const verification = await transporter.verify();
+    
+    if (verification) {
+      console.log('✅ SMTP Server is ready to send emails');
+      return { success: true, message: 'SMTP connection verified' };
+    }
+  } catch (error) {
+    console.error('❌ SMTP Connection Error:', error.message);
+    return { success: false, error: error.message };
+  }
+};
+
 // Send OTP email
 export const sendOTPEmail = async (email, otp, purpose = 'verification') => {
   try {
     const transporter = await createTransporter();
+    
+    // Verify connection before sending
+    try {
+      await transporter.verify();
+    } catch (verifyError) {
+      console.error('SMTP verification failed:', verifyError.message);
+      throw new Error('Email service is not available. Please try again later.');
+    }
     
     // Determine subject based on purpose
     const subjects = {
@@ -156,11 +201,12 @@ export const sendOTPEmail = async (email, otp, purpose = 'verification') => {
     
     const info = await transporter.sendMail(mailOptions);
     
-    console.log('\n✉️  OTP Email sent successfully!');
+    console.log('\n✉️  OTP Email sent successfully via SMTP!');
     console.log('   Message ID:', info.messageId);
     console.log('   Recipient:', email);
+    console.log('   Response:', info.response);
     if (nodemailer.getTestMessageUrl(info)) {
-      console.log('   Preview URL:', nodemailer.getTestMessageUrl(info));
+      console.log('   📧 Preview URL:', nodemailer.getTestMessageUrl(info));
     }
     console.log('');
     
@@ -170,8 +216,18 @@ export const sendOTPEmail = async (email, otp, purpose = 'verification') => {
       previewUrl: nodemailer.getTestMessageUrl(info)
     };
   } catch (error) {
-    console.error('Error sending OTP email:', error);
-    throw new Error('Failed to send OTP email');
+    console.error('❌ Error sending OTP email:', error);
+    
+    // Provide specific error messages
+    if (error.code === 'EAUTH') {
+      throw new Error('Email authentication failed. Please check your email credentials.');
+    } else if (error.code === 'ECONNECTION') {
+      throw new Error('Could not connect to email server. Please check your internet connection.');
+    } else if (error.code === 'ETIMEDOUT') {
+      throw new Error('Email server connection timed out. Please try again.');
+    } else {
+      throw new Error(`Failed to send OTP email: ${error.message}`);
+    }
   }
 };
 
@@ -200,4 +256,4 @@ export const sendWelcomeEmail = async (email, name) => {
   }
 };
 
-export default { sendOTPEmail, sendWelcomeEmail };
+export default { sendOTPEmail, sendWelcomeEmail, verifyEmailConnection };
