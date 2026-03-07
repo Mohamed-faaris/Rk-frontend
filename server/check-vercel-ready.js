@@ -117,8 +117,12 @@ console.log('   → Add these variables:\n');
 
 console.log('   EMAIL_SERVICE = gmail');
 console.log('   EMAIL_USER = rajkayal7281@gmail.com');
-console.log('   EMAIL_PASSWORD = xgkmtezivaertolf');
-console.log('   EMAIL_FROM = "RajKayal Creative Hub <noreply@rkch.tech>"\n');
+console.log('   EMAIL_PASSWORD = xgkmtezivaertolf  (no spaces!)');
+console.log('   EMAIL_FROM = "RajKayal Creative Hub <noreply@rkch.tech>"');
+console.log('');
+console.log('   ⚠️  Note: Remove spaces from App Password!');
+console.log('   Google shows: xgkm tezi vaer tolf');
+console.log('   You enter:    xgkmtezivaertolf\n');
 
 console.log('2. Make sure to select ALL environments:');
 console.log('   ☑ Production');
