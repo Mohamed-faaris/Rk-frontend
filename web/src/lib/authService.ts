@@ -65,6 +65,55 @@ export const authService = {
       logger.error('Login error:', error);
       throw error;
     }
+  },
+
+  googleLogin: async (idToken: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/google', { idToken });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      logger.error('Google login error:', error);
+      throw error;
+    }
+  },
+
+  appleLogin: async (idToken: string, fullName?: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/apple', { idToken, fullName });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      logger.error('Apple login error:', error);
+      throw error;
+    }
+  },
+
+  facebookLogin: async (accessToken: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/facebook', { accessToken });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error: unknown) {
+      logger.error('Facebook login error:', error);
+      throw error;
+    }
+  },
 
   verifyOTP: async (data: OTPVerifyRequest): Promise<AuthResponse> => {
     try {

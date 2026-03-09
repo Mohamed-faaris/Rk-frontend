@@ -171,7 +171,7 @@ const BrandingDetailPage = () => {
     try {
       // Upload file first
       const uploadResult = await uploadFile(selectedFile);
-      logger.log('Upload result:', uploadResult);
+      logger.debug('Upload result:', uploadResult);
       
       // Get the URL from the upload response
       const uploadedUrl = uploadResult.data.url;
@@ -190,7 +190,7 @@ const BrandingDetailPage = () => {
         fileFormat
       };
       
-      logger.log('Sending media data:', mediaData);
+      logger.debug('Sending media data:', mediaData);
 
       // Add to database
       const updatedItem = await addAdditionalMedia(id, mediaData);
@@ -293,7 +293,7 @@ const BrandingDetailPage = () => {
                         if (video.duration <= 10) {
                           video.muted = true;
                           video.loop = true;
-                          video.play().catch(err => logger.log('Autoplay prevented:', err));
+                          video.play().catch(err => logger.debug('Autoplay prevented:', err));
                         }
                       }}
                     >

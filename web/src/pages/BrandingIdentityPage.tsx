@@ -430,7 +430,7 @@ const BrandingIdentityPage = () => {
                             if (video.duration <= 10) {
                               video.muted = true;
                               video.loop = true;
-                              video.play().catch(err => logger.log('Autoplay prevented:', err));
+                              video.play().catch(err => logger.debug('Autoplay prevented:', err));
                             }
                           }}
                         />

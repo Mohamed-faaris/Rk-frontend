@@ -352,7 +352,7 @@ Are you looking for our services, or interested in joining our team?`,
     try {
       // Get smart response with intent detection
       const { response, link, linkText } = detectServiceAndResponse(messageText);
-      logger.log('Detected response:', { response, link, linkText });
+      logger.debug('Detected response:', { response, link, linkText });
       
       // Check if this is a bye message to auto-close chat
       const isByeMessage = /\b(bye|goodbye|see you|farewell|take care|see ya|later|cya|adios|ciao)\b/.test(messageText.toLowerCase());
@@ -396,7 +396,7 @@ Are you looking for our services, or interested in joining our team?`,
               suggestedLinkText: apiResponse.suggestedLinkText || linkText
             };
           }
-          logger.log('API Bot Message:', botMsg);
+          logger.debug('API Bot Message:', botMsg);
         } catch (apiError) {
           // Fallback to client-side response if API fails
           logger.warn('API error, using fallback response:', apiError);
@@ -430,7 +430,7 @@ Are you looking for our services, or interested in joining our team?`,
   }, [handleSendMessage]);
 
   const handleLinkClick = useCallback((link: string) => {
-    logger.log('Navigating to:', link);
+    logger.debug('Navigating to:', link);
     navigate(link);
     setIsOpen(false);
   }, [navigate]);

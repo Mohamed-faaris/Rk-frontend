@@ -98,9 +98,12 @@ export default function ContactPage() {
       });
     } catch (error: unknown) {
       logger.error('Contact form error:', error);
+      const errorMessage = error && typeof error === 'object' && 'response' in error
+        ? (error.response as { data?: { message?: string } })?.data?.message
+        : 'Failed to send message. Please try again.';
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to send message. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
