@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = React.useCallback(async (email: string, password: string) => {
     try {
       const response = await authService.login({ email, password });
       
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
   const googleLogin = async (idToken: string) => {
     try {
@@ -96,19 +96,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (name: string, email: string, phone: string, password: string, confirmPassword: string) => {
+  const register = React.useCallback(async (name: string, email: string, phone: string, password: string, confirmPassword: string) => {
     try {
       const response = await authService.register({ name, email, phone, password, confirmPassword });
       setUser(response.user);
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = React.useCallback(() => {
     authService.logout();
     setUser(null);
-  };
+  }, []);
 
   const setAuthUser = (user: User) => {
     setUser(user);
