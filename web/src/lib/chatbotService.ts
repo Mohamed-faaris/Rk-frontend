@@ -1,15 +1,6 @@
-const getApiBaseUrl = () => {
-  const envApiUrl = import.meta.env.VITE_API_URL;
-  
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      return `http://${hostname}:5002/api`;
-    }
-  }
-  
-  return envApiUrl || 'https://rk-backend.vercel.app';
-};
+import { env } from './env';
+
+const getApiBaseUrl = () => env.VITE_API_URL;
 
 const API_BASE_URL = getApiBaseUrl();
 

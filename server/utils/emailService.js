@@ -1,31 +1,27 @@
 import nodemailer from 'nodemailer';
+import { env } from '../env.js';
 
-// Create transporter with SMTP configuration
 const createTransporter = async () => {
-  // Check if Gmail SMTP is properly configured
-  if (process.env.EMAIL_SERVICE === 'gmail' && 
-      process.env.EMAIL_USER && 
-      process.env.EMAIL_PASSWORD && 
-      process.env.EMAIL_PASSWORD !== 'your-app-password-here') {
+  if (env.EMAIL_SERVICE === 'gmail' && 
+      env.EMAIL_USER && 
+      env.EMAIL_PASSWORD && 
+      env.EMAIL_PASSWORD !== 'your-app-password-here') {
     
     console.log('📧 Using Gmail SMTP for sending OTP emails');
-    console.log('   Email:', process.env.EMAIL_USER);
+    console.log('   Email:', env.EMAIL_USER);
     console.log('   Environment:', process.env.VERCEL ? 'Vercel' : 'Local');
     
-    // Configure SMTP transport (similar to Java SMTP configuration)
     return nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587, // TLS port
-      secure: false, // true for 465, false for other ports
+      port: 587,
+      secure: false,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD // Use App Password for Gmail
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASSWORD
       },
       tls: {
-        // Do not fail on invalid certificates
         rejectUnauthorized: false
       },
-      // Additional settings for reliability
       pool: true,
       maxConnections: 5,
       maxMessages: 100,

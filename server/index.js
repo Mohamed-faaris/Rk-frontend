@@ -20,21 +20,17 @@
 
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import { verifyEmailConnection } from './utils/emailService.js';
+import { env } from './env.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment
-dotenv.config({ path: path.join(__dirname, '../.env.server') });
-dotenv.config({ path: path.join(__dirname, '../.env') });
-
-const MODE = process.env.MODE || 'api';
-const IS_DEV = process.env.NODE_ENV !== 'production';
+const MODE = env.MODE;
+const IS_DEV = env.NODE_ENV !== 'production';
 
 console.log(`\n🚀 Starting server in ${MODE} mode (${IS_DEV ? 'development' : 'production'})\n`);
 
@@ -46,7 +42,6 @@ const app = express();
 const getClientUrls = () => {
   const urls = [];
   
-  // Always allow localhost in development
   if (IS_DEV) {
     urls.push(
       'http://localhost:5173',
@@ -55,10 +50,7 @@ const getClientUrls = () => {
     );
   }
   
-  // Parse CLIENT_URLS from environment
-  if (process.env.CLIENT_URLS) {
-    urls.push(...process.env.CLIENT_URLS.split(',').map(u => u.trim()));
-  }
+  urls.push(...env.CLIENT_URLS.split(',').map(u => u.trim()));
   
   return urls.filter(Boolean);
 };
@@ -101,7 +93,7 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     mode: MODE,
     timestamp: new Date(),
-    env: process.env.NODE_ENV || 'development',
+    env: env.NODE_ENV,
     db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
@@ -113,7 +105,7 @@ app.get('/health', (req, res) => {
 // ============================================
 // DATABASE CONNECTION
 // ============================================
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = env.MONGODB_URI;
 
 const connectDB = async () => {
   if (mongoose.connection.readyState === 1) return;
@@ -227,7 +219,7 @@ if (MODE === 'api') {
 // ============================================
 // START SERVER (only if not running as Vercel serverless)
 // ============================================
-const PORT = process.env.PORT || 5002;
+const PORT = env.PORT;
 
 // Check if we're running directly (not as a Vercel function)
 const isDirectExecution = import.meta.url === `file://${process.argv[1]}`;
@@ -236,7 +228,7 @@ if (isDirectExecution) {
   const server = app.listen(PORT, '0.0.0.0', async () => {
     console.log(`\n✅ Server running on port ${PORT}`);
     console.log(`✅ Mode: ${MODE}`);
-    console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}\n`);
+    console.log(`✅ Environment: ${env.NODE_ENV}\n`);
     
     // Verify SMTP connection
     console.log('🔍 Verifying SMTP email connection...');
