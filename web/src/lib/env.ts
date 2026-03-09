@@ -12,4 +12,6 @@ if (!parsed.success) {
   throw new Error('Invalid environment variables');
 }
 
+console.log('API URL:', import.meta.env.VITE_API_URL);
+
 export const env = parsed.data;
