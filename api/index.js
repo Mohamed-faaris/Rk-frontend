@@ -9,17 +9,19 @@ export default async function handler(req, res) {
   
   if (!app && !loadError) {
     try {
-      // Import the Express app (without starting the HTTP server)
+      console.log('[API] Attempting to load Express app...');
       const module = await import('../server/index.js');
+      console.log('[API] Module loaded, getting default export...');
       app = module.default;
       console.log('[API] Express app loaded successfully');
     } catch (err) {
       loadError = err;
       console.error('[API] Failed to load Express app:', err.message);
+      console.error('[API] Stack:', err.stack);
       return res.status(500).json({ 
         error: 'Server configuration error', 
         message: err.message,
-        stack: err.stack 
+        stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined
       });
     }
   }

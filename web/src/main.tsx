@@ -15,7 +15,37 @@ if (!root) {
 }
 
 try {
-  createRoot(root).render(<App />);
+  window.addEventListener('error', (event) => {
+  console.error('Global error:', event.error);
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = `
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #000;
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        text-align: center;
+        padding: 20px;
+      ">
+        <div>
+          <h1>Application Error</h1>
+          <p>Failed to initialize the application.</p>
+          <pre style="font-size: 12px; color: #999; margin-top: 20px; text-align: left; overflow: auto;">${event.error?.message || event.message}</pre>
+        </div>
+      </div>
+    `;
+  }
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled rejection:', event.reason);
+});
+
+createRoot(root).render(<App />);
 } catch (error) {
   console.error("Failed to render React app:", error);
   root.innerHTML = `

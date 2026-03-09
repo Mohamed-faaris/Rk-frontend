@@ -116,9 +116,6 @@ export const login = async (req, res, next) => {
 
     // Check if user is admin - if yes, check if OTP should be skipped
     const skipOTP = env.SKIP_OTP === 'true' || env.NODE_ENV === 'development';
-      SKIP_OTP_env: env.SKIP_OTP,
-      NODE_ENV: env.NODE_ENV
-    });
     
     // If admin and OTP not skipped, require OTP verification
     if (user.role === 'admin' && !skipOTP) {
