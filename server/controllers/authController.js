@@ -7,14 +7,15 @@ import appleSigninAuth from 'apple-signin-auth';
 import nodeFetch from 'node-fetch';
 import { sendOTPEmail } from '../utils/emailService.js';
 import { generateSecureOTP } from '../utils/otpUtils.js';
+import { env } from '../env.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'rajkayal_creative_hub_secret_key_2025';
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d';
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID;
-const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
-const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
-const FACEBOOK_GRAPH_VERSION = process.env.FACEBOOK_GRAPH_VERSION || 'v19.0';
+const JWT_SECRET = env.JWT_SECRET;
+const JWT_EXPIRE = env.JWT_EXPIRE;
+const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
+const APPLE_CLIENT_ID = env.APPLE_CLIENT_ID;
+const FACEBOOK_APP_ID = env.FACEBOOK_APP_ID;
+const FACEBOOK_APP_SECRET = env.FACEBOOK_APP_SECRET;
+const FACEBOOK_GRAPH_VERSION = env.FACEBOOK_GRAPH_VERSION;
 
 const httpFetch = typeof globalThis.fetch === 'function' ? globalThis.fetch.bind(globalThis) : nodeFetch;
 
@@ -114,13 +115,9 @@ export const login = async (req, res, next) => {
     }
 
     // Check if user is admin - if yes, check if OTP should be skipped
-    const skipOTP = process.env.SKIP_OTP === 'true' || process.env.NODE_ENV === 'development';
-    
-    console.log('OTP Check:', { 
-      isAdmin: user.role === 'admin', 
-      skipOTP, 
-      SKIP_OTP_env: process.env.SKIP_OTP,
-      NODE_ENV: process.env.NODE_ENV 
+    const skipOTP = env.SKIP_OTP === 'true' || env.NODE_ENV === 'development';
+      SKIP_OTP_env: env.SKIP_OTP,
+      NODE_ENV: env.NODE_ENV
     });
     
     // If admin and OTP not skipped, require OTP verification
@@ -152,7 +149,7 @@ export const login = async (req, res, next) => {
         previewUrl = emailResult.previewUrl;
         
         // Display OTP in terminal for development
-        if (process.env.NODE_ENV === 'development') {
+        if (env.NODE_ENV === 'development') {
           console.log('\n╔═══════════════════════════════════════════╗');
           console.log('║       🔐 ADMIN LOGIN OTP (DEV MODE)      ║');
           console.log('╠═══════════════════════════════════════════╣');
@@ -166,7 +163,7 @@ export const login = async (req, res, next) => {
         console.log('⚠️  OTP email failed - Check Gmail App Password in .env');
         
         // In development, still allow login with console OTP
-        if (process.env.NODE_ENV === 'development') {
+        if (env.NODE_ENV === 'development') {
           console.log('\n╔═══════════════════════════════════════════╗');
           console.log('║       ⚠️  EMAIL FAILED - OTP BELOW        ║');
           console.log('╠═══════════════════════════════════════════╣');
@@ -422,7 +419,7 @@ export const resendOTP = async (req, res, next) => {
       console.log(`✅ OTP resent successfully to: ${email}`);
       
       // Display OTP in development mode
-      if (process.env.NODE_ENV === 'development') {
+      if (env.NODE_ENV === 'development') {
         console.log('\n╔═══════════════════════════════════════════╗');
         console.log('║         🔄 OTP RESENT (DEV MODE)          ║');
         console.log('╠═══════════════════════════════════════════╣');
@@ -455,7 +452,7 @@ export const googleLogin = async (req, res) => {
     const { idToken } = req.body;
 
     // Development/Test Mode: Allow mock login for testing UI
-    if (idToken === 'mock-google-token' && process.env.NODE_ENV === 'development') {
+    if (idToken === 'mock-google-token' && env.NODE_ENV === 'development') {
       let user = await User.findOne({ email: 'test-google@rkch.dev' });
       if (!user) {
         user = await User.create({
@@ -538,7 +535,7 @@ export const appleLogin = async (req, res) => {
     const { idToken, fullName } = req.body;
 
     // Development/Test Mode: Allow mock login for testing UI
-    if (idToken === 'mock-apple-token' && process.env.NODE_ENV === 'development') {
+    if (idToken === 'mock-apple-token' && env.NODE_ENV === 'development') {
       let user = await User.findOne({ email: 'test-apple@rkch.dev' });
       if (!user) {
         user = await User.create({
@@ -624,7 +621,7 @@ export const facebookLogin = async (req, res) => {
     const { accessToken } = req.body;
 
     // Development/Test Mode: Allow mock login for testing UI
-    if (accessToken === 'mock-facebook-token' && process.env.NODE_ENV === 'development') {
+    if (accessToken === 'mock-facebook-token' && env.NODE_ENV === 'development') {
       let user = await User.findOne({ email: 'test-facebook@rkch.dev' });
       if (!user) {
         user = await User.create({

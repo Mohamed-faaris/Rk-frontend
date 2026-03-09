@@ -1,21 +1,12 @@
 import axios from 'axios';
+import { env } from './env';
 
-// Get API base URL from environment
 const getApiBaseUrl = () => {
-  const envApiUrl = import.meta.env.VITE_API_URL;
-  
-  if (envApiUrl) {
-    // VITE_API_URL already includes /api path
-    return envApiUrl;
-  }
-
-  // Development: use localhost
   if (import.meta.env.DEV) {
     return 'http://localhost:5002/api';
   }
 
-  // Production fallback (same server serves both)
-  return '/api';
+  return env.VITE_API_URL;
 };
 
 const API_BASE_URL = getApiBaseUrl();
