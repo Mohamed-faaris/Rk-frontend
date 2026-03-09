@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import chatbotService from '@/lib/chatbotService';
+import { logger } from '@/lib/logger';
 import { Loader, Star, Check, MessageSquare, Users, MessageCircle, AlertCircle } from 'lucide-react';
 
 interface ChatMessage {
@@ -68,7 +69,7 @@ export default function ChatbotDashboard() {
       setMessages(filtered);
       setStats(statsData);
     } catch (error) {
-      console.error('Error loading data:', error);
+      logger.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +91,7 @@ export default function ChatbotDashboard() {
       await chatbotService.markAsRead(messageId);
       loadData();
     } catch (error) {
-      console.error('Error marking as read:', error);
+      logger.error('Error marking as read:', error);
     }
   };
 
@@ -101,7 +102,7 @@ export default function ChatbotDashboard() {
       setSelectedSession(null);
       loadData();
     } catch (error) {
-      console.error('Error resolving session:', error);
+      logger.error('Error resolving session:', error);
     }
   };
 
@@ -110,7 +111,7 @@ export default function ChatbotDashboard() {
       await chatbotService.toggleStar(messageId, !currentStar);
       loadData();
     } catch (error) {
-      console.error('Error toggling star:', error);
+      logger.error('Error toggling star:', error);
     }
   };
 

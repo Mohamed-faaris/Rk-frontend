@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, CheckCircle, Clock } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 const OrderServicePage = () => {
   const navigate = useNavigate();
@@ -129,9 +130,11 @@ const OrderServicePage = () => {
       await orderService.createOrder(formData);
       setSuccess(true);
       setTimeout(() => navigate('/orders'), 2000);
-    } catch (err: any) {
-      console.error('Order creation error:', err);
-      setError(err.response?.data?.error || 'Failed to create order. Please try again.');
+    } catch (err: unknown) {
+      logger.error('Order creation error:', err);
+      setError(err && typeof err === 'object' && 'response' in err 
+        ? (err.response as { data?: { error?: string } })?.data?.error 
+        : err instanceof Error ? err.message : 'Failed to create order. Please try again.');
     } finally {
       setIsLoading(false);
     }

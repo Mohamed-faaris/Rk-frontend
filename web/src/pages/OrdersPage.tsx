@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { logger } from '@/lib/logger';
 import {
   Clock,
   CheckCircle,
@@ -37,9 +38,9 @@ const OrdersPage = () => {
       setIsLoading(true);
       const ordersData = await orderService.getOrders();
       setOrders(ordersData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Failed to load orders. Please try again.');
-      console.error('Error fetching orders:', err);
+      logger.error('Error fetching orders:', err);
     } finally {
       setIsLoading(false);
     }

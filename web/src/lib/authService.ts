@@ -1,5 +1,6 @@
 import api from './api';
 import { env } from './env';
+import { logger } from './logger';
 
 const API_URL = env.VITE_API_URL;
 
@@ -46,9 +47,9 @@ export interface OTPResendRequest {
 export const authService = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
     try {
-      console.log('Login request:', { email: data.email });
+      logger.debug('Login request:', { email: data.email });
       const response = await api.post('/auth/login', data);
-      console.log('Login response:', response.data);
+      logger.debug('Login response:', response.data);
       
       // Check if OTP is required
       if (response.data.requiresOTP) {
@@ -60,102 +61,53 @@ export const authService = {
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;
-    } catch (error: any) {
-      console.error('Login error:', error);
+    } catch (error: unknown) {
+      logger.error('Login error:', error);
       throw error;
     }
-  },
-
-  googleLogin: async (idToken: string): Promise<AuthResponse> => {
-    try {
-      const response = await api.post('/auth/google', { idToken });
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-
-      return response.data;
-    } catch (error: any) {
-      console.error('Google login error:', error);
-      throw error;
-    }
-  },
-
-  appleLogin: async (idToken: string, fullName?: string): Promise<AuthResponse> => {
-    try {
-      const response = await api.post('/auth/apple', { idToken, fullName });
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-
-      return response.data;
-    } catch (error: any) {
-      console.error('Apple login error:', error);
-      throw error;
-    }
-  },
-
-  facebookLogin: async (accessToken: string): Promise<AuthResponse> => {
-    try {
-      const response = await api.post('/auth/facebook', { accessToken });
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-
-      return response.data;
-    } catch (error: any) {
-      console.error('Facebook login error:', error);
-      throw error;
-    }
-  },
 
   verifyOTP: async (data: OTPVerifyRequest): Promise<AuthResponse> => {
     try {
-      console.log('OTP verification request:', { email: data.email });
+      logger.debug('OTP verification request:', { email: data.email });
       const response = await api.post('/auth/verify-otp', data);
-      console.log('OTP verification response:', response.data);
+      logger.debug('OTP verification response:', response.data);
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;
-    } catch (error: any) {
-      console.error('OTP verification error:', error);
+    } catch (error: unknown) {
+      logger.error('OTP verification error:', error);
       throw error;
     }
   },
 
   resendOTP: async (data: OTPResendRequest): Promise<{ success: boolean; message: string; previewUrl?: string }> => {
     try {
-      console.log('Resend OTP request:', { email: data.email });
+      logger.debug('Resend OTP request:', { email: data.email });
       const response = await api.post('/auth/resend-otp', data);
-      console.log('Resend OTP response:', response.data);
+      logger.debug('Resend OTP response:', response.data);
       return response.data;
-    } catch (error: any) {
-      console.error('Resend OTP error:', error);
+    } catch (error: unknown) {
+      logger.error('Resend OTP error:', error);
       throw error;
     }
   },
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
     try {
-      console.log('Register request:', { name: data.name, email: data.email });
+      logger.debug('Register request:', { name: data.name, email: data.email });
       const response = await api.post('/auth/register', data);
-      console.log('Register response:', response.data);
+      logger.debug('Register response:', response.data);
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;
-    } catch (error: any) {
-      console.error('Register error:', error);
+    } catch (error: unknown) {
+      logger.error('Register error:', error);
       throw error;
     }
   },
@@ -209,7 +161,7 @@ export const login = async (email: string, password: string) => {
     })
     return await response.json()
   } catch (error) {
-    console.error('Login error:', error)
+    logger.error('Login error:', error)
     throw error
   }
 }

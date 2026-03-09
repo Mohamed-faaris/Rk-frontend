@@ -2,6 +2,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, Suspense, Component, ReactNode, ErrorInfo } from "react";
 import LiquidEther from "./LiquidEther";
+import { logger } from "@/lib/logger";
 
 // Error fallback component
 const LiquidEtherFallback = () => (
@@ -23,7 +24,7 @@ class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('LiquidEther error:', error, errorInfo);
+    logger.error('LiquidEther error:', error, errorInfo);
     if (this.props.onError) {
       this.props.onError(error);
     }

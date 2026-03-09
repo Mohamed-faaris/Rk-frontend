@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { logger } from '@/lib/logger';
 import {
   Dialog,
   DialogContent,
@@ -80,9 +81,9 @@ export default function EmployeeDetailsPage() {
         if (!id) throw new Error('Employee ID not provided');
         const response = await employeeService.getById(id);
         setEmployee(response.data || response);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load employee details');
-        console.error('Load employee error:', err);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load employee details');
+        logger.error('Load employee error:', err);
       } finally {
         setLoading(false);
       }

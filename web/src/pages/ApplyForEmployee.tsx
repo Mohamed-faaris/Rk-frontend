@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
 import DragDropUpload from '@/components/DragDropUpload';
+import { logger } from '@/lib/logger';
 import {
   Select,
   SelectContent,
@@ -85,9 +86,11 @@ const ApplyForEmployee = () => {
       await applicationService.submitApplication(formDataToSend);
       setSuccess('Application submitted successfully! Our team will review your application shortly.');
       setTimeout(() => navigate('/'), 2000);
-    } catch (err: any) {
-      console.error('Application submission error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to submit application');
+    } catch (err: unknown) {
+      logger.error('Application submission error:', err);
+      setError(err && typeof err === 'object' && 'response' in err 
+        ? (err.response as { data?: { error?: string } })?.data?.error 
+        : err instanceof Error ? err.message : 'Failed to submit application');
     } finally {
       setIsLoading(false);
     }

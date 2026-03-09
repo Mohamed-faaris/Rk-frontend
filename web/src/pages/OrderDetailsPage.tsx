@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { logger } from '@/lib/logger';
 import {
   Dialog,
   DialogContent,
@@ -58,9 +59,9 @@ const OrderDetailsPage = () => {
       setIsLoading(true);
       const orderData = await orderService.getOrder(id);
       setOrder(orderData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Failed to load order details. Please try again.');
-      console.error('Error fetching order details:', err);
+      logger.error('Error fetching order details:', err);
     } finally {
       setIsLoading(false);
     }
@@ -76,9 +77,9 @@ const OrderDetailsPage = () => {
       navigate('/orders', { 
         state: { message: 'Order canceled successfully and moved to canceled projects' }
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Failed to cancel order. Please try again.');
-      console.error('Error canceling order:', err);
+      logger.error('Error canceling order:', err);
     } finally {
       setIsCanceling(false);
       setShowCancelDialog(false);

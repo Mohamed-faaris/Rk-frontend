@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { isUserLoggedIn } from '@/lib/authUtils';
+import { logger } from '@/lib/logger';
 
 interface AuthPopupModalProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ const AuthPopupModal: React.FC<AuthPopupModalProps> = ({
   // Check if user is logged in and close popup if they are
   useEffect(() => {
     if (isOpen && isUserLoggedIn()) {
-      console.log('User already logged in, closing popup');
+      logger.debug('User already logged in, closing popup');
       onClose();
     }
   }, [isOpen, onClose]);

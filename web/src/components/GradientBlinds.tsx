@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './GradientBlinds.css';
+import { logger } from '@/lib/logger';
 
 export interface GradientBlindsProps {
   className?: string;
@@ -336,7 +337,7 @@ void main() {
         try {
           renderer.render({ scene: meshRef.current });
         } catch (e) {
-          console.error(e);
+          logger.error(e);
         }
       }
     };

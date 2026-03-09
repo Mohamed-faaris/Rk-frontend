@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './LiquidEther.css';
+import { logger } from '@/lib/logger';
 
 export interface LiquidEtherProps {
   mouseForce?: number;
@@ -92,11 +93,11 @@ export default function LiquidEther({
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
       if (!gl) {
-        console.warn('WebGL not supported, LiquidEther will be disabled');
+        logger.warn('WebGL not supported, LiquidEther will be disabled');
         return;
       }
     } catch (e) {
-      console.warn('WebGL check failed:', e);
+      logger.warn('WebGL check failed:', e);
       return;
     }
 
@@ -1164,7 +1165,7 @@ export default function LiquidEther({
       ro.observe(container);
       resizeObserverRef.current = ro;
     } catch (error) {
-      console.error('LiquidEther initialization failed:', error);
+      logger.error('LiquidEther initialization failed:', error);
       webglRef.current = null;
       // Component will still render, just without the WebGL animation
     }

@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthContext';
 import { contactService } from '@/lib/contactService';
+import { logger } from '@/lib/logger';
 import {
   Select,
   SelectContent,
@@ -95,8 +96,8 @@ export default function ContactPage() {
         subject: '',
         message: '',
       });
-    } catch (error: any) {
-      console.error('Contact form error:', error);
+    } catch (error: unknown) {
+      logger.error('Contact form error:', error);
       toast({
         title: 'Error',
         description: error.response?.data?.message || 'Failed to send message. Please try again.',

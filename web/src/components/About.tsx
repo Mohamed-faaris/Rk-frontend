@@ -1,5 +1,6 @@
 import { Target, Users, Zap } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { logger } from "@/lib/logger";
 
 const About = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -11,7 +12,7 @@ const About = () => {
     // Handle video end event to ensure looping
     const handleVideoEnd = () => {
       video.currentTime = 0;
-      video.play().catch(err => console.log('Autoplay prevented:', err));
+      video.play().catch(err => logger.debug('Autoplay prevented:', err));
     };
 
     // Ensure video starts playing immediately
@@ -19,8 +20,8 @@ const About = () => {
       const promise = video.play();
       if (promise !== undefined) {
         promise
-          .then(() => console.log('Video playing'))
-          .catch(err => console.log('Autoplay error:', err));
+          .then(() => logger.debug('Video playing'))
+          .catch(err => logger.debug('Autoplay error:', err));
       }
     };
 
@@ -112,12 +113,12 @@ const About = () => {
                   controls={false}
                   webkit-playsinline="true"
                   x5-playsinline="true"
-                  onError={(e) => console.error('Video error:', e)}
+                  onError={(e) => logger.error('Video error:', e)}
                   onLoadedData={() => {
-                    console.log('Video loaded, attempting autoplay');
+                    logger.debug('Video loaded, attempting autoplay');
                     const video = videoRef.current;
                     if (video) {
-                      video.play().catch(err => console.log('Autoplay error:', err));
+                      video.play().catch(err => logger.debug('Autoplay error:', err));
                     }
                   }}
                 >

@@ -11,6 +11,7 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
+import { logger } from "@/lib/logger";
 import {
   getBrandingItem,
   likeBrandingItem,
@@ -56,7 +57,7 @@ const BrandingDetailPage = () => {
         setIsLiked(data.likedBy.includes(user.id));
       }
     } catch (error: any) {
-      console.error('Error loading item:', error);
+      logger.error('Error loading item:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -109,7 +110,7 @@ const BrandingDetailPage = () => {
         title: item.title,
         text: item.description,
         url: window.location.href,
-      }).catch(console.error);
+      }).catch(logger.error);
     } else {
       // Fallback: Copy to clipboard
       navigator.clipboard.writeText(window.location.href);
@@ -170,7 +171,7 @@ const BrandingDetailPage = () => {
     try {
       // Upload file first
       const uploadResult = await uploadFile(selectedFile);
-      console.log('Upload result:', uploadResult);
+      logger.log('Upload result:', uploadResult);
       
       // Get the URL from the upload response
       const uploadedUrl = uploadResult.data.url;
@@ -189,7 +190,7 @@ const BrandingDetailPage = () => {
         fileFormat
       };
       
-      console.log('Sending media data:', mediaData);
+      logger.log('Sending media data:', mediaData);
 
       // Add to database
       const updatedItem = await addAdditionalMedia(id, mediaData);
@@ -204,7 +205,7 @@ const BrandingDetailPage = () => {
         description: "Additional media added successfully!",
       });
     } catch (error: any) {
-      console.error('Error adding media:', error);
+      logger.error('Error adding media:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -292,7 +293,7 @@ const BrandingDetailPage = () => {
                         if (video.duration <= 10) {
                           video.muted = true;
                           video.loop = true;
-                          video.play().catch(err => console.log('Autoplay prevented:', err));
+                          video.play().catch(err => logger.log('Autoplay prevented:', err));
                         }
                       }}
                     >

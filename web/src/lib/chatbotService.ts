@@ -1,4 +1,5 @@
 import { env } from './env';
+import { logger } from './logger';
 
 const getApiBaseUrl = () => env.VITE_API_URL;
 
@@ -82,7 +83,7 @@ class ChatbotService {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error sending message:', error);
+      logger.error('Error sending message:', error);
       throw error;
     }
   }
@@ -99,7 +100,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching chat history:', error);
+      logger.error('Error fetching chat history:', error);
       throw error;
     }
   }
@@ -116,7 +117,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching session messages:', error);
+      logger.error('Error fetching session messages:', error);
       throw error;
     }
   }
@@ -137,7 +138,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching all messages:', error);
+      logger.error('Error fetching all messages:', error);
       throw error;
     }
   }
@@ -154,7 +155,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching chat stats:', error);
+      logger.error('Error fetching chat stats:', error);
       throw error;
     }
   }
@@ -172,7 +173,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error marking as read:', error);
+      logger.error('Error marking as read:', error);
       throw error;
     }
   }
@@ -198,7 +199,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error marking as resolved:', error);
+      logger.error('Error marking as resolved:', error);
       throw error;
     }
   }
@@ -217,7 +218,7 @@ class ChatbotService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error toggling star:', error);
+      logger.error('Error toggling star:', error);
       throw error;
     }
   }

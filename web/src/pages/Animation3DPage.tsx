@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
+import { logger } from "@/lib/logger";
 import {
   Dialog,
   DialogContent,
@@ -147,7 +148,7 @@ const Animation3DPage = () => {
       setIsDialogOpen(false);
       loadAnimations();
     } catch (error: any) {
-      console.error('Upload error:', error);
+      logger.error('Upload error:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -434,7 +435,7 @@ const Animation3DPage = () => {
                               if (video.duration <= 10) {
                                 video.muted = true;
                                 video.loop = true;
-                                video.play().catch(err => console.log('Autoplay prevented:', err));
+                                video.play().catch(err => logger.log('Autoplay prevented:', err));
                               }
                             }}
                           />

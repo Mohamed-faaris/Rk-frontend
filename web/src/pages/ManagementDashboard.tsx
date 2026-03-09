@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { logger } from '@/lib/logger';
 import {
   Dialog,
   DialogContent,
@@ -190,7 +191,7 @@ export default function ManagementDashboard() {
       const response = await employeeService.getAll();
       setEmployees(response.data || []);
     } catch (err: any) {
-      console.error('Load employees error:', err);
+      logger.error('Load employees error:', err);
     }
   };
 
@@ -199,7 +200,7 @@ export default function ManagementDashboard() {
       const response = await employeeService.getStats();
       setStats(prev => ({ ...prev, employees: response.data }));
     } catch (err: any) {
-      console.error('Load employee stats error:', err);
+      logger.error('Load employee stats error:', err);
     }
   };
 
@@ -208,7 +209,7 @@ export default function ManagementDashboard() {
       const response = await projectService.getAll();
       setProjects(response.data || []);
     } catch (err: any) {
-      console.error('Load projects error:', err);
+      logger.error('Load projects error:', err);
     }
   };
 
@@ -217,15 +218,15 @@ export default function ManagementDashboard() {
       const response = await projectService.getStats();
       setStats(prev => ({ ...prev, projects: response.data }));
     } catch (err: any) {
-      console.error('Load project stats error:', err);
+      logger.error('Load project stats error:', err);
     }
   };
 
   const loadOrders = async () => {
     try {
-      console.log('Loading orders...');
+      logger.debug('Loading orders...');
       const response = await orderService.getAllOrdersAdmin();
-      console.log('Orders loaded:', response);
+      logger.debug('Orders loaded:', response);
       setOrders(response || []);
       
       // Calculate order stats
@@ -235,30 +236,30 @@ export default function ManagementDashboard() {
       
       setStats(prev => ({ ...prev, orders: { total, pending, completed } }));
     } catch (err: any) {
-      console.error('Load orders error:', err);
-      console.error('Error details:', err.response?.data);
+      logger.error('Load orders error:', err);
+      logger.error('Error details:', err.response?.data);
       setError('Failed to load orders: ' + (err.response?.data?.message || err.message));
     }
   };
 
   const loadUsers = async () => {
     try {
-      console.log('Loading users...');
+      logger.debug('Loading users...');
       const response = await userService.getAllUsers();
-      console.log('Users loaded:', response);
+      logger.debug('Users loaded:', response);
       setUsers(response || []);
     } catch (err: any) {
-      console.error('Load users error:', err);
-      console.error('Error details:', err.response?.data);
+      logger.error('Load users error:', err);
+      logger.error('Error details:', err.response?.data);
       setError('Failed to load users: ' + (err.response?.data?.message || err.message));
     }
   };
 
   const loadUserStats = async () => {
     try {
-      console.log('Loading user stats...');
+      logger.debug('Loading user stats...');
       const response = await userService.getUserStats();
-      console.log('User stats loaded:', response);
+      logger.debug('User stats loaded:', response);
       setStats(prev => ({ 
         ...prev, 
         users: { 
@@ -268,16 +269,16 @@ export default function ManagementDashboard() {
         } 
       }));
     } catch (err: any) {
-      console.error('Load user stats error:', err);
-      console.error('Error details:', err.response?.data);
+      logger.error('Load user stats error:', err);
+      logger.error('Error details:', err.response?.data);
     }
   };
 
   const loadRevenue = async () => {
     try {
-      console.log('Loading revenue...');
+      logger.debug('Loading revenue...');
       const response = await revenueService.getRevenueStats();
-      console.log('Revenue loaded:', response);
+      logger.debug('Revenue loaded:', response);
       setRevenueData(response);
       setRevenueChart(response.chart || []);
       setStats(prev => ({ 
@@ -289,8 +290,8 @@ export default function ManagementDashboard() {
         } 
       }));
     } catch (err: any) {
-      console.error('Load revenue error:', err);
-      console.error('Error details:', err.response?.data);
+      logger.error('Load revenue error:', err);
+      logger.error('Error details:', err.response?.data);
       setError('Failed to load revenue: ' + (err.response?.data?.message || err.message));
     }
   };
@@ -300,7 +301,7 @@ export default function ManagementDashboard() {
       const response = await applicationService.getAllApplications();
       setApplications(response.applications || []);
     } catch (err: any) {
-      console.error('Load applications error:', err);
+      logger.error('Load applications error:', err);
       setError('Failed to load applications');
     }
   };
@@ -327,21 +328,21 @@ export default function ManagementDashboard() {
           }
         }
 
-        console.log('Accepting application with data:', { id, notes, salary, joiningDate });
+        logger.debug('Accepting application with data:', { id, notes, salary, joiningDate });
 
         const result = await applicationService.acceptApplication(id, notes, salary, joiningDate);
 
-        console.log('Application acceptance result:', result);
+        logger.debug('Application acceptance result:', result);
 
         if (result.data && result.data.employee) {
           // Employee was created, show confirmation within the same dialog
-          console.log('Employee created:', result.data.employee);
+          logger.debug('Employee created:', result.data.employee);
           setNewEmployeeData(result.data.employee);
           setEmployeeConfirmationForm({ salary: result.data.employee.salary.toString() });
           // Don't close the application dialog - show confirmation within it
           setSuccess('Employee created successfully. Please confirm the details below.');
         } else {
-          console.log('No employee data in response, but application accepted');
+          logger.debug('No employee data in response, but application accepted');
           setSuccess('Application accepted successfully');
           // Close the application dialog since no confirmation needed
           setApplicationDialog(false);
@@ -354,7 +355,7 @@ export default function ManagementDashboard() {
         await loadEmployees();
         await loadEmployeeStats();
       } else {
-        console.log('Rejecting application:', id);
+        logger.debug('Rejecting application:', id);
         await applicationService.rejectApplication(id, notes);
         setSuccess('Application rejected');
 
@@ -366,7 +367,7 @@ export default function ManagementDashboard() {
       }
 
     } catch (err: any) {
-      console.error('Application action error:', err);
+      logger.error('Application action error:', err);
       const errorMessage = err.response?.data?.error || err.message || 'Action failed';
       setError(errorMessage);
       // Don't close the dialog on error so user can try again
@@ -376,12 +377,12 @@ export default function ManagementDashboard() {
   };
 
   const handleEmployeeConfirmation = async (action: 'confirm' | 'cancel') => {
-    console.log('Handling employee confirmation:', action, newEmployeeData);
+    logger.debug('Handling employee confirmation:', action, newEmployeeData);
     try {
       setLoading(true);
       
       if (!newEmployeeData || !newEmployeeData._id) {
-        console.error('Employee data not available:', newEmployeeData);
+        logger.error('Employee data not available:', newEmployeeData);
         setError('Employee data not available');
         return;
       }
@@ -415,7 +416,7 @@ export default function ManagementDashboard() {
       setEmployeeConfirmationForm({ salary: '' });
       loadApplications();
     } catch (err: any) {
-      console.error('Employee confirmation error:', err);
+      logger.error('Employee confirmation error:', err);
       setError(err.response?.data?.error || 'Failed to process employee confirmation');
     } finally {
       setLoading(false);
@@ -569,7 +570,7 @@ export default function ManagementDashboard() {
         return;
       }
 
-      console.log('Updating order status:', {
+      logger.debug('Updating order status:', {
         orderId: editingOrder._id,
         newStatus: orderStatusForm.status,
         notes: orderStatusForm.notes
@@ -581,7 +582,7 @@ export default function ManagementDashboard() {
         orderStatusForm.notes
       );
       
-      console.log('Order status update response:', response);
+      logger.debug('Order status update response:', response);
       setSuccess('Order status updated successfully');
       
       // Close dialog and reset form
@@ -592,8 +593,8 @@ export default function ManagementDashboard() {
       // Reload orders to show updated data
       await loadOrders();
     } catch (err: any) {
-      console.error('Update order status error:', err);
-      console.error('Error response:', err.response?.data);
+      logger.error('Update order status error:', err);
+      logger.error('Error response:', err.response?.data);
       setError(err.response?.data?.error || err.message || 'Failed to update order status');
     } finally {
       setLoading(false);

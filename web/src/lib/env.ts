@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { logger } from './logger';
 
 const envSchema = z.object({
   VITE_API_URL: z.string().url(),
@@ -12,6 +13,6 @@ if (!parsed.success) {
   throw new Error('Invalid environment variables');
 }
 
-console.log('API URL:', import.meta.env.VITE_API_URL);
+logger.info('API URL:', import.meta.env.VITE_API_URL);
 
 export const env = parsed.data;

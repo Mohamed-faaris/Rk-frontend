@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { contactService } from "@/lib/contactService";
+import { logger } from "@/lib/logger";
 import {
   Select,
   SelectContent,
@@ -102,7 +103,7 @@ const Contact = () => {
         message: "" 
       });
     } catch (error: any) {
-      console.error('Contact form error:', error);
+      logger.error('Contact form error:', error);
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to send message. Please try again.",
@@ -154,7 +155,7 @@ const Contact = () => {
       });
       setApplicationDialogOpen(false);
     } catch (error: any) {
-      console.error('Application error:', error);
+      logger.error('Application error:', error);
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to submit application. Please try again.",

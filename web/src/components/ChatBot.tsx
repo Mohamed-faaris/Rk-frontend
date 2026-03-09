@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Loader, ExternalLink, Bot } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import chatbotService from '@/lib/chatbotService';
+import { logger } from '@/lib/logger';
 
 interface Message {
   id: string;
@@ -228,7 +229,7 @@ Ready to start your journey with us?`,
         }
       }
     } catch (error) {
-      console.error('Error in service matching:', error);
+      logger.error('Error in service matching:', error);
       // Continue with default response
     }
 
@@ -351,7 +352,7 @@ Are you looking for our services, or interested in joining our team?`,
     try {
       // Get smart response with intent detection
       const { response, link, linkText } = detectServiceAndResponse(messageText);
-      console.log('Detected response:', { response, link, linkText });
+      logger.log('Detected response:', { response, link, linkText });
       
       // Check if this is a bye message to auto-close chat
       const isByeMessage = /\b(bye|goodbye|see you|farewell|take care|see ya|later|cya|adios|ciao)\b/.test(messageText.toLowerCase());
@@ -395,10 +396,10 @@ Are you looking for our services, or interested in joining our team?`,
               suggestedLinkText: apiResponse.suggestedLinkText || linkText
             };
           }
-          console.log('API Bot Message:', botMsg);
+          logger.log('API Bot Message:', botMsg);
         } catch (apiError) {
           // Fallback to client-side response if API fails
-          console.warn('API error, using fallback response:', apiError);
+          logger.warn('API error, using fallback response:', apiError);
         }
       }
       
@@ -411,7 +412,7 @@ Are you looking for our services, or interested in joining our team?`,
         }, 3000);
       }
     } catch (error) {
-      console.error('Error processing message:', error);
+      logger.error('Error processing message:', error);
       const errorMsg: Message = {
         id: (Date.now() + 2).toString(),
         text: 'Sorry, I encountered an error. Please try again.',
@@ -429,7 +430,7 @@ Are you looking for our services, or interested in joining our team?`,
   }, [handleSendMessage]);
 
   const handleLinkClick = useCallback((link: string) => {
-    console.log('Navigating to:', link);
+    logger.log('Navigating to:', link);
     navigate(link);
     setIsOpen(false);
   }, [navigate]);

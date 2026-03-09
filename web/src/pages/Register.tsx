@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { User, Mail, Lock, CheckCircle2, ArrowRight, Sparkles, Moon, Sun, Eye, EyeOff } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export default function Register() {
     }
 
     try {
-      console.log('Attempting registration with:', {
+      logger.debug('Attempting registration with:', {
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -70,9 +71,11 @@ export default function Register() {
       await register(formData.name, formData.email, formData.phone, formData.password, formData.confirmPassword);
       setSuccess('Registration successful! Redirecting...');
       setTimeout(() => navigate('/'), 1500);
-    } catch (err: any) {
-      console.error('Registration error:', err);
-      const errorMsg = err.response?.data?.error || err.message || 'Registration failed. Please try again.';
+    } catch (err: unknown) {
+      logger.error('Registration error:', err);
+      const errorMsg = err && typeof err === 'object' && 'response' in err 
+        ? (err.response as { data?: { error?: string } })?.data?.error 
+        : err instanceof Error ? err.message : 'Registration failed. Please try again.';
       setError(errorMsg);
     } finally {
       setIsLoading(false);

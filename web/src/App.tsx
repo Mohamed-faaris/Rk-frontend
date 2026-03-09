@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ChatBot from "./components/ChatBot";
+import { logger } from "./lib/logger";
 import { useState, useEffect, Suspense, lazy } from "react";
 
 // Lazy load other pages to prevent loading all at once
@@ -56,8 +57,8 @@ const AppContent = () => {
 
   useEffect(() => {
     // Listen for auth popup events
-    const handleShowAuthPopup = (event: any) => {
-      console.log('Auth popup event received:', event);
+    const handleShowAuthPopup = (event: unknown) => {
+      logger.debug('Auth popup event received:', event);
       setAuthPopupOpen(true);
     };
 

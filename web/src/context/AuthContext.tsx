@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { authService, User } from '@/lib/authService';
+import { logger } from '@/lib/logger';
 
 interface AuthContextType {
   user: User | null;
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           return JSON.parse(userJson);
         } catch (e) {
-          console.error('Failed to parse user from localStorage:', e);
+          logger.error('Failed to parse user from localStorage:', e);
           return null;
         }
       }
