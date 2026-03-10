@@ -33,7 +33,7 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Instagram, href: "https://www.instagram.com/rajkayal_design", label: "Instagram" },
+    { icon: Instagram, href: "https://www.instagram.com/rajkayal_creative_hub?igsh=MXZneXB6aHBqMWV3bQ%3D%3D&utm_source=qr", label: "Instagram" },
     { icon: Linkedin, href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn" },
     { icon: Github, href: "https://github.com/SivasuriyanRaja", label: "GitHub" },
   ];
