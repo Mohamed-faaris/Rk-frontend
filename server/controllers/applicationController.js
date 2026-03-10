@@ -1,5 +1,6 @@
 import EmployeeApplication from '../models/EmployeeApplication.js';
 import User from '../models/User.js';
+import { sendApplicationAcceptedEmail, sendApplicationRejectedEmail } from '../utils/emailService.js';
 
 // @desc    Submit employee application
 // @route   POST /api/applications/apply
@@ -215,6 +216,15 @@ export const acceptApplication = async (req, res, next) => {
     // Check if employee already exists with this email
     const existingEmployee = await Employee.findOne({ email: application.email });
     if (existingEmployee) {
+      await sendApplicationAcceptedEmail(
+        application.email,
+        application.name,
+        application.position,
+        application.department,
+        salary || application.expectedSalary,
+        joiningDate,
+        adminNotes
+      );
       return res.status(200).json({
         success: true,
         message: 'Application accepted successfully. Employee already exists.',
@@ -245,6 +255,17 @@ export const acceptApplication = async (req, res, next) => {
       avatar: application.profilePhoto || '',
       address: address
     });
+
+    // Send acceptance email to applicant
+    await sendApplicationAcceptedEmail(
+      application.email,
+      application.name,
+      application.position,
+      application.department,
+      salary || application.expectedSalary,
+      joiningDate,
+      adminNotes
+    );
 
     res.status(200).json({
       success: true,
@@ -280,6 +301,15 @@ export const rejectApplication = async (req, res, next) => {
     if (!application) {
       return res.status(404).json({ error: 'Application not found' });
     }
+
+    // Send rejection email to applicant
+    await sendApplicationRejectedEmail(
+      application.email,
+      application.name,
+      application.position,
+      application.department,
+      adminNotes
+    );
 
     res.status(200).json({
       success: true,
