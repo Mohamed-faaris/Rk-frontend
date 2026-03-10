@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Moon, Sun, LogOut, User, Settings, Briefcase, ShoppingCart } from "lucide-react";
+import { Menu, X, Moon, Sun, LogOut, User, Settings, Briefcase, ShoppingCart, Bell, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useAuth } from "@/context/AuthContext";
@@ -16,6 +16,7 @@ import {
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [applicationStatus, setApplicationStatus] = useState<"accepted" | "rejected" | null>(null);
   const { theme, setTheme } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -49,6 +50,24 @@ const Navbar = () => {
       }, 100);
     }
   }, []);
+
+  // Keep latest application status for navbar notification dropdown.
+  useEffect(() => {
+    const statusQuery = new URLSearchParams(location.search).get("status");
+
+    if (statusQuery === "accepted" || statusQuery === "rejected") {
+      localStorage.setItem("latestApplicationStatus", statusQuery);
+      setApplicationStatus(statusQuery);
+      return;
+    }
+
+    const storedStatus = localStorage.getItem("latestApplicationStatus");
+    if (storedStatus === "accepted" || storedStatus === "rejected") {
+      setApplicationStatus(storedStatus);
+    } else {
+      setApplicationStatus(null);
+    }
+  }, [location.search]);
 
   const navLinks = [
     { name: "Home", href: "#home" },
@@ -88,6 +107,11 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const handleClearNotification = () => {
+    localStorage.removeItem("latestApplicationStatus");
+    setApplicationStatus(null);
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -123,6 +147,54 @@ const Navbar = () => {
 
           {/* Auth & Theme Controls */}
           <div className="flex items-center space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-full"
+                  aria-label="Application notifications"
+                >
+                  <Bell className="h-5 w-5" />
+                  {applicationStatus && (
+                    <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80">
+                <DropdownMenuLabel className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-accent" />
+                  Application Updates
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {applicationStatus === "accepted" && (
+                  <div className="px-3 py-2 text-sm text-foreground">
+                    <p className="font-semibold text-emerald-500">Accepted</p>
+                    <p className="mt-1 text-muted-foreground">
+                      Congratulations! Your hard work is opening new doors. Keep your confidence high and step into this next chapter with pride.
+                    </p>
+                  </div>
+                )}
+                {applicationStatus === "rejected" && (
+                  <div className="px-3 py-2 text-sm text-foreground">
+                    <p className="font-semibold text-amber-500">Rejected</p>
+                    <p className="mt-1 text-muted-foreground">
+                      This is one step, not your final destination. Keep improving your skills and come back stronger. Your time will come.
+                    </p>
+                  </div>
+                )}
+                {!applicationStatus && (
+                  <div className="px-3 py-2 text-sm text-muted-foreground">
+                    No new application updates right now.
+                  </div>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleClearNotification} disabled={!applicationStatus}>
+                  Clear notification
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button
               variant="ghost"
               size="icon"
