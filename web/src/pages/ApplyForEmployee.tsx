@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ApplicationStatusNotice from '@/components/ApplicationStatusNotice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +23,7 @@ import { applicationService } from '@/lib/applicationService';
 
 const ApplyForEmployee = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -45,6 +47,8 @@ const ApplyForEmployee = () => {
   });
   const [resumeFile, setResumeFile] = useState<File[]>([]);
   const [profilePhotoFile, setProfilePhotoFile] = useState<File[]>([]);
+  const statusQuery = new URLSearchParams(location.search).get('status');
+  const applicationStatus = statusQuery === 'accepted' || statusQuery === 'rejected' ? statusQuery : null;
 
   const positions = ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Other'];
   const departments = ['Development', 'Design', '3D Animation', 'UI/UX', 'Management', 'Marketing', 'Sales', 'HR', 'Operations'];
@@ -101,6 +105,8 @@ const ApplyForEmployee = () => {
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+          <ApplicationStatusNotice status={applicationStatus} />
+
           {/* Back Button */}
           <Button
             variant="outline"

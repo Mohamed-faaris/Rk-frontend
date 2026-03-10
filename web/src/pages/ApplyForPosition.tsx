@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ApplicationStatusNotice from '@/components/ApplicationStatusNotice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,6 +34,7 @@ interface Position {
 
 const ApplyForPosition = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { positionId } = useParams<{ positionId: string }>();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +44,8 @@ const ApplyForPosition = () => {
   const [position, setPosition] = useState<Position | null>(null);
   const [resumeFile, setResumeFile] = useState<File[]>([]);
   const [profilePhotoFile, setProfilePhotoFile] = useState<File[]>([]);
+  const statusQuery = new URLSearchParams(location.search).get('status');
+  const applicationStatus = statusQuery === 'accepted' || statusQuery === 'rejected' ? statusQuery : null;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -178,6 +182,8 @@ const ApplyForPosition = () => {
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+          <ApplicationStatusNotice status={applicationStatus} />
+
           {/* Back Button */}
           <Button
             variant="outline"
