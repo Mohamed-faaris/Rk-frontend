@@ -1,5 +1,6 @@
 import Order from '../models/Order.js';
 import CanceledOrder from '../models/CanceledOrder.js';
+import { sendOrderStatusUpdateEmail } from '../utils/emailService.js';
 
 // @desc    Get all orders for a user
 // @route   GET /api/orders
@@ -163,6 +164,8 @@ export const updateOrderStatus = async (req, res, next) => {
       });
     }
 
+    const previousStatus = order.status;
+
     order.status = status;
     
     // Add note if provided
@@ -188,6 +191,20 @@ export const updateOrderStatus = async (req, res, next) => {
     // Populate user info for response
     await order.populate('user', 'name email');
     await order.populate('notes.author', 'name email');
+
+    // Notify only the affected order owner (individual user)
+    if (order.user?.email && previousStatus !== status) {
+      await sendOrderStatusUpdateEmail({
+        email: order.user.email,
+        name: order.user.name,
+        orderTitle: order.title,
+        orderService: order.service,
+        previousStatus,
+        currentStatus: status,
+        adminNotes: notes,
+        orderId: order._id?.toString()
+      });
+    }
 
     res.status(200).json({
       success: true,

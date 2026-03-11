@@ -1,5 +1,6 @@
 import Employee from '../models/Employee.js';
 import EmployeeApplication from '../models/EmployeeApplication.js';
+import { sendApplicationAcceptedEmail } from '../utils/emailService.js';
 
 // @desc    Get all employees
 // @route   GET /api/employees
@@ -99,6 +100,19 @@ export const createEmployeeFromApplication = async (req, res) => {
       reviewedBy: req.user?.id,
       updatedAt: new Date()
     });
+
+    // Notify only the applicant linked to this application
+    if (application.email) {
+      await sendApplicationAcceptedEmail(
+        application.email,
+        application.name,
+        application.position,
+        application.department,
+        salary || application.expectedSalary,
+        joiningDate,
+        undefined
+      );
+    }
 
     res.status(201).json({
       success: true,

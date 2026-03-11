@@ -462,4 +462,87 @@ export const sendApplicationRejectedEmail = async (email, name, position, depart
   }
 };
 
-export default { sendOTPEmail, sendWelcomeEmail, sendApplicationAcceptedEmail, sendApplicationRejectedEmail, verifyEmailConnection };
+// Send order status update email
+export const sendOrderStatusUpdateEmail = async ({
+  email,
+  name,
+  orderTitle,
+  orderService,
+  previousStatus,
+  currentStatus,
+  adminNotes,
+  orderId
+}) => {
+  try {
+    const transporter = await createTransporter();
+
+    const prettifyStatus = (status) =>
+      String(status || '')
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
+    const mailOptions = {
+      from: env.EMAIL_FROM || '"RajKayal Creative Hub" <noreply@rajkayal.com>',
+      to: email,
+      subject: `Order Status Updated: ${prettifyStatus(currentStatus)} - RajKayal Creative Hub`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        </head>
+        <body style="font-family: Arial, sans-serif; background-color: #0f0f0f; color: #ffffff; margin: 0; padding: 0;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 30px 16px;">
+            <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 28px;">
+              <h2 style="margin: 0 0 12px; color: #D4AF37;">Order Status Update</h2>
+              <p style="margin: 0 0 20px; color: #cfcfcf; line-height: 1.6;">
+                Hello ${name || 'Customer'}, your order status has been updated.
+              </p>
+
+              <div style="background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+                <p style="margin: 0 0 8px; color: #a0a0a0; font-size: 13px;">Order</p>
+                <p style="margin: 0 0 6px; color: #fff; font-size: 16px; font-weight: 700;">${orderTitle || 'Untitled Order'}</p>
+                <p style="margin: 0; color: #a0a0a0; font-size: 13px;">Service: ${orderService || 'N/A'}</p>
+                ${orderId ? `<p style="margin: 8px 0 0; color: #777; font-size: 12px;">Order ID: ${orderId}</p>` : ''}
+              </div>
+
+              <div style="background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+                <p style="margin: 0 0 8px; color: #a0a0a0; font-size: 13px;">Status Change</p>
+                <p style="margin: 0; color: #fff; font-size: 14px;">
+                  ${prettifyStatus(previousStatus)} -> <strong style="color: #D4AF37;">${prettifyStatus(currentStatus)}</strong>
+                </p>
+              </div>
+
+              ${adminNotes ? `
+                <div style="background: #111; border-left: 3px solid #D4AF37; border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 16px;">
+                  <p style="margin: 0 0 6px; color: #D4AF37; font-size: 13px;">Admin Notes</p>
+                  <p style="margin: 0; color: #cfcfcf; font-size: 13px; line-height: 1.6;">${adminNotes}</p>
+                </div>
+              ` : ''}
+
+              <p style="margin: 0; color: #9a9a9a; font-size: 12px;">This is an automated update from RajKayal Creative Hub.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Order status update email sent to:', email, '| MessageId:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending order status update email:', error.message);
+    // Non-fatal: do not block status update API response
+  }
+};
+
+export default {
+  sendOTPEmail,
+  sendWelcomeEmail,
+  sendApplicationAcceptedEmail,
+  sendApplicationRejectedEmail,
+  sendOrderStatusUpdateEmail,
+  verifyEmailConnection
+};
