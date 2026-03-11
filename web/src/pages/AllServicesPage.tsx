@@ -191,7 +191,7 @@ const AllServicesPage = () => {
             RajKayal Creative Hub
           </Badge>
           <h1 className="mx-auto mt-5 max-w-5xl text-3xl font-bold leading-tight text-[#F8E6A2] md:text-5xl lg:text-6xl">
-            Design &amp; Software Service Price List - 2026
+            Design &amp; Software Service Price List
           </h1>
           <p className="mx-auto mt-4 max-w-3xl text-sm text-[#D5D5D5] md:text-base">
             Affordable and professional pricing for small businesses, schools, colleges, startups, and local town clients.
