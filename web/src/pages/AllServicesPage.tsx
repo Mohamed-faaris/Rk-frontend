@@ -29,9 +29,8 @@ const AllServicesPage = () => {
       id: 'id-card',
       title: 'ID Card Designs',
       services: [
-        { name: 'ID Card Design', price: '₹300 - ₹500' },
-        { name: 'School ID Card', price: '₹500 - ₹800' },
-        { name: 'College ID Card', price: '₹800 - ₹1,500' },
+        { name: 'School ID Card', price: '₹300 - ₹500' },
+        { name: 'College ID Card', price: '₹500 - ₹800' },
         { name: 'Corporate ID Card', price: '₹800 - ₹1,500' },
       ],
     },

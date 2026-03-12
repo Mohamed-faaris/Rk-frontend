@@ -39,53 +39,6 @@ const OrderServicePage = () => {
     }
   });
 
-  const services = [
-    {
-      title: "Web Design & Development",
-      startingPrice: 5000,
-      priceRange: "₹5,000 - ₹6,00,000",
-      pricingUnit: "",
-      features: ["Responsive Design", "SEO Optimized", "Fast Loading", "Mobile First"]
-    },
-    {
-      title: "Branding & Identity",
-      startingPrice: 1000,
-      priceRange: "₹1,000 - ₹1,00,000",
-      pricingUnit: "",
-      features: ["Logo Design", "Brand Guidelines", "Color Palette", "Typography"]
-    },
-    {
-      title: "3D Animation",
-      startingPrice: 2111,
-      priceRange: "₹2,111 - ₹8,00,000",
-      pricingUnit: "per Minute",
-      features: ["3D Modeling", "Motion Graphics", "Product Visualization", "Character Animation"]
-    },
-    {
-      title: "Video Production",
-      startingPrice: 5000,
-      priceRange: "₹5,000 - ₹15,000",
-      pricingUnit: "per Hour",
-      features: ["Script Writing", "HD Video", "Editing", "Sound Design"]
-    },
-    {
-      title: "UI/UX Design",
-      startingPrice: 5000,
-      priceRange: "₹5,000 - ₹50,000",
-      pricingUnit: "per Screen",
-      features: ["User Research", "Wireframing", "Prototyping", "Usability Testing"]
-    },
-    {
-      title: "Digital Strategy",
-      startingPrice: 10000,
-      priceRange: "₹10,000 - ₹2,00,000",
-      pricingUnit: "per Month",
-      features: ["Market Analysis", "Content Strategy", "Social Media", "Performance Tracking"]
-    }
-  ];
-
-  const currentService = services.find(s => s.title === serviceName);
-
   useEffect(() => {
     if (serviceName) {
       setFormData(prev => ({ ...prev, service: serviceName }));
@@ -114,8 +67,8 @@ const OrderServicePage = () => {
       return;
     }
 
-    if (formData.budget < 8300) {
-      setError('Budget must be at least ₹8,300');
+    if (formData.budget <= 0) {
+      setError('Enter a valid budget');
       setIsLoading(false);
       return;
     }
@@ -189,31 +142,29 @@ const OrderServicePage = () => {
                 <CardTitle className="text-foreground">Service Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {currentService && (
-                  <>
-                    <div className="flex items-start justify-between">
-                      <span className="text-muted-foreground">Pricing</span>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-foreground">{(currentService as any).priceRange}</div>
-                        {(currentService as any).pricingUnit && (
-                          <div className="text-xs text-muted-foreground mt-1">{(currentService as any).pricingUnit}</div>
-                        )}
-                      </div>
-                    </div>
+                <div>
+                  <span className="text-muted-foreground">Selected Service</span>
+                  <div className="mt-2 text-xl font-semibold text-foreground break-words">
+                    {serviceName || 'General Service'}
+                  </div>
+                </div>
 
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-2">What's Included:</h4>
-                      <ul className="space-y-1">
-                        {currentService.features.map((feature, idx) => (
-                          <li key={idx} className="text-sm text-muted-foreground flex items-center">
-                            <CheckCircle className="w-3 h-3 text-accent mr-2" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </>
-                )}
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">What to include</h4>
+                  <ul className="space-y-1">
+                    {[
+                      'Project scope or deliverables',
+                      'Any reference links or examples',
+                      'Your expected timeline',
+                      'Budget and priority details'
+                    ].map((item) => (
+                      <li key={item} className="text-sm text-muted-foreground flex items-center">
+                        <CheckCircle className="w-3 h-3 text-accent mr-2" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -381,7 +332,7 @@ const OrderServicePage = () => {
                           value={formData.budget || ''}
                           onChange={(e) => handleChange('budget', parseInt(e.target.value) || 0)}
                           placeholder="415000"
-                          min="8300"
+                          min="1"
                           required
                           disabled={isLoading}
                           className="bg-secondary border-border text-foreground pl-10"

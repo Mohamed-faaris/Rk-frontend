@@ -9,14 +9,7 @@ const orderSchema = new mongoose.Schema({
   service: {
     type: String,
     required: [true, 'Service type is required'],
-    enum: [
-      'Web Design & Development',
-      'Branding & Identity',
-      '3D Animation',
-      'Video Production',
-      'UI/UX Design',
-      'Digital Strategy'
-    ]
+    trim: true
   },
   // Client Details
   clientInfo: {
@@ -55,8 +48,7 @@ const orderSchema = new mongoose.Schema({
   },
   budget: {
     type: Number,
-    required: [true, 'Budget is required'],
-    min: [8300, 'Budget must be at least ₹8,300']
+    required: [true, 'Budget is required']
   },
   totalAmount: {
     type: Number,
