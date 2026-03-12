@@ -102,21 +102,52 @@ export default function ManagementDashboard() {
   const [editingApplication, setEditingApplication] = useState<any>(null);
   const [newEmployeeData, setNewEmployeeData] = useState<any>(null);
 
+  const encodePathSegments = (value: string) => {
+    return value
+      .split('/')
+      .map((segment) => {
+        if (!segment) {
+          return segment;
+        }
+        try {
+          return encodeURIComponent(decodeURIComponent(segment));
+        } catch {
+          return encodeURIComponent(segment);
+        }
+      })
+      .join('/');
+  };
+
   const getFileUrl = (filePath?: string) => {
     if (!filePath) {
       return '';
     }
 
-    let fullUrl: string;
+    const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
+
+    let fullUrl = '';
     if (/^https?:\/\//i.test(filePath)) {
-      fullUrl = filePath;
+      try {
+        const parsedUrl = new URL(filePath);
+        const encodedPath = encodePathSegments(parsedUrl.pathname);
+        const isFrontendUploadUrl =
+          parsedUrl.pathname.startsWith('/uploads/') &&
+          (parsedUrl.hostname.includes('rkch.tech') || parsedUrl.origin === window.location.origin);
+
+        if (isFrontendUploadUrl) {
+          fullUrl = `${apiOrigin}${encodedPath}${parsedUrl.search}${parsedUrl.hash}`;
+        } else {
+          fullUrl = `${parsedUrl.origin}${encodedPath}${parsedUrl.search}${parsedUrl.hash}`;
+        }
+      } catch {
+        fullUrl = filePath;
+      }
     } else {
-      const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
       const normalizedPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
-      fullUrl = `${apiOrigin}${normalizedPath}`;
+      const encodedPath = encodePathSegments(normalizedPath);
+      fullUrl = `${apiOrigin}${encodedPath}`;
     }
 
-    // Encode URL to handle spaces and special characters in filenames
     try {
       return new URL(fullUrl).href;
     } catch {
