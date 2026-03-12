@@ -105,6 +105,7 @@ const ApplyForEmployee = () => {
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+          <h1 className="sr-only">Apply for Employee Position</h1>
           <ApplicationStatusNotice status={applicationStatus} />
 
           {/* Back Button */}

@@ -79,21 +79,21 @@ const AppContent = () => {
       <Routes>
         {/* Public Routes - No Login Required */}
         <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-otp" element={<Suspense fallback={<PageLoader />}><VerifyOTP /></Suspense>} />
-        <Route path="/services" element={<Suspense fallback={<PageLoader />}><AllServicesPage /></Suspense>} />
-        <Route path="/services-overview" element={<Suspense fallback={<PageLoader />}><ServicesPage /></Suspense>} />
-        <Route path="/branding-identity" element={<Suspense fallback={<PageLoader />}><BrandingIdentityPage /></Suspense>} />
-        <Route path="/branding-identity/:id" element={<Suspense fallback={<PageLoader />}><BrandingDetailPage /></Suspense>} />
+        <Route path="/login" element={<main><Login /></main>} />
+        <Route path="/register" element={<main><Register /></main>} />
+        <Route path="/verify-otp" element={<main><Suspense fallback={<PageLoader />}><VerifyOTP /></Suspense></main>} />
+        <Route path="/services" element={<main><Suspense fallback={<PageLoader />}><AllServicesPage /></Suspense></main>} />
+        <Route path="/services-overview" element={<main><Suspense fallback={<PageLoader />}><ServicesPage /></Suspense></main>} />
+        <Route path="/branding-identity" element={<main><Suspense fallback={<PageLoader />}><BrandingIdentityPage /></Suspense></main>} />
+        <Route path="/branding-identity/:id" element={<main><Suspense fallback={<PageLoader />}><BrandingDetailPage /></Suspense></main>} />
         <Route path="/web-development" element={<Suspense fallback={<PageLoader />}><WebDevelopmentPage /></Suspense>} />
         <Route path="/3d-animation" element={<Suspense fallback={<PageLoader />}><Animation3DPage /></Suspense>} />
         <Route path="/uiux-design" element={<Suspense fallback={<PageLoader />}><UIUXDesignPage /></Suspense>} />
-        <Route path="/blog" element={<Suspense fallback={<PageLoader />}><BlogPage /></Suspense>} />
-        <Route path="/case-studies" element={<Suspense fallback={<PageLoader />}><CaseStudiesPage /></Suspense>} />
-        <Route path="/privacy-policy" element={<Suspense fallback={<PageLoader />}><PrivacyPolicyPage /></Suspense>} />
-        <Route path="/terms-of-service" element={<Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense>} />
-        <Route path="/contact" element={<Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
+        <Route path="/blog" element={<main><Suspense fallback={<PageLoader />}><BlogPage /></Suspense></main>} />
+        <Route path="/case-studies" element={<main><Suspense fallback={<PageLoader />}><CaseStudiesPage /></Suspense></main>} />
+        <Route path="/privacy-policy" element={<main><Suspense fallback={<PageLoader />}><PrivacyPolicyPage /></Suspense></main>} />
+        <Route path="/terms-of-service" element={<main><Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense></main>} />
+        <Route path="/contact" element={<main><Suspense fallback={<PageLoader />}><ContactPage /></Suspense></main>} />
         <Route path="/apply-employee" element={<Suspense fallback={<PageLoader />}><ApplyForEmployee /></Suspense>} />
         <Route path="/apply-position/:positionId" element={<Suspense fallback={<PageLoader />}><ApplyForPosition /></Suspense>} />
         <Route path="/employee/:id" element={<Suspense fallback={<PageLoader />}><EmployeeDetailsPage /></Suspense>} />
@@ -108,50 +108,62 @@ const AppContent = () => {
         } />
         <Route path="/services/order/:serviceName" element={
           <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}>
-              <OrderServicePage />
-            </Suspense>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <OrderServicePage />
+              </Suspense>
+            </main>
           </ProtectedRoute>
         } />
         <Route path="/orders" element={
           <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}>
-              <OrdersPage />
-            </Suspense>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <OrdersPage />
+              </Suspense>
+            </main>
           </ProtectedRoute>
         } />
         <Route path="/orders/:id" element={
           <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}>
-              <OrderDetailsPage />
-            </Suspense>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <OrderDetailsPage />
+              </Suspense>
+            </main>
           </ProtectedRoute>
         } />
 
         {/* Admin Routes */}
         <Route path="/admin" element={
           <AdminRoute>
-            <Suspense fallback={<PageLoader />}>
-              <AdminDashboard />
-            </Suspense>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <AdminDashboard />
+              </Suspense>
+            </main>
           </AdminRoute>
         } />
         <Route path="/management" element={
           <AdminRoute>
-            <Suspense fallback={<PageLoader />}>
-              <ManagementDashboard />
-            </Suspense>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <ManagementDashboard />
+              </Suspense>
+            </main>
           </AdminRoute>
         } />
         <Route path="/chatbot-dashboard" element={
           <AdminRoute>
-            <Suspense fallback={<PageLoader />}>
-              <ChatbotDashboard />
-            </Suspense>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <ChatbotDashboard />
+              </Suspense>
+            </main>
           </AdminRoute>
         } />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<main><NotFound /></main>} />
       </Routes>
       <ChatBot />
     </>

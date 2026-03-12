@@ -102,6 +102,7 @@ export default function Login() {
         <div className="w-full max-w-md animate-fade-in-up">
           <Card className="border-border bg-background/95 backdrop-blur-xl shadow-2xl hover:shadow-gold transition-all duration-500">
             <CardHeader className="text-center space-y-4 pb-8 pt-10">
+              <h1 className="sr-only">Login</h1>
               <div className="flex justify-center animate-scale-in">
                 <div className="relative">
                   <div className="absolute inset-0 bg-accent/20 blur-3xl rounded-full animate-pulse-slow" />

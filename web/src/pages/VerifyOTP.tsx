@@ -99,6 +99,7 @@ export default function VerifyOTP() {
       <div className="flex items-center justify-center min-h-screen pt-20">
         <Card className="w-full max-w-md border-border mx-4">
         <CardHeader className="text-center space-y-4">
+          <h1 className="sr-only">Verify OTP</h1>
           {/* Shield Icon */}
           <div className="flex items-center justify-center gap-2">
             <div className="p-3 rounded-full bg-accent/10 border border-accent/30">

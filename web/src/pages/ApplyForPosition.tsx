@@ -142,6 +142,7 @@ const ApplyForPosition = () => {
         <Navbar />
         <main className="pt-24 pb-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+            <h1 className="sr-only">Apply for Position</h1>
             <div className="animate-pulse space-y-4">
               <div className="h-10 bg-muted rounded-lg w-24"></div>
               <div className="h-64 bg-muted rounded-lg"></div>
@@ -159,6 +160,7 @@ const ApplyForPosition = () => {
         <Navbar />
         <main className="pt-24 pb-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+            <h1 className="sr-only">Apply for Position</h1>
             <Button
               variant="outline"
               onClick={() => navigate(-1)}
@@ -182,6 +184,7 @@ const ApplyForPosition = () => {
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+          <h1 className="sr-only">Apply for Position</h1>
           <ApplicationStatusNotice status={applicationStatus} />
 
           {/* Back Button */}
