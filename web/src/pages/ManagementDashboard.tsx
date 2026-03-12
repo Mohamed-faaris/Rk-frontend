@@ -59,6 +59,7 @@ import orderService from '@/lib/orderService';
 import userService from '@/lib/userService';
 import revenueService from '@/lib/revenueService';
 import { applicationService } from '@/lib/applicationService';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function ManagementDashboard() {
   const navigate = useNavigate();
@@ -99,6 +100,20 @@ export default function ManagementDashboard() {
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [editingApplication, setEditingApplication] = useState<any>(null);
   const [newEmployeeData, setNewEmployeeData] = useState<any>(null);
+
+  const getFileUrl = (filePath?: string) => {
+    if (!filePath) {
+      return '';
+    }
+
+    if (/^https?:\/\//i.test(filePath)) {
+      return filePath;
+    }
+
+    const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
+    const normalizedPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+    return `${apiOrigin}${normalizedPath}`;
+  };
 
   // Form data
   const [employeeForm, setEmployeeForm] = useState({
@@ -1183,7 +1198,7 @@ export default function ManagementDashboard() {
                                               <Label className="text-muted-foreground">Profile Photo</Label>
                                               <div className="mt-2">
                                                 <img
-                                                  src={`https://rk-backend.vercel.app${editingApplication.profilePhoto}`}
+                                                  src={getFileUrl(editingApplication.profilePhoto)}
                                                   alt={`${editingApplication.name}'s profile`}
                                                   className="w-24 h-24 rounded-full object-cover border-2 border-border"
                                                   onError={(e) => {
@@ -1243,8 +1258,8 @@ export default function ManagementDashboard() {
                                             <div>
                                               <Label className="text-muted-foreground">Resume URL</Label>
                                               {editingApplication.resume ? (
-                                                <a href={editingApplication.resume} target="_blank" rel="noopener noreferrer" className="mt-1 text-accent hover:underline block">
-                                                  {editingApplication.resume}
+                                                <a href={getFileUrl(editingApplication.resume)} target="_blank" rel="noopener noreferrer" className="mt-1 text-accent hover:underline break-all block">
+                                                  {getFileUrl(editingApplication.resume)}
                                                 </a>
                                               ) : (
                                                 <p className="mt-1 text-muted-foreground">Not provided</p>
@@ -1367,7 +1382,7 @@ export default function ManagementDashboard() {
                                               {newEmployeeData.avatar && (
                                                 <div className="flex justify-center mb-4">
                                                   <img
-                                                    src={`https://rk-backend.vercel.app${newEmployeeData.avatar}`}
+                                                    src={getFileUrl(newEmployeeData.avatar)}
                                                     alt={`${newEmployeeData.name}'s profile`}
                                                     className="w-20 h-20 rounded-full object-cover border-2 border-border"
                                                     onError={(e) => {
