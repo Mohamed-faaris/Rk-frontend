@@ -107,7 +107,12 @@ export default function EmployeeDetailsPage() {
   const handleDownload = (fileUrl: string, fileName: string) => {
     if (fileUrl) {
       const link = document.createElement('a');
-      link.href = fileUrl;
+      // Encode URL to handle spaces and special characters in filenames
+      try {
+        link.href = new URL(fileUrl).href;
+      } catch {
+        link.href = encodeURI(fileUrl);
+      }
       link.download = fileName;
       document.body.appendChild(link);
       link.click();

@@ -107,13 +107,21 @@ export default function ManagementDashboard() {
       return '';
     }
 
+    let fullUrl: string;
     if (/^https?:\/\//i.test(filePath)) {
-      return filePath;
+      fullUrl = filePath;
+    } else {
+      const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
+      const normalizedPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+      fullUrl = `${apiOrigin}${normalizedPath}`;
     }
 
-    const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
-    const normalizedPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
-    return `${apiOrigin}${normalizedPath}`;
+    // Encode URL to handle spaces and special characters in filenames
+    try {
+      return new URL(fullUrl).href;
+    } catch {
+      return encodeURI(fullUrl);
+    }
   };
 
   const handleResumeDownload = async (resumePath: string, applicantName?: string) => {

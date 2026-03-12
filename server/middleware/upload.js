@@ -36,7 +36,9 @@ const storage = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
     const nameWithoutExt = path.basename(file.originalname, ext);
-    cb(null, nameWithoutExt + '-' + uniqueSuffix + ext);
+    // Sanitize filename: replace spaces and non-alphanumeric chars (except dots/hyphens) with hyphens
+    const safeName = nameWithoutExt.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/-+/g, '-');
+    cb(null, safeName + '-' + uniqueSuffix + ext);
   }
 });
 
