@@ -167,6 +167,36 @@ export const getAllApplications = async (req, res, next) => {
   }
 };
 
+// @desc    Get latest application status for logged-in user
+// @route   GET /api/applications/my-status
+// @access  Private
+export const getMyApplicationStatus = async (req, res, next) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const user = await User.findById(userId).select('email name');
+    if (!user?.email) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const application = await EmployeeApplication.findOne({ email: user.email })
+      .sort({ updatedAt: -1, createdAt: -1 })
+      .select('status adminNotes position department updatedAt createdAt');
+
+    return res.status(200).json({
+      success: true,
+      application: application || null,
+    });
+  } catch (error) {
+    console.error('Get my application status error:', error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 // @desc    Get application by ID
 // @route   GET /api/applications/:id
 // @access  Admin

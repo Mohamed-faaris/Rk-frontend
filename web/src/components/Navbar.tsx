@@ -3,6 +3,7 @@ import { Menu, X, Moon, Sun, LogOut, User, Settings, Briefcase, ShoppingCart, Be
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useAuth } from "@/context/AuthContext";
+import { applicationService } from "@/lib/applicationService";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
@@ -30,10 +31,27 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, []);
+
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    window.scrollTo(0, 0);
   }, [location.pathname]);
 
   // Handle hash navigation on page load
@@ -53,21 +71,58 @@ const Navbar = () => {
 
   // Keep latest application status for navbar notification dropdown.
   useEffect(() => {
+    let isMounted = true;
     const statusQuery = new URLSearchParams(location.search).get("status");
 
     if (statusQuery === "accepted" || statusQuery === "rejected") {
       localStorage.setItem("latestApplicationStatus", statusQuery);
-      setApplicationStatus(statusQuery);
-      return;
+      if (isMounted) {
+        setApplicationStatus(statusQuery);
+      }
     }
 
     const storedStatus = localStorage.getItem("latestApplicationStatus");
     if (storedStatus === "accepted" || storedStatus === "rejected") {
-      setApplicationStatus(storedStatus);
+      if (isMounted) {
+        setApplicationStatus(storedStatus);
+      }
     } else {
-      setApplicationStatus(null);
+      if (isMounted) {
+        setApplicationStatus(null);
+      }
     }
-  }, [location.search]);
+
+    const syncFromServer = async () => {
+      if (!isAuthenticated) {
+        return;
+      }
+
+      try {
+        const result = await applicationService.getMyApplicationStatus();
+        const serverStatus = result?.application?.status;
+
+        if (serverStatus === "accepted" || serverStatus === "rejected") {
+          localStorage.setItem("latestApplicationStatus", serverStatus);
+          if (isMounted) {
+            setApplicationStatus(serverStatus);
+          }
+          return;
+        }
+
+        if (isMounted) {
+          setApplicationStatus(null);
+        }
+      } catch {
+        // Keep the local cached status if server call fails.
+      }
+    };
+
+    syncFromServer();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.search, isAuthenticated]);
 
   const navLinks = [
     { name: "Home", href: "#home" },
@@ -121,11 +176,11 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex h-16 items-center justify-between md:h-20">
           {/* Logo */}
           <a href="#home" onClick={handleLogoClick} className="flex items-center space-x-2 md:space-x-3 group cursor-pointer min-w-0">
-            <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-10 w-10 md:h-12 md:w-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(253,185,19,0.3)] transition-all duration-300" />
-            <span className="font-bold text-xs sm:text-sm md:text-lg bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent whitespace-nowrap">
+            <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-9 w-9 md:h-12 md:w-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(253,185,19,0.3)] transition-all duration-300" />
+            <span className="hidden font-bold text-sm bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent whitespace-nowrap sm:inline md:text-lg">
               RajKayal Creative Hub
             </span>
           </a>
@@ -146,7 +201,7 @@ const Navbar = () => {
           </div>
 
           {/* Auth & Theme Controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-1.5 md:space-x-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -209,7 +264,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-2">
+                  <Button variant="ghost" className="hidden items-center space-x-2 md:flex">
                     <User className="h-4 w-4" />
                     <span className="hidden sm:inline">{user?.name}</span>
                   </Button>
@@ -261,6 +316,7 @@ const Navbar = () => {
               className="md:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -273,19 +329,19 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 animate-fade-in bg-background/95 backdrop-blur-xl border-t border-border">
-            <div className="flex flex-col space-y-2">
+          <div className="md:hidden fixed left-0 right-0 top-16 z-40 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-border bg-background/95 py-4 backdrop-blur-xl animate-fade-in">
+            <div className="flex flex-col space-y-1 px-4 pb-4">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors cursor-pointer"
+                  className="rounded-lg px-4 py-3.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground cursor-pointer"
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="border-t border-border pt-2 mt-2">
+              <div className="mt-2 border-t border-border pt-3">
                 {isAuthenticated ? (
                   <>
                     <div className="px-4 py-2 text-sm text-muted-foreground">
@@ -296,7 +352,7 @@ const Navbar = () => {
                         navigate('/account');
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full text-left px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                      className="w-full rounded-lg px-4 py-3.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                     >
                       <User className="inline mr-2 h-4 w-4" />
                       Account Settings
@@ -306,7 +362,7 @@ const Navbar = () => {
                         navigate('/orders');
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full text-left px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                      className="w-full rounded-lg px-4 py-3.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                     >
                       <ShoppingCart className="inline mr-2 h-4 w-4" />
                       My Orders
@@ -317,7 +373,7 @@ const Navbar = () => {
                           navigate('/management');
                           setIsMobileMenuOpen(false);
                         }}
-                        className="w-full text-left px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                        className="w-full rounded-lg px-4 py-3.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                       >
                         Management Dashboard
                       </button>
@@ -327,7 +383,7 @@ const Navbar = () => {
                         handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full text-left px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                      className="w-full rounded-lg px-4 py-3.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                     >
                       Logout
                     </button>
@@ -338,7 +394,7 @@ const Navbar = () => {
                       navigate('/login');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full text-left px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors"
+                    className="w-full rounded-lg px-4 py-3.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground"
                   >
                     Login
                   </button>

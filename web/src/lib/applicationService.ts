@@ -41,6 +41,11 @@ export const applicationService = {
     return response.data;
   },
 
+  async getMyApplicationStatus() {
+    const response = await api.get(`${API_BASE_URL}/my-status`);
+    return response.data;
+  },
+
   async acceptApplication(id: string, adminNotes: string, salary?: number, joiningDate?: string) {
     const response = await api.put(`${API_BASE_URL}/${id}/accept`, { adminNotes, salary, joiningDate });
     return response.data;
