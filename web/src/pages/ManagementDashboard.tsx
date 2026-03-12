@@ -49,6 +49,7 @@ import {
   TrendingUp,
   UserCog,
   FileText,
+  Download,
   Eye,
   ThumbsUp,
   ThumbsDown
@@ -113,6 +114,33 @@ export default function ManagementDashboard() {
     const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
     const normalizedPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
     return `${apiOrigin}${normalizedPath}`;
+  };
+
+  const handleResumeDownload = async (resumePath: string, applicantName?: string) => {
+    try {
+      setError('');
+      const fileUrl = getFileUrl(resumePath);
+      const response = await fetch(fileUrl);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch resume: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const tempUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const fallbackName = applicantName ? `${applicantName.replace(/\s+/g, '_')}_Resume` : 'Resume';
+      const extension = fileUrl.split('.').pop()?.split(/\#|\?/)[0] || 'pdf';
+
+      link.href = tempUrl;
+      link.download = `${fallbackName}.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(tempUrl);
+    } catch (err: any) {
+      setError(err?.message || 'Unable to download resume. Please try again.');
+    }
   };
 
   // Form data
@@ -1258,9 +1286,26 @@ export default function ManagementDashboard() {
                                             <div>
                                               <Label className="text-muted-foreground">Resume URL</Label>
                                               {editingApplication.resume ? (
-                                                <a href={getFileUrl(editingApplication.resume)} target="_blank" rel="noopener noreferrer" className="mt-1 text-accent hover:underline break-all block">
-                                                  {getFileUrl(editingApplication.resume)}
-                                                </a>
+                                                <div className="mt-2 space-y-2">
+                                                  <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => handleResumeDownload(editingApplication.resume, editingApplication.name)}
+                                                    className="border-accent/40"
+                                                  >
+                                                    <Download className="mr-2 h-4 w-4" />
+                                                    Download Resume
+                                                  </Button>
+                                                  <a
+                                                    href={getFileUrl(editingApplication.resume)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-xs text-accent hover:underline break-all block"
+                                                  >
+                                                    {getFileUrl(editingApplication.resume)}
+                                                  </a>
+                                                </div>
                                               ) : (
                                                 <p className="mt-1 text-muted-foreground">Not provided</p>
                                               )}
