@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, IndianRupee } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Seo from "@/components/Seo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,144 +20,170 @@ type ServiceCategory = {
   services: ServiceItem[];
 };
 
+const serviceCategories: ServiceCategory[] = [
+  {
+    id: 'id-card',
+    title: 'ID Card Designs',
+    services: [
+      { name: 'School ID Card', price: '₹300 - ₹500' },
+      { name: 'College ID Card', price: '₹500 - ₹800' },
+      { name: 'Corporate ID Card', price: '₹800 - ₹1,500' },
+    ],
+  },
+  {
+    id: 'logo-design',
+    title: 'Logo Design',
+    services: [
+      { name: 'Basic Logo', price: '₹800 - ₹1,500' },
+      { name: 'Professional Logo', price: '₹1,500 - ₹4,000' },
+      { name: 'Premium Brand Logo', price: '₹5,000+' },
+    ],
+  },
+  {
+    id: 'printing-designs',
+    title: 'Printing Designs',
+    services: [
+      { name: 'Visiting Card', price: '₹300 - ₹700' },
+      { name: 'Letterhead', price: '₹300 - ₹600' },
+      { name: 'Invoice / Bill Book', price: '₹400 - ₹800' },
+      { name: 'Envelope Design', price: '₹150 - ₹400' },
+    ],
+  },
+  {
+    id: 'advertisement-designs',
+    title: 'Advertisement Designs',
+    services: [
+      { name: 'Poster Design', price: '₹500 - ₹1,200' },
+      { name: 'Flyer Design', price: '₹500 - ₹1,200' },
+      { name: 'Banner / Flex', price: '₹800 - ₹2,000' },
+    ],
+  },
+  {
+    id: 'social-media-designs',
+    title: 'Social Media Designs',
+    services: [
+      { name: 'Social Media Post', price: '₹200 - ₹500' },
+      { name: 'Instagram / Facebook Ad', price: '₹300 - ₹700' },
+      { name: 'Social Media Pack (10 Posts)', price: '₹1,500 - ₹3,000' },
+    ],
+  },
+  {
+    id: 'video-editing',
+    title: 'Video Editing',
+    services: [
+      { name: 'Basic Video Editing', price: '₹500 - ₹1,500' },
+      { name: 'YouTube Video Editing', price: '₹1,500 - ₹4,000' },
+      { name: 'Reel / Shorts Editing', price: '₹300 - ₹800' },
+      { name: 'Promo / Advertisement Video', price: '₹2,000 - ₹6,000' },
+    ],
+  },
+  {
+    id: 'photoshop-services',
+    title: 'Photoshop Services',
+    services: [
+      { name: 'Photo Editing / Retouch', price: '₹150 - ₹500' },
+      { name: 'Background Removal', price: '₹50 - ₹150 per image' },
+      { name: 'Photo Manipulation', price: '₹500 - ₹1,500' },
+      { name: 'Poster Photoshop Design', price: '₹500 - ₹1,200' },
+    ],
+  },
+  {
+    id: 'branding-designs',
+    title: 'Branding Designs',
+    services: [
+      { name: 'Vehicle / Lorry Design', price: '₹1,500 - ₹5,000' },
+      { name: 'Shop Board Design', price: '₹1,000 - ₹3,000' },
+      { name: 'Complete Branding Package', price: '₹3,000 - ₹8,000' },
+    ],
+  },
+  {
+    id: 'website-design',
+    title: 'Website Design',
+    services: [
+      { name: 'Basic Website Design (1-3 Pages)', price: '₹3,000 - ₹7,000' },
+      { name: 'Business Website (4-6 Pages)', price: '₹7,000 - ₹15,000' },
+      { name: 'Professional Website', price: '₹15,000 - ₹30,000' },
+      { name: 'Landing Page Design', price: '₹2,000 - ₹5,000' },
+    ],
+  },
+  {
+    id: 'website-development',
+    title: 'Website Development',
+    services: [
+      { name: 'Static Website Development', price: '₹5,000 - ₹12,000' },
+      { name: 'Dynamic Website Development', price: '₹12,000 - ₹35,000' },
+      { name: 'Portfolio Website', price: '₹5,000 - ₹10,000' },
+      { name: 'Blog Website', price: '₹6,000 - ₹12,000' },
+    ],
+  },
+  {
+    id: 'ecommerce-development',
+    title: 'E-Commerce Development',
+    services: [
+      { name: 'Basic Online Store', price: '₹15,000 - ₹30,000' },
+      { name: 'Medium E-Commerce Website', price: '₹30,000 - ₹60,000' },
+      { name: 'Advanced E-Commerce Platform', price: '₹60,000 - ₹1,50,000+' },
+    ],
+  },
+  {
+    id: 'web-maintenance',
+    title: 'Web Maintenance',
+    services: [
+      { name: 'Monthly Website Maintenance', price: '₹1,000 - ₹3,000' },
+      { name: 'Website Update / Bug Fix', price: '₹500 - ₹2,000' },
+    ],
+  },
+  {
+    id: 'software-development',
+    title: 'Software Development',
+    services: [
+      { name: 'Desktop Application', price: '₹5,000 - ₹25,000' },
+      { name: 'Custom Business Software', price: '₹15,000 - ₹80,000' },
+      { name: 'Management Systems (School / Shop / Office)', price: '₹10,000 - ₹50,000' },
+    ],
+  },
+  {
+    id: 'tech-services',
+    title: 'Other Tech Services',
+    services: [
+      { name: 'Website Hosting Setup', price: '₹1,000 - ₹3,000' },
+      { name: 'Domain Setup', price: '₹500 - ₹1,500' },
+      { name: 'Website Deployment', price: '₹1,000 - ₹3,000' },
+      { name: 'Bug Fixing / Code Debugging', price: '₹500 - ₹2,000' },
+    ],
+  },
+];
+
+const servicePageJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      name: 'RajKayal Creative Hub',
+      url: 'https://rkch.tech',
+      logo: 'https://rkch.tech/rklogofinal.png',
+    },
+    {
+      '@type': 'CollectionPage',
+      name: 'Design and Software Services Pricing',
+      url: 'https://rkch.tech/services',
+      description: 'Service pricing for branding, websites, UI/UX, social content, video editing, and custom software projects from RajKayal Creative Hub.',
+    },
+    {
+      '@type': 'ItemList',
+      itemListElement: serviceCategories.map((category, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: category.title,
+      })),
+    },
+  ],
+};
+
 const AllServicesPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('all');
-
-  const serviceCategories: ServiceCategory[] = [
-    {
-      id: 'id-card',
-      title: 'ID Card Designs',
-      services: [
-        { name: 'School ID Card', price: '₹300 - ₹500' },
-        { name: 'College ID Card', price: '₹500 - ₹800' },
-        { name: 'Corporate ID Card', price: '₹800 - ₹1,500' },
-      ],
-    },
-    {
-      id: 'logo-design',
-      title: 'Logo Design',
-      services: [
-        { name: 'Basic Logo', price: '₹800 - ₹1,500' },
-        { name: 'Professional Logo', price: '₹1,500 - ₹4,000' },
-        { name: 'Premium Brand Logo', price: '₹5,000+' },
-      ],
-    },
-    {
-      id: 'printing-designs',
-      title: 'Printing Designs',
-      services: [
-        { name: 'Visiting Card', price: '₹300 - ₹700' },
-        { name: 'Letterhead', price: '₹300 - ₹600' },
-        { name: 'Invoice / Bill Book', price: '₹400 - ₹800' },
-        { name: 'Envelope Design', price: '₹150 - ₹400' },
-      ],
-    },
-    {
-      id: 'advertisement-designs',
-      title: 'Advertisement Designs',
-      services: [
-        { name: 'Poster Design', price: '₹500 - ₹1,200' },
-        { name: 'Flyer Design', price: '₹500 - ₹1,200' },
-        { name: 'Banner / Flex', price: '₹800 - ₹2,000' },
-      ],
-    },
-    {
-      id: 'social-media-designs',
-      title: 'Social Media Designs',
-      services: [
-        { name: 'Social Media Post', price: '₹200 - ₹500' },
-        { name: 'Instagram / Facebook Ad', price: '₹300 - ₹700' },
-        { name: 'Social Media Pack (10 Posts)', price: '₹1,500 - ₹3,000' },
-      ],
-    },
-    {
-      id: 'video-editing',
-      title: 'Video Editing',
-      services: [
-        { name: 'Basic Video Editing', price: '₹500 - ₹1,500' },
-        { name: 'YouTube Video Editing', price: '₹1,500 - ₹4,000' },
-        { name: 'Reel / Shorts Editing', price: '₹300 - ₹800' },
-        { name: 'Promo / Advertisement Video', price: '₹2,000 - ₹6,000' },
-      ],
-    },
-    {
-      id: 'photoshop-services',
-      title: 'Photoshop Services',
-      services: [
-        { name: 'Photo Editing / Retouch', price: '₹150 - ₹500' },
-        { name: 'Background Removal', price: '₹50 - ₹150 per image' },
-        { name: 'Photo Manipulation', price: '₹500 - ₹1,500' },
-        { name: 'Poster Photoshop Design', price: '₹500 - ₹1,200' },
-      ],
-    },
-    {
-      id: 'branding-designs',
-      title: 'Branding Designs',
-      services: [
-        { name: 'Vehicle / Lorry Design', price: '₹1,500 - ₹5,000' },
-        { name: 'Shop Board Design', price: '₹1,000 - ₹3,000' },
-        { name: 'Complete Branding Package', price: '₹3,000 - ₹8,000' },
-      ],
-    },
-    {
-      id: 'website-design',
-      title: 'Website Design',
-      services: [
-        { name: 'Basic Website Design (1-3 Pages)', price: '₹3,000 - ₹7,000' },
-        { name: 'Business Website (4-6 Pages)', price: '₹7,000 - ₹15,000' },
-        { name: 'Professional Website', price: '₹15,000 - ₹30,000' },
-        { name: 'Landing Page Design', price: '₹2,000 - ₹5,000' },
-      ],
-    },
-    {
-      id: 'website-development',
-      title: 'Website Development',
-      services: [
-        { name: 'Static Website Development', price: '₹5,000 - ₹12,000' },
-        { name: 'Dynamic Website Development', price: '₹12,000 - ₹35,000' },
-        { name: 'Portfolio Website', price: '₹5,000 - ₹10,000' },
-        { name: 'Blog Website', price: '₹6,000 - ₹12,000' },
-      ],
-    },
-    {
-      id: 'ecommerce-development',
-      title: 'E-Commerce Development',
-      services: [
-        { name: 'Basic Online Store', price: '₹15,000 - ₹30,000' },
-        { name: 'Medium E-Commerce Website', price: '₹30,000 - ₹60,000' },
-        { name: 'Advanced E-Commerce Platform', price: '₹60,000 - ₹1,50,000+' },
-      ],
-    },
-    {
-      id: 'web-maintenance',
-      title: 'Web Maintenance',
-      services: [
-        { name: 'Monthly Website Maintenance', price: '₹1,000 - ₹3,000' },
-        { name: 'Website Update / Bug Fix', price: '₹500 - ₹2,000' },
-      ],
-    },
-    {
-      id: 'software-development',
-      title: 'Software Development',
-      services: [
-        { name: 'Desktop Application', price: '₹5,000 - ₹25,000' },
-        { name: 'Custom Business Software', price: '₹15,000 - ₹80,000' },
-        { name: 'Management Systems (School / Shop / Office)', price: '₹10,000 - ₹50,000' },
-      ],
-    },
-    {
-      id: 'tech-services',
-      title: 'Other Tech Services',
-      services: [
-        { name: 'Website Hosting Setup', price: '₹1,000 - ₹3,000' },
-        { name: 'Domain Setup', price: '₹500 - ₹1,500' },
-        { name: 'Website Deployment', price: '₹1,000 - ₹3,000' },
-        { name: 'Bug Fixing / Code Debugging', price: '₹500 - ₹2,000' },
-      ],
-    },
-  ];
 
   const categoryTabs = useMemo(
     () => [{ id: 'all', name: 'All Services' }, ...serviceCategories.map((category) => ({ id: category.id, name: category.title }))],
@@ -177,9 +204,29 @@ const AllServicesPage = () => {
 
   return (
     <div className="min-h-screen bg-[#080808] text-white">
-      <Navbar />
+      <Seo
+        title="Design & Software Services Pricing | RajKayal"
+        description="Browse RajKayal Creative Hub pricing for logos, branding, website design, web development, UI/UX, social media creatives, video editing, and custom software services."
+        canonicalPath="/services"
+        imagePath="/rajkayal-large.png"
+        imageWidth="256"
+        imageHeight="256"
+        keywords="RajKayal services, web development pricing, branding packages, UI UX design cost, logo design pricing, video editing services"
+        jsonLd={servicePageJsonLd}
+      />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[70] focus:rounded-md focus:bg-[#D4AF37] focus:px-4 focus:py-2 focus:text-black"
+      >
+        Skip to main content
+      </a>
 
-      <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-10 md:py-24">
+      <header>
+        <Navbar />
+      </header>
+
+      <main id="main-content">
+        <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-10 md:py-24">
         <div className="pointer-events-none absolute inset-0 opacity-20">
           <div className="absolute left-0 top-0 h-56 w-56 rounded-full bg-[#D4AF37]/20 blur-3xl" />
           <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#B68A2F]/20 blur-3xl" />
@@ -190,10 +237,13 @@ const AllServicesPage = () => {
             RajKayal Creative Hub
           </Badge>
           <h1 className="mx-auto mt-4 max-w-5xl text-2xl font-bold leading-tight text-[#F8E6A2] sm:text-3xl md:text-5xl lg:text-6xl">
-            Design &amp; Software Service Price List – 2026
+            Design &amp; Software Service Price List
           </h1>
-          <p className="mx-auto mt-3 max-w-3xl text-xs text-[#D5D5D5] sm:text-sm md:text-base">
-            Affordable and professional pricing for small businesses, schools, colleges, startups, and local town clients.
+          <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-[#D5D5D5] sm:text-base md:text-lg">
+            Affordable and professional pricing for small businesses, schools, colleges, startups, and local town clients who need branding, design, websites, and custom software support from a single creative partner.
+          </p>
+          <p className="mx-auto mt-4 max-w-4xl text-sm leading-7 text-[#CFCFCF] sm:text-base">
+            This page gives you a practical view of our starting price ranges, the categories we cover, and the kinds of deliverables you can request right away. If you need a logo, a shop board, a school ID card, a landing page, an online store, or an internal business tool, you can use this list to estimate scope before booking a consultation. Every project can still be tailored based on complexity, turnaround time, quantity, content requirements, and revisions.
           </p>
           <div className="mt-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
             {categoryTabs.slice(1, 7).map((tab) => (
@@ -203,9 +253,12 @@ const AllServicesPage = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      <section className="sticky top-0 z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:py-4">
+        <section aria-labelledby="pricing-filters" className="sticky top-0 z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:py-4">
+        <div className="sr-only">
+          <h2 id="pricing-filters">Filter service categories</h2>
+        </div>
         <div className="mx-auto w-full max-w-screen-xl overflow-hidden px-3 sm:px-4">
           <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
             {categoryTabs.map((category) => (
@@ -225,10 +278,54 @@ const AllServicesPage = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      <section className="py-6 md:py-14">
+        <section className="border-b border-[#D4AF37]/15 bg-[#090909] py-8 md:py-12">
+          <div className="container mx-auto grid gap-6 px-4 md:grid-cols-[1.5fr_1fr]">
+            <article className="rounded-2xl border border-[#D4AF37]/15 bg-[#111111] p-6 shadow-[0_0_0_1px_rgba(212,175,55,0.03)]">
+              <h2 className="text-2xl font-semibold text-[#F6D77A]">How to use this service catalog</h2>
+              <p className="mt-4 text-sm leading-7 text-[#D8D8D8] sm:text-base">
+                The amounts shown here are realistic starting ranges for common design and software requests. Simple tasks such as basic logo work, social media creatives, background removal, or single poster layouts stay near the lower end. Projects with deeper strategy, more pages, custom illustrations, animation work, integrations, or multiple revision rounds usually move toward the upper end.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-[#D8D8D8] sm:text-base">
+                We also work with bundled requirements. Schools and colleges often combine ID cards, notices, letterheads, and web updates. Local businesses usually request branding, storefront graphics, social media post packs, and a business website together. Startups often need UI design, a launch landing page, product explainers, and ongoing maintenance in one coordinated plan.
+              </p>
+              <p className="mt-4 text-sm leading-7 text-[#D8D8D8] sm:text-base">
+                If your requirement does not fit neatly into one card, use the consultation or enquiry links below. We can prepare a custom package based on your timeline, asset readiness, content support needs, domain or hosting setup, and how much ongoing technical support you want after launch.
+              </p>
+            </article>
+
+            <aside className="rounded-2xl border border-[#D4AF37]/15 bg-[#111111] p-6">
+              <h2 className="text-xl font-semibold text-[#F6D77A]">Explore related pages</h2>
+              <nav aria-label="Related service pages" className="mt-4 space-y-3">
+                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/services-overview">
+                  View the full services overview
+                </Link>
+                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/branding-identity">
+                  Browse branding and identity projects
+                </Link>
+                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/web-development">
+                  Explore web development capabilities
+                </Link>
+                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/uiux-design">
+                  Review UI/UX design services
+                </Link>
+                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/contact">
+                  Contact the RajKayal team
+                </Link>
+              </nav>
+            </aside>
+          </div>
+        </section>
+
+        <section id="services-content" aria-labelledby="pricing-list-heading" className="py-6 md:py-14">
         <div className="container mx-auto px-3 sm:px-4">
+          <div className="mb-6 md:mb-8">
+            <h2 id="pricing-list-heading" className="text-2xl font-semibold text-[#F6D77A] sm:text-3xl">Service pricing by category</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#D2D2D2] sm:text-base">
+              Compare our pricing across design, branding, web, e-commerce, maintenance, and software development services. Use the category filter to narrow the list or send an enquiry directly from any category card.
+            </p>
+          </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
             {filteredCategories.map((category) => (
               <Card
@@ -270,40 +367,26 @@ const AllServicesPage = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      <section className="border-t border-[#D4AF37]/20 bg-[#0A0A0A] py-10 md:py-14">
+        <section className="border-t border-[#D4AF37]/20 bg-[#0A0A0A] py-10 md:py-14">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-xl font-bold text-[#F6D77A] sm:text-2xl md:text-3xl">Custom Packages Available</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-xs text-[#D0D0D0] sm:text-sm md:text-base">
-            We create tailored plans for schools, colleges, small businesses, startups, and local brands across India.
+          <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-[#D0D0D0] sm:text-base">
+            We create tailored plans for schools, colleges, small businesses, startups, and local brands across India. If you need recurring design support, a launch bundle, or a combined website and branding package, we can structure scope and pricing around your exact goals.
           </p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button
-              onClick={() => {
-                navigate('/');
-                setTimeout(() => {
-                  const element = document.querySelector('#contact');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                  }
-                  window.history.replaceState(null, '', '/?type=consultation#contact');
-                }, 100);
-              }}
-              className="bg-[#D4AF37] font-semibold text-black hover:bg-[#C59B2F]"
-            >
-              Get Free Consultation
+            <Button asChild className="bg-[#D4AF37] font-semibold text-black hover:bg-[#C59B2F]">
+              <Link to="/contact">Get Free Consultation</Link>
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/#portfolio')}
-              className="border-[#D4AF37]/50 bg-transparent text-[#F6D77A] hover:bg-[#D4AF37]/10"
-            >
-              View Our Work
+            <Button asChild variant="outline" className="border-[#D4AF37]/50 bg-transparent text-[#F6D77A] hover:bg-[#D4AF37]/10">
+              <Link to="/case-studies">View Our Work</Link>
             </Button>
           </div>
         </div>
-      </section>
+        </section>
+      </main>
+
       <Footer />
     </div>
   );

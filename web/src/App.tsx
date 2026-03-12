@@ -82,7 +82,7 @@ const AppContent = () => {
         <Route path="/login" element={<main><Login /></main>} />
         <Route path="/register" element={<main><Register /></main>} />
         <Route path="/verify-otp" element={<main><Suspense fallback={<PageLoader />}><VerifyOTP /></Suspense></main>} />
-        <Route path="/services" element={<main><Suspense fallback={<PageLoader />}><AllServicesPage /></Suspense></main>} />
+        <Route path="/services" element={<Suspense fallback={<PageLoader />}><AllServicesPage /></Suspense>} />
         <Route path="/services-overview" element={<main><Suspense fallback={<PageLoader />}><ServicesPage /></Suspense></main>} />
         <Route path="/branding-identity" element={<main><Suspense fallback={<PageLoader />}><BrandingIdentityPage /></Suspense></main>} />
         <Route path="/branding-identity/:id" element={<main><Suspense fallback={<PageLoader />}><BrandingDetailPage /></Suspense></main>} />
