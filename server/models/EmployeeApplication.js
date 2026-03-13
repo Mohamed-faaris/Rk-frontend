@@ -66,6 +66,10 @@ const employeeApplicationSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  linkedin: {
+    type: String,
+    trim: true
+  },
   resume: {
     type: String,
     trim: true

@@ -42,6 +42,7 @@ const Contact = () => {
     education: "",
     skills: "",
     portfolio: "",
+    linkedin: "",
     resume: "",
     coverLetter: "",
     expectedSalary: "",
@@ -148,6 +149,7 @@ const Contact = () => {
         education: "",
         skills: "",
         portfolio: "",
+        linkedin: "",
         resume: "",
         coverLetter: "",
         expectedSalary: "",
@@ -520,12 +522,23 @@ const Contact = () => {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Resume URL</label>
+                          <label className="text-sm font-medium">LinkedIn URL</label>
+                          <Input
+                            type="url"
+                            value={applicationForm.linkedin}
+                            onChange={(e) => setApplicationForm({...applicationForm, linkedin: e.target.value})}
+                            placeholder="https://www.linkedin.com/in/your-profile"
+                            className="bg-background border-border focus:border-accent"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Resume URL *</label>
                           <Input
                             type="url"
                             value={applicationForm.resume}
                             onChange={(e) => setApplicationForm({...applicationForm, resume: e.target.value})}
                             placeholder="https://link-to-your-resume.com"
+                            required
                             className="bg-background border-border focus:border-accent"
                           />
                         </div>

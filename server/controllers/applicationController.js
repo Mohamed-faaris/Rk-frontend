@@ -13,17 +13,11 @@ const __dirname = path.dirname(__filename);
 // @access  Public
 export const submitApplication = async (req, res, next) => {
   try {
-    const { name, email, address1, address2, phone, position, department, experience, education, skills, portfolio, resume, coverLetter, expectedSalary, workPreference } = req.body;
+    const { name, email, address1, address2, phone, position, department, experience, education, skills, portfolio, linkedin, resume, coverLetter, expectedSalary, workPreference } = req.body;
 
     // Resume is now collected as a URL link.
     const resumeUrl = (resume || '').trim();
-    let profilePhotoPath = '';
-
-    if (req.files) {
-      if (req.files.profilePhoto && req.files.profilePhoto[0]) {
-        profilePhotoPath = `/uploads/${req.files.profilePhoto[0].filename}`;
-      }
-    }
+    const linkedInUrl = (linkedin || '').trim();
 
     // Validation
     if (!name || !email || !address1 || !phone || !position || !department || !experience || !education || !skills || !coverLetter || !expectedSalary) {
@@ -41,6 +35,17 @@ export const submitApplication = async (req, res, next) => {
       }
     } catch {
       return res.status(400).json({ error: 'Please provide a valid resume URL' });
+    }
+
+    if (linkedInUrl) {
+      try {
+        const parsedLinkedInUrl = new URL(linkedInUrl);
+        if (!['http:', 'https:'].includes(parsedLinkedInUrl.protocol) || !parsedLinkedInUrl.hostname.includes('linkedin.com')) {
+          return res.status(400).json({ error: 'Please provide a valid LinkedIn profile URL' });
+        }
+      } catch {
+        return res.status(400).json({ error: 'Please provide a valid LinkedIn profile URL' });
+      }
     }
 
     // Validate expectedSalary is a valid number
@@ -68,8 +73,8 @@ export const submitApplication = async (req, res, next) => {
       education,
       skills,
       portfolio,
+      linkedin: linkedInUrl,
       resume: resumeUrl,
-      profilePhoto: profilePhotoPath,
       coverLetter,
       expectedSalary: Number(expectedSalary),
       workPreference
@@ -92,20 +97,13 @@ export const submitApplication = async (req, res, next) => {
 export const submitPositionApplication = async (req, res, next) => {
   console.log('Position application submission started');
   try {
-    const { name, email, phone, education, experience, skills, portfolio, resume, coverLetter, expectedSalary, positionId, positionTitle, department } = req.body;
+    const { name, email, phone, education, experience, skills, portfolio, linkedin, resume, coverLetter, expectedSalary, positionId, positionTitle, department } = req.body;
 
     console.log('Received position application data:', { name, email, positionId, positionTitle });
 
     // Resume is now collected as a URL link.
     const resumeUrl = (resume || '').trim();
-    let profilePhotoPath = '';
-
-    if (req.files) {
-      if (req.files.profilePhoto && req.files.profilePhoto[0]) {
-        profilePhotoPath = `/uploads/${req.files.profilePhoto[0].filename}`;
-        console.log('Profile photo uploaded:', profilePhotoPath);
-      }
-    }
+    const linkedInUrl = (linkedin || '').trim();
 
     // Validation
     if (!name || !email || !phone || !education || !experience || !skills || !coverLetter || !expectedSalary || !positionId || !positionTitle || !department) {
@@ -124,6 +122,17 @@ export const submitPositionApplication = async (req, res, next) => {
       }
     } catch {
       return res.status(400).json({ error: 'Please provide a valid resume URL' });
+    }
+
+    if (linkedInUrl) {
+      try {
+        const parsedLinkedInUrl = new URL(linkedInUrl);
+        if (!['http:', 'https:'].includes(parsedLinkedInUrl.protocol) || !parsedLinkedInUrl.hostname.includes('linkedin.com')) {
+          return res.status(400).json({ error: 'Please provide a valid LinkedIn profile URL' });
+        }
+      } catch {
+        return res.status(400).json({ error: 'Please provide a valid LinkedIn profile URL' });
+      }
     }
 
     // Validate expectedSalary is a valid number
@@ -153,8 +162,8 @@ export const submitPositionApplication = async (req, res, next) => {
       education,
       skills,
       portfolio,
+      linkedin: linkedInUrl,
       resume: resumeUrl,
-      profilePhoto: profilePhotoPath,
       coverLetter,
       expectedSalary: Number(expectedSalary),
       workPreference: 'Full-time', // Default for position applications
@@ -359,7 +368,7 @@ export const acceptApplication = async (req, res, next) => {
       joiningDate: joiningDate || new Date(),
       status: 'Active',
       skills: application.skills ? application.skills.split(',').map(skill => skill.trim()) : [],
-      avatar: application.profilePhoto || '',
+      avatar: '',
       address: address
     });
 

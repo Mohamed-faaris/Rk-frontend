@@ -1338,22 +1338,6 @@ export default function ManagementDashboard() {
                                               <p className="mt-1 font-medium">{editingApplication.education}</p>
                                             </div>
                                           </div>
-                                          {/* Profile Photo */}
-                                          {editingApplication.profilePhoto && (
-                                            <div className="mt-4">
-                                              <Label className="text-muted-foreground">Profile Photo</Label>
-                                              <div className="mt-2">
-                                                <img
-                                                  src={getFileUrl(editingApplication.profilePhoto)}
-                                                  alt={`${editingApplication.name}'s profile`}
-                                                  className="w-24 h-24 rounded-full object-cover border-2 border-border"
-                                                  onError={(e) => {
-                                                    e.currentTarget.style.display = 'none';
-                                                  }}
-                                                />
-                                              </div>
-                                            </div>
-                                          )}
                                         </div>
 
                                         {/* Position Details */}
@@ -1396,6 +1380,16 @@ export default function ManagementDashboard() {
                                               {editingApplication.portfolio ? (
                                                 <a href={editingApplication.portfolio} target="_blank" rel="noopener noreferrer" className="mt-1 text-accent hover:underline block">
                                                   {editingApplication.portfolio}
+                                                </a>
+                                              ) : (
+                                                <p className="mt-1 text-muted-foreground">Not provided</p>
+                                              )}
+                                            </div>
+                                            <div>
+                                              <Label className="text-muted-foreground">LinkedIn URL</Label>
+                                              {editingApplication.linkedin ? (
+                                                <a href={editingApplication.linkedin} target="_blank" rel="noopener noreferrer" className="mt-1 text-accent hover:underline block break-words">
+                                                  {editingApplication.linkedin}
                                                 </a>
                                               ) : (
                                                 <p className="mt-1 text-muted-foreground">Not provided</p>

@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
-import DragDropUpload from '@/components/DragDropUpload';
 import { logger } from '@/lib/logger';
 import {
   Select,
@@ -40,12 +39,12 @@ const ApplyForEmployee = () => {
     education: '',
     skills: '',
     portfolio: '',
+    linkedin: '',
     resume: '',
     coverLetter: '',
     expectedSalary: '',
     workPreference: 'Full-time'
   });
-  const [profilePhotoFile, setProfilePhotoFile] = useState<File[]>([]);
   const statusQuery = new URLSearchParams(location.search).get('status');
   const applicationStatus = statusQuery === 'accepted' || statusQuery === 'rejected' ? statusQuery : null;
 
@@ -71,19 +70,7 @@ const ApplyForEmployee = () => {
     setIsLoading(true);
 
     try {
-      const formDataToSend = new FormData();
-      
-      // Add text fields
-      Object.keys(formData).forEach(key => {
-        formDataToSend.append(key, formData[key as keyof typeof formData]);
-      });
-
-      // Add files
-      if (profilePhotoFile.length > 0) {
-        formDataToSend.append('profilePhoto', profilePhotoFile[0]);
-      }
-
-      await applicationService.submitApplication(formDataToSend);
+      await applicationService.submitApplication(formData);
       setSuccess('Application submitted successfully! Our team will review your application shortly.');
       setTimeout(() => navigate('/'), 2000);
     } catch (err: unknown) {
@@ -303,20 +290,20 @@ const ApplyForEmployee = () => {
                   </div>
                 </div>
 
-                {/* Profile Photo */}
+                {/* Professional Links */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Profile Information</h3>
-
-                  <DragDropUpload
-                    label="Profile Photo *"
-                    description="Upload a professional profile photo"
-                    acceptedFormats={['.jpg', '.jpeg', '.png', '.webp']}
-                    maxSize={2 * 1024 * 1024} // 2MB for photos
-                    type="photo"
-                    onFilesSelected={setProfilePhotoFile}
-                    value={profilePhotoFile}
-                    disabled={isLoading}
-                  />
+                  <h3 className="text-lg font-semibold">Professional Links</h3>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">LinkedIn URL</label>
+                    <Input
+                      type="url"
+                      name="linkedin"
+                      value={formData.linkedin}
+                      onChange={handleChange}
+                      placeholder="https://www.linkedin.com/in/your-profile"
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
 
                 {/* Skills and Experience */}
