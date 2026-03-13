@@ -48,6 +48,7 @@ const serviceCatalog = [
       { name: 'Poster Design', price: '₹500 - ₹1,200' },
       { name: 'Flyer Design', price: '₹500 - ₹1,200' },
       { name: 'Banner / Flex', price: '₹800 - ₹2,000' },
+      { name: 'Invitation Design', price: '₹300 - ₹1,500' },
     ],
   },
   {
