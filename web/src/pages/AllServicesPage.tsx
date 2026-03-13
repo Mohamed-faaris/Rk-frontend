@@ -81,7 +81,7 @@ const AllServicesPage = () => {
         <Navbar />
       </header>
 
-      <main id="main-content">
+      <main id="main-content" className="pt-16 md:pt-20">
         <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-10 md:py-24">
         <div className="pointer-events-none absolute inset-0 opacity-20">
           <div className="absolute left-0 top-0 h-56 w-56 rounded-full bg-[#D4AF37]/20 blur-3xl" />
@@ -111,7 +111,7 @@ const AllServicesPage = () => {
         </div>
         </section>
 
-        <section aria-labelledby="pricing-filters" className="sticky top-0 z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:py-4">
+        <section aria-labelledby="pricing-filters" className="sticky top-16 z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:top-20 md:py-4">
         <div className="sr-only">
           <h2 id="pricing-filters">Filter service categories</h2>
         </div>
@@ -196,10 +196,10 @@ const AllServicesPage = () => {
                     {category.services.map((service) => (
                       <div
                         key={`${category.id}-${service.name}`}
-                        className="grid grid-cols-[1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-2.5 transition-colors hover:border-[#D4AF37]/20 hover:bg-[#D4AF37]/5 active:bg-[#D4AF37]/10"
+                        className="grid grid-cols-1 items-center gap-2 rounded-md border border-transparent px-2 py-2.5 transition-colors hover:border-[#D4AF37]/20 hover:bg-[#D4AF37]/5 active:bg-[#D4AF37]/10 sm:grid-cols-[1fr_auto]"
                       >
                         <p className="min-w-0 break-normal text-xs leading-relaxed text-[#EFEFEF] sm:text-sm md:text-[15px]">{service.name}</p>
-                        <div className="flex shrink-0 items-center justify-end whitespace-nowrap text-xs font-semibold text-[#F6D77A] sm:text-sm md:text-[15px]">
+                        <div className="mt-1 flex items-center justify-start whitespace-normal text-xs font-semibold text-[#F6D77A] sm:mt-0 sm:justify-end sm:whitespace-nowrap sm:text-sm md:text-[15px]">
                           <IndianRupee className="mr-0.5 h-3 w-3 sm:h-4 sm:w-4" />
                           <span>{service.price.replace('₹', '')}</span>
                         </div>

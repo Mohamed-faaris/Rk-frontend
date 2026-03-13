@@ -180,7 +180,7 @@ const Navbar = () => {
           {/* Logo */}
           <a href="#home" onClick={handleLogoClick} className="flex items-center space-x-2 md:space-x-3 group cursor-pointer min-w-0">
             <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-9 w-9 md:h-12 md:w-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(253,185,19,0.3)] transition-all duration-300" />
-            <span className="brand-display hidden font-bold text-sm bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent whitespace-nowrap sm:inline md:text-lg">
+            <span className="brand-display hidden font-bold text-sm bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent whitespace-nowrap md:inline md:text-lg">
               RajKayal Creative Hub
             </span>
           </a>
@@ -297,7 +297,7 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => navigate('/login')} className="hidden sm:inline-flex">
+              <Button onClick={() => navigate('/login')} className="hidden md:inline-flex">
                 Login
               </Button>
             )}
