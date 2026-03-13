@@ -170,6 +170,24 @@ export default function ManagementDashboard() {
     if (normalizedPath.startsWith('/uploads/')) {
       candidates.add(`${window.location.origin}${encodedPath}`);
       candidates.add(`${apiOrigin}${encodedPath}`);
+
+      // Legacy safety: some records may store unsanitized names (spaces/parentheses),
+      // while files on disk are saved with sanitized names.
+      const filename = normalizedPath.split('/').pop() || '';
+      const dotIndex = filename.lastIndexOf('.');
+      const namePart = dotIndex >= 0 ? filename.slice(0, dotIndex) : filename;
+      const extPart = dotIndex >= 0 ? filename.slice(dotIndex) : '';
+      const decodedNamePart = decodeURIComponent(namePart);
+      const safeNamePart = decodedNamePart
+        .replace(/[^a-zA-Z0-9._-]/g, '-')
+        .replace(/-+/g, '-');
+
+      if (safeNamePart && safeNamePart !== decodedNamePart) {
+        const safeFilename = `${safeNamePart}${extPart}`;
+        const safeEncodedPath = encodePathSegments(`/uploads/${safeFilename}`);
+        candidates.add(`${window.location.origin}${safeEncodedPath}`);
+        candidates.add(`${apiOrigin}${safeEncodedPath}`);
+      }
     }
 
     // Try original absolute URL if provided by DB.
