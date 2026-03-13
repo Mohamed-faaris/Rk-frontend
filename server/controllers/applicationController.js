@@ -15,14 +15,11 @@ export const submitApplication = async (req, res, next) => {
   try {
     const { name, email, address1, address2, phone, position, department, experience, education, skills, portfolio, resume, coverLetter, expectedSalary, workPreference } = req.body;
 
-    // Handle file uploads
-    let resumePath = resume || '';
+    // Resume is now collected as a URL link.
+    const resumeUrl = (resume || '').trim();
     let profilePhotoPath = '';
 
     if (req.files) {
-      if (req.files.resumeFile && req.files.resumeFile[0]) {
-        resumePath = `/uploads/${req.files.resumeFile[0].filename}`;
-      }
       if (req.files.profilePhoto && req.files.profilePhoto[0]) {
         profilePhotoPath = `/uploads/${req.files.profilePhoto[0].filename}`;
       }
@@ -31,6 +28,19 @@ export const submitApplication = async (req, res, next) => {
     // Validation
     if (!name || !email || !address1 || !phone || !position || !department || !experience || !education || !skills || !coverLetter || !expectedSalary) {
       return res.status(400).json({ error: 'Please provide all required fields' });
+    }
+
+    if (!resumeUrl) {
+      return res.status(400).json({ error: 'Please provide your resume URL' });
+    }
+
+    try {
+      const parsedResumeUrl = new URL(resumeUrl);
+      if (!['http:', 'https:'].includes(parsedResumeUrl.protocol)) {
+        return res.status(400).json({ error: 'Resume URL must start with http:// or https://' });
+      }
+    } catch {
+      return res.status(400).json({ error: 'Please provide a valid resume URL' });
     }
 
     // Validate expectedSalary is a valid number
@@ -58,7 +68,7 @@ export const submitApplication = async (req, res, next) => {
       education,
       skills,
       portfolio,
-      resume: resumePath,
+      resume: resumeUrl,
       profilePhoto: profilePhotoPath,
       coverLetter,
       expectedSalary: Number(expectedSalary),
@@ -82,19 +92,15 @@ export const submitApplication = async (req, res, next) => {
 export const submitPositionApplication = async (req, res, next) => {
   console.log('Position application submission started');
   try {
-    const { name, email, phone, education, experience, skills, portfolio, coverLetter, expectedSalary, positionId, positionTitle, department } = req.body;
+    const { name, email, phone, education, experience, skills, portfolio, resume, coverLetter, expectedSalary, positionId, positionTitle, department } = req.body;
 
     console.log('Received position application data:', { name, email, positionId, positionTitle });
 
-    // Handle file uploads
-    let resumePath = '';
+    // Resume is now collected as a URL link.
+    const resumeUrl = (resume || '').trim();
     let profilePhotoPath = '';
 
     if (req.files) {
-      if (req.files.resumeFile && req.files.resumeFile[0]) {
-        resumePath = `/uploads/${req.files.resumeFile[0].filename}`;
-        console.log('Resume uploaded:', resumePath);
-      }
       if (req.files.profilePhoto && req.files.profilePhoto[0]) {
         profilePhotoPath = `/uploads/${req.files.profilePhoto[0].filename}`;
         console.log('Profile photo uploaded:', profilePhotoPath);
@@ -105,6 +111,19 @@ export const submitPositionApplication = async (req, res, next) => {
     if (!name || !email || !phone || !education || !experience || !skills || !coverLetter || !expectedSalary || !positionId || !positionTitle || !department) {
       console.log('Validation failed - missing required fields');
       return res.status(400).json({ error: 'Please provide all required fields' });
+    }
+
+    if (!resumeUrl) {
+      return res.status(400).json({ error: 'Please provide your resume URL' });
+    }
+
+    try {
+      const parsedResumeUrl = new URL(resumeUrl);
+      if (!['http:', 'https:'].includes(parsedResumeUrl.protocol)) {
+        return res.status(400).json({ error: 'Resume URL must start with http:// or https://' });
+      }
+    } catch {
+      return res.status(400).json({ error: 'Please provide a valid resume URL' });
     }
 
     // Validate expectedSalary is a valid number
@@ -134,7 +153,7 @@ export const submitPositionApplication = async (req, res, next) => {
       education,
       skills,
       portfolio,
-      resume: resumePath,
+      resume: resumeUrl,
       profilePhoto: profilePhotoPath,
       coverLetter,
       expectedSalary: Number(expectedSalary),

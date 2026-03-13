@@ -18,14 +18,12 @@ const router = express.Router();
 
 // Public routes
 router.post('/apply', upload.fields([
-  { name: 'resumeFile', maxCount: 1 },
   { name: 'profilePhoto', maxCount: 1 }
 ]), submitApplication);
 router.post('/apply-position', (req, res, next) => {
   console.log('Route /apply-position hit');
   next();
 }, upload.fields([
-  { name: 'resumeFile', maxCount: 1 },
   { name: 'profilePhoto', maxCount: 1 }
 ]), submitPositionApplication);
 

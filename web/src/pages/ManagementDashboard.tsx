@@ -201,6 +201,12 @@ export default function ManagementDashboard() {
   const handleResumeDownload = async (resumePath: string, applicantName?: string, applicationId?: string) => {
     try {
       setError('');
+
+      if (/^https?:\/\//i.test(resumePath || '')) {
+        window.open(resumePath, '_blank', 'noopener,noreferrer');
+        return;
+      }
+
       let blob: Blob | null = null;
       let fileUrl = '';
 
@@ -1407,7 +1413,7 @@ export default function ManagementDashboard() {
                                                     className="border-accent/40"
                                                   >
                                                     <Download className="mr-2 h-4 w-4" />
-                                                    Download Resume
+                                                    Open Resume
                                                   </Button>
                                                   <a
                                                     href={getFileUrl(editingApplication.resume)}

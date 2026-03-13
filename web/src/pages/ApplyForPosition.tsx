@@ -42,7 +42,6 @@ const ApplyForPosition = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [position, setPosition] = useState<Position | null>(null);
-  const [resumeFile, setResumeFile] = useState<File[]>([]);
   const [profilePhotoFile, setProfilePhotoFile] = useState<File[]>([]);
   const statusQuery = new URLSearchParams(location.search).get('status');
   const applicationStatus = statusQuery === 'accepted' || statusQuery === 'rejected' ? statusQuery : null;
@@ -54,6 +53,7 @@ const ApplyForPosition = () => {
     experience: '',
     skills: '',
     portfolio: '',
+    resume: '',
     coverLetter: '',
     expectedSalary: '',
   });
@@ -116,9 +116,6 @@ const ApplyForPosition = () => {
       formDataToSend.append('department', position?.department || '');
 
       // Add files
-      if (resumeFile.length > 0) {
-        formDataToSend.append('resumeFile', resumeFile[0]);
-      }
       if (profilePhotoFile.length > 0) {
         formDataToSend.append('profilePhoto', profilePhotoFile[0]);
       }
@@ -389,16 +386,18 @@ const ApplyForPosition = () => {
                     />
                   </div>
 
-                  <DragDropUpload
-                    label="Resume/CV *"
-                    description="Upload your resume or CV as PDF"
-                    acceptedFormats={['.pdf', '.doc', '.docx']}
-                    maxSize={5 * 1024 * 1024}
-                    type="resume"
-                    onFilesSelected={setResumeFile}
-                    value={resumeFile}
-                    disabled={isLoading}
-                  />
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Resume URL *</label>
+                    <Input
+                      type="url"
+                      name="resume"
+                      value={formData.resume}
+                      onChange={handleChange}
+                      placeholder="https://drive.google.com/... or https://yourdomain.com/resume.pdf"
+                      required
+                      disabled={isLoading}
+                    />
+                  </div>
                 </div>
 
                 {/* Expected Salary */}

@@ -45,7 +45,6 @@ const ApplyForEmployee = () => {
     expectedSalary: '',
     workPreference: 'Full-time'
   });
-  const [resumeFile, setResumeFile] = useState<File[]>([]);
   const [profilePhotoFile, setProfilePhotoFile] = useState<File[]>([]);
   const statusQuery = new URLSearchParams(location.search).get('status');
   const applicationStatus = statusQuery === 'accepted' || statusQuery === 'rejected' ? statusQuery : null;
@@ -80,9 +79,6 @@ const ApplyForEmployee = () => {
       });
 
       // Add files
-      if (resumeFile.length > 0) {
-        formDataToSend.append('resumeFile', resumeFile[0]);
-      }
       if (profilePhotoFile.length > 0) {
         formDataToSend.append('profilePhoto', profilePhotoFile[0]);
       }
@@ -352,25 +348,15 @@ const ApplyForEmployee = () => {
                     />
                   </div>
 
-                  <DragDropUpload
-                    label="Resume/CV *"
-                    description="Upload your resume or CV as PDF"
-                    acceptedFormats={['.pdf', '.doc', '.docx']}
-                    maxSize={5 * 1024 * 1024} // 5MB for documents
-                    type="resume"
-                    onFilesSelected={setResumeFile}
-                    value={resumeFile}
-                    disabled={isLoading}
-                  />
-
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Resume URL (Optional)</label>
+                    <label className="text-sm font-medium mb-2 block">Resume URL *</label>
                     <Input
                       type="url"
                       name="resume"
                       value={formData.resume}
                       onChange={handleChange}
-                      placeholder="https://yourresume.com"
+                      placeholder="https://drive.google.com/... or https://yourdomain.com/resume.pdf"
+                      required
                       disabled={isLoading}
                     />
                   </div>
