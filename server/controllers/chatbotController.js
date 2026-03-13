@@ -1,199 +1,431 @@
 import ChatMessage from '../models/ChatMessage.js';
 
-// Service details with links
-const serviceLinks = {
-  webDevelopment: {
-    name: 'Web Development',
-    link: '/web-development',
-    keywords: ['web', 'website', 'web development', 'web app', 'web application', 'frontend', 'backend', 'full stack', 'develop', 'create website', 'build website', 'responsive'],
-    description: 'Custom web applications, responsive websites, and web solutions'
+const serviceCatalog = [
+  {
+    id: 'id-card',
+    name: 'ID Card Designs',
+    link: '/services',
+    description: 'School, college, and corporate ID card design services.',
+    keywords: ['id card', 'identity card', 'school id', 'college id', 'corporate id', 'employee id'],
+    services: [
+      { name: 'School ID Card', price: '₹300 - ₹500' },
+      { name: 'College ID Card', price: '₹500 - ₹800' },
+      { name: 'Corporate ID Card', price: '₹800 - ₹1,500' },
+    ],
   },
-  branding: {
-    name: 'Branding & Identity',
+  {
+    id: 'logo-design',
+    name: 'Logo Design',
+    link: '/services',
+    description: 'Basic, professional, and premium brand logo packages.',
+    keywords: ['logo', 'logo design', 'brand logo', 'professional logo', 'premium logo'],
+    services: [
+      { name: 'Basic Logo', price: '₹800 - ₹1,500' },
+      { name: 'Professional Logo', price: '₹1,500 - ₹4,000' },
+      { name: 'Premium Brand Logo', price: '₹5,000+' },
+    ],
+  },
+  {
+    id: 'printing-designs',
+    name: 'Printing Designs',
+    link: '/services',
+    description: 'Print-ready brand stationery and business collateral.',
+    keywords: ['visiting card', 'business card', 'letterhead', 'invoice', 'bill book', 'envelope design', 'print design', 'printing design'],
+    services: [
+      { name: 'Visiting Card', price: '₹300 - ₹700' },
+      { name: 'Letterhead', price: '₹300 - ₹600' },
+      { name: 'Invoice / Bill Book', price: '₹400 - ₹800' },
+      { name: 'Envelope Design', price: '₹150 - ₹400' },
+    ],
+  },
+  {
+    id: 'advertisement-designs',
+    name: 'Advertisement Designs',
+    link: '/services',
+    description: 'Posters, flyers, banners, and outdoor ad creatives.',
+    keywords: ['poster', 'flyer', 'banner', 'flex', 'advertisement', 'ad design', 'promo poster'],
+    services: [
+      { name: 'Poster Design', price: '₹500 - ₹1,200' },
+      { name: 'Flyer Design', price: '₹500 - ₹1,200' },
+      { name: 'Banner / Flex', price: '₹800 - ₹2,000' },
+    ],
+  },
+  {
+    id: 'social-media-designs',
+    name: 'Social Media Designs',
+    link: '/services',
+    description: 'Social media post design, ad creatives, and post packs.',
+    keywords: ['social media', 'instagram post', 'facebook ad', 'social post', 'social media post', 'social media pack', 'instagram ad'],
+    services: [
+      { name: 'Social Media Post', price: '₹200 - ₹500' },
+      { name: 'Instagram / Facebook Ad', price: '₹300 - ₹700' },
+      { name: 'Social Media Pack (10 Posts)', price: '₹1,500 - ₹3,000' },
+    ],
+  },
+  {
+    id: 'video-editing',
+    name: 'Video Editing',
+    link: '/services',
+    description: 'Editing for YouTube videos, reels, promos, and ad creatives.',
+    keywords: ['video editing', 'youtube editing', 'youtube video', 'reel editing', 'shorts editing', 'promo video', 'advertisement video', 'video editor'],
+    services: [
+      { name: 'Basic Video Editing', price: '₹500 - ₹1,500' },
+      { name: 'YouTube Video Editing', price: '₹1,500 - ₹4,000' },
+      { name: 'Reel / Shorts Editing', price: '₹300 - ₹800' },
+      { name: 'Promo / Advertisement Video', price: '₹2,000 - ₹6,000' },
+    ],
+  },
+  {
+    id: 'photoshop-services',
+    name: 'Photoshop Services',
+    link: '/services',
+    description: 'Retouching, background removal, poster edits, and manipulation work.',
+    keywords: ['photoshop', 'photo editing', 'retouch', 'background removal', 'photo manipulation', 'image editing'],
+    services: [
+      { name: 'Photo Editing / Retouch', price: '₹150 - ₹500' },
+      { name: 'Background Removal', price: '₹50 - ₹150 per image' },
+      { name: 'Photo Manipulation', price: '₹500 - ₹1,500' },
+      { name: 'Poster Photoshop Design', price: '₹500 - ₹1,200' },
+    ],
+  },
+  {
+    id: 'branding-designs',
+    name: 'Branding Designs',
     link: '/branding-identity',
-    keywords: ['brand', 'branding', 'identity', 'logo', 'design', 'visual identity', 'brand identity', 'corporate identity', 'brand design', 'logo design'],
-    description: 'Complete branding solutions including logos, brand guidelines, and visual identity'
+    description: 'Vehicle graphics, shop boards, and bundled branding packages.',
+    keywords: ['branding', 'brand identity', 'vehicle design', 'lorry design', 'shop board', 'branding package', 'visual identity'],
+    services: [
+      { name: 'Vehicle / Lorry Design', price: '₹1,500 - ₹5,000' },
+      { name: 'Shop Board Design', price: '₹1,000 - ₹3,000' },
+      { name: 'Complete Branding Package', price: '₹3,000 - ₹8,000' },
+    ],
   },
-  uiux: {
+  {
+    id: 'website-design',
+    name: 'Website Design',
+    link: '/web-development',
+    description: 'Landing pages and business website design packages.',
+    keywords: ['website design', 'web design', 'landing page', 'business website design', 'professional website design'],
+    services: [
+      { name: 'Basic Website Design (1-3 Pages)', price: '₹3,000 - ₹7,000' },
+      { name: 'Business Website (4-6 Pages)', price: '₹7,000 - ₹15,000' },
+      { name: 'Professional Website', price: '₹15,000 - ₹30,000' },
+      { name: 'Landing Page Design', price: '₹2,000 - ₹5,000' },
+    ],
+  },
+  {
+    id: 'website-development',
+    name: 'Website Development',
+    link: '/web-development',
+    description: 'Static, dynamic, portfolio, and blog website development.',
+    keywords: ['website development', 'web development', 'static website', 'dynamic website', 'portfolio website', 'blog website', 'build website', 'develop website'],
+    services: [
+      { name: 'Static Website Development', price: '₹5,000 - ₹12,000' },
+      { name: 'Dynamic Website Development', price: '₹12,000 - ₹35,000' },
+      { name: 'Portfolio Website', price: '₹5,000 - ₹10,000' },
+      { name: 'Blog Website', price: '₹6,000 - ₹12,000' },
+    ],
+  },
+  {
+    id: 'ecommerce-development',
+    name: 'E-Commerce Development',
+    link: '/web-development',
+    description: 'Online store builds for small, medium, and advanced commerce needs.',
+    keywords: ['ecommerce', 'e-commerce', 'online store', 'shopping website', 'store website', 'cart', 'checkout'],
+    services: [
+      { name: 'Basic Online Store', price: '₹15,000 - ₹30,000' },
+      { name: 'Medium E-Commerce Website', price: '₹30,000 - ₹60,000' },
+      { name: 'Advanced E-Commerce Platform', price: '₹60,000 - ₹1,50,000+' },
+    ],
+  },
+  {
+    id: 'web-maintenance',
+    name: 'Web Maintenance',
+    link: '/services',
+    description: 'Ongoing site updates, support, and bug fixing.',
+    keywords: ['maintenance', 'website maintenance', 'site update', 'website update', 'bug fix', 'support', 'monthly maintenance'],
+    services: [
+      { name: 'Monthly Website Maintenance', price: '₹1,000 - ₹3,000' },
+      { name: 'Website Update / Bug Fix', price: '₹500 - ₹2,000' },
+    ],
+  },
+  {
+    id: 'software-development',
+    name: 'Software Development',
+    link: '/services',
+    description: 'Desktop apps, custom business tools, and management systems.',
+    keywords: ['software development', 'desktop application', 'custom software', 'business software', 'management system', 'school management', 'shop management', 'office management'],
+    services: [
+      { name: 'Desktop Application', price: '₹5,000 - ₹25,000' },
+      { name: 'Custom Business Software', price: '₹15,000 - ₹80,000' },
+      { name: 'Management Systems (School / Shop / Office)', price: '₹10,000 - ₹50,000' },
+    ],
+  },
+  {
+    id: 'tech-services',
+    name: 'Other Tech Services',
+    link: '/services',
+    description: 'Hosting, domain, deployment, and debugging assistance.',
+    keywords: ['hosting', 'domain', 'deployment', 'deploy website', 'debugging', 'code debugging', 'bug fixing', 'website hosting setup'],
+    services: [
+      { name: 'Website Hosting Setup', price: '₹1,000 - ₹3,000' },
+      { name: 'Domain Setup', price: '₹500 - ₹1,500' },
+      { name: 'Website Deployment', price: '₹1,000 - ₹3,000' },
+      { name: 'Bug Fixing / Code Debugging', price: '₹500 - ₹2,000' },
+    ],
+  },
+];
+
+const specialtyServices = [
+  {
     name: 'UI/UX Design',
     link: '/uiux-design',
-    keywords: ['ui', 'ux', 'design', 'interface', 'user experience', 'ui design', 'ux design', 'wireframe', 'mockup', 'app design', 'interface design'],
-    description: 'Beautiful and intuitive user interfaces and experiences'
+    description: 'User experience design, wireframes, flows, and interface systems for apps and websites.',
+    keywords: ['ui', 'ux', 'uiux', 'ui/ux', 'user experience', 'interface design', 'wireframe', 'prototype', 'app design'],
+    pricingNote: 'UI/UX projects are quoted based on screen count, flows, research depth, prototyping, and revisions.',
   },
-  animation3d: {
+  {
     name: '3D Animation',
     link: '/3d-animation',
-    keywords: ['3d', 'animation', '3d animation', 'motion', 'visual effects', 'vfx', 'rendering', 'animated', 'motion graphics', '3d model'],
-    description: 'Professional 3D animations and visual effects'
+    description: '3D animation, product visuals, motion graphics, and rendered scenes.',
+    keywords: ['3d', '3d animation', 'animation', 'motion graphics', 'vfx', 'rendering', 'product visualization'],
+    pricingNote: '3D animation is usually quoted after scope review because duration, modeling effort, and render quality affect pricing heavily.',
   },
-  orders: {
-    name: 'All Services',
-    link: '/services',
-    keywords: ['order', 'my order', 'orders', 'project', 'my project', 'track', 'status', 'services', 'all services', 'offerings'],
-    description: 'View all services and place orders'
-  },
-  portfolio: {
+  {
     name: 'Portfolio',
     link: '/case-studies',
-    keywords: ['portfolio', 'case study', 'examples', 'showcase', 'previous work', 'our work', 'past projects', 'featured work'],
-    description: 'Explore our portfolio and case studies'
+    description: 'Explore previous projects, case studies, and delivery examples.',
+    keywords: ['portfolio', 'case study', 'examples', 'showcase', 'our work', 'previous work', 'past projects'],
   },
-  career: {
+  {
     name: 'Career',
     link: '/apply-employee',
-    keywords: ['join team', 'team member', 'employment opportunity', 'vacancy', 'opening', 'position available', 'hiring', 'recruitment'],
-    description: 'Join our creative team'
+    description: 'Apply to join the RK Creative Hub team.',
+    keywords: ['career', 'job', 'apply', 'hiring', 'vacancy', 'opening', 'join team', 'join your company'],
   },
-  blog: {
+  {
     name: 'Blog',
     link: '/blog',
-    keywords: ['blog', 'article', 'news', 'tips', 'insights', 'tutorial', 'guide', 'read'],
-    description: 'Read our blog for industry insights'
+    description: 'Read our articles, updates, and creative insights.',
+    keywords: ['blog', 'article', 'news', 'insights', 'tutorial', 'guide'],
+  },
+];
+
+const sendOffMessages = [
+  '👋 Goodbye! It was great chatting with you. Feel free to come back anytime!',
+  '🌟 Take care! Looking forward to our next conversation. Have a wonderful day!',
+  "🚀 Until next time! Don't hesitate to reach out when you need creative solutions.",
+  "✨ Farewell! Remember, we're always here to help with your creative projects.",
+  '💫 See you soon! Thanks for exploring RK Creative Hub with me.',
+  '🎨 Goodbye for now! Keep creating amazing things!',
+  '🌈 Take care and stay creative! Come back anytime you need inspiration.',
+  '⭐ Farewell! Your next creative journey awaits. Safe travels!',
+  '🎭 Until we meet again! Keep the creative spark alive.',
+  "🎯 Goodbye! Ready to help whenever you're ready to create something amazing.",
+];
+
+const pricingIntentPattern = /price|cost|how much|pricing|quote|budget|rate|charges/;
+const timelineIntentPattern = /time|how long|duration|timeline|how fast|deadline|delivery/;
+const serviceIntentPattern = /service|services|offer|offering|catalog|price list|pricing list|service list|help me choose/;
+const contactIntentPattern = /contact|call|reach|email|phone|get in touch/;
+const portfolioIntentPattern = /portfolio|case study|previous work|what have you done|examples|show me your work/;
+const jobIntentPattern = /work for you|work with you|join your team|join the team|looking for job|seeking job|want to work|apply for job|job application|employment|join company|need to join|join in work|want to join|interested in joining|join your company|i need to join|like to work|interested in working|seeking for job|looking for employment|job seeker/;
+
+const formatServiceLines = (services, limit = services.length) => services
+  .slice(0, limit)
+  .map((service) => `• ${service.name}: ${service.price}`)
+  .join('\n');
+
+const getCategoryTimeline = (categoryId) => {
+  switch (categoryId) {
+    case 'id-card':
+    case 'logo-design':
+    case 'printing-designs':
+    case 'advertisement-designs':
+    case 'social-media-designs':
+    case 'photoshop-services':
+      return 'Most single-design requests in this category are usually delivered in about 1-3 working days, depending on quantity and revisions.';
+    case 'video-editing':
+      return 'Video editing timelines usually range from 1-5 days based on footage length, motion work, subtitles, and revision rounds.';
+    case 'website-design':
+    case 'website-development':
+      return 'Website design and development typically take about 1-4 weeks depending on page count, content readiness, and custom features.';
+    case 'ecommerce-development':
+    case 'software-development':
+      return 'E-commerce and software projects usually take about 2-8+ weeks depending on integrations, admin flows, and testing scope.';
+    case 'web-maintenance':
+    case 'tech-services':
+      return 'Maintenance, deployment, domain, hosting, and bug-fix requests are often handled within the same day to a few working days.';
+    default:
+      return 'Final delivery depends on complexity, content readiness, feedback speed, and the number of revisions required.';
   }
 };
 
-// AI responses with links based on categories
-const getBotResponseWithLinks = (userMessage, category = 'general') => {
-  const lowerMessage = userMessage.toLowerCase();
-  
-  // Priority-based keyword matching for accurate service detection
-  let detectedService = null;
-  let maxMatches = 0;
-  
-  for (const [key, service] of Object.entries(serviceLinks)) {
-    const matches = service.keywords.filter(keyword => lowerMessage.includes(keyword)).length;
-    if (matches > maxMatches) {
-      maxMatches = matches;
-      detectedService = service;
+const findBestCatalogMatch = (message) => {
+  let bestMatch = null;
+  let highestScore = 0;
+
+  for (const category of serviceCatalog) {
+    let score = 0;
+
+    if (message.includes(category.name.toLowerCase())) {
+      score += 8;
+    }
+
+    for (const keyword of category.keywords) {
+      if (message.includes(keyword)) {
+        score += keyword.includes(' ') ? 4 : 2;
+      }
+    }
+
+    for (const service of category.services) {
+      const serviceName = service.name.toLowerCase();
+      if (message.includes(serviceName)) {
+        score += 6;
+      }
+    }
+
+    if (score > highestScore) {
+      highestScore = score;
+      bestMatch = category;
     }
   }
 
-  // Dynamic responses based on detected service or category
+  return highestScore > 0 ? bestMatch : null;
+};
+
+const findSpecialtyMatch = (message) => {
+  let bestMatch = null;
+  let highestScore = 0;
+
+  for (const service of specialtyServices) {
+    let score = 0;
+
+    if (message.includes(service.name.toLowerCase())) {
+      score += 8;
+    }
+
+    for (const keyword of service.keywords) {
+      if (message.includes(keyword)) {
+        score += keyword.includes(' ') ? 4 : 2;
+      }
+    }
+
+    if (score > highestScore) {
+      highestScore = score;
+      bestMatch = service;
+    }
+  }
+
+  return highestScore > 0 ? bestMatch : null;
+};
+
+const getBotResponseWithLinks = (userMessage, category = 'general') => {
+  const lowerMessage = userMessage.toLowerCase().trim();
+  const matchedCategory = findBestCatalogMatch(lowerMessage);
+  const matchedSpecialty = findSpecialtyMatch(lowerMessage);
+
   let response = '';
   let link = null;
   let linkText = null;
 
-  // Greeting detection
-  if (lowerMessage.match(/^(hello|hi|hey|greetings|start|help)\b/)) {
-    response = "Hello! 👋 I'm SIRA, your AI Assistant at RK Creative Hub. I'm here to help you find the perfect service for your needs. What would you like help with?";
-  } 
-  // Bye detection with different send-off messages
-  else if (/\b(bye|goodbye|see you|farewell|take care|see ya|later|cya|adios|ciao)\b/.test(lowerMessage)) {
-    const sendOffMessages = [
-      "👋 Goodbye! It was great chatting with you. Feel free to come back anytime!",
-      "🌟 Take care! Looking forward to our next conversation. Have a wonderful day!",
-      "🚀 Until next time! Don't hesitate to reach out when you need creative solutions.",
-      "✨ Farewell! Remember, we're always here to help with your creative projects.",
-      "💫 See you soon! Thanks for exploring RK Creative Hub with me.",
-      "🎨 Goodbye for now! Keep creating amazing things!",
-      "🌈 Take care and stay creative! Come back anytime you need inspiration.",
-      "⭐ Farewell! Your next creative journey awaits. Safe travels!",
-      "🎭 Until we meet again! Keep the creative spark alive.",
-      "🎯 Goodbye! Ready to help whenever you're ready to create something amazing."
-    ];
-    
+  if (/^(hello|hi|hey|greetings|start|help|what can you do)\b/.test(lowerMessage)) {
+    response = "Hello! 👋 I'm SIRA, your AI Assistant at RK Creative Hub. I can help you compare service categories, understand pricing, and point you to the right page for your project.";
+  } else if (/\b(bye|goodbye|see you|farewell|take care|see ya|later|cya|adios|ciao)\b/.test(lowerMessage)) {
     response = sendOffMessages[Math.floor(Math.random() * sendOffMessages.length)];
-  } 
-  // Sharp service detection - if user mentions specific service
-  else if (detectedService && maxMatches > 0) {
-    response = `Perfect! You're looking for ${detectedService.name}. ${detectedService.description}. 
+  } else if (jobIntentPattern.test(lowerMessage)) {
+    response = `That's great to hear! We regularly work across design, branding, websites, UI/UX, and animation projects.
 
-Let me show you what we offer in this service.`;
-    link = detectedService.link;
-    linkText = `Explore ${detectedService.name}`;
-  }
-  // Order/Services - Show all services
-  else if (lowerMessage.includes('order') || lowerMessage.includes('service') && !lowerMessage.includes('service area')) {
-    response = `Great! We offer comprehensive creative services:
-
-🌐 Web Development - Custom web apps & responsive websites
-🎨 Branding & Identity - Complete brand design & identity
-✨ UI/UX Design - Beautiful, intuitive interfaces
-🎬 3D Animation - Professional animations & effects
-
-Which service interests you most?`;
-    link = '/services';
-    linkText = 'View All Services';
-  }
-  // Pricing inquiry
-  else if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('how much') || lowerMessage.includes('pricing') || lowerMessage.includes('quote')) {
-    response = `Our pricing is tailored to your project needs:
-
-💰 Web Development: From ₹2,07,500
-💰 Branding & Identity: From ₹1,24,500
-💰 UI/UX Design: Custom quotes
-💰 3D Animation: Custom quotes
-
-Ready to get a personalized quote for your project?`;
-    link = '/services';
-    linkText = 'Get a Custom Quote';
-  }
-  // Timeline inquiry
-  else if (lowerMessage.includes('time') || lowerMessage.includes('how long') || lowerMessage.includes('duration') || lowerMessage.includes('timeline') || lowerMessage.includes('how fast')) {
-    response = `Project timelines vary based on complexity:
-
-⏱️ Small Projects: 1-2 weeks
-⏱️ Medium Projects: 2-4 weeks  
-⏱️ Large Projects: 4-8+ weeks
-
-We'll discuss your specific timeline requirements to meet your deadlines!`;
-    link = '/services';
-    linkText = 'Discuss Your Project';
-  }
-  // Portfolio/Work inquiry
-  else if (lowerMessage.includes('portfolio') || lowerMessage.includes('case study') || lowerMessage.includes('previous work') || lowerMessage.includes('what have you done') || lowerMessage.includes('examples')) {
-    response = `Check out our portfolio to see the amazing projects we've completed! Each case study showcases our expertise across different industries.`;
-    link = '/case-studies';
-    linkText = 'View Our Portfolio';
-  }
-  // Contact inquiry
-  else if (lowerMessage.includes('contact') || lowerMessage.includes('call') || lowerMessage.includes('reach') || lowerMessage.includes('email') || lowerMessage.includes('phone')) {
+To apply, keep your resume, portfolio links, and a short introduction ready. You can start from our careers page.`;
+    link = '/apply-employee';
+    linkText = 'Start Your Application';
+  } else if (contactIntentPattern.test(lowerMessage)) {
     response = `You can reach us through:
 
 📧 Email: rajkayal7281@gmail.com
-📞 Phone: Available during business hours
-💬 Chat: You're already chatting!
-📋 Contact Form: For detailed inquiries
+💬 Chat: Right here in SIRA
+📋 Contact Form: Best for project briefs and requirements
 
-How can we help you today?`;
-    link = '/services';
+If you already know the service you need, I can point you to the right category first.`;
+    link = '/contact';
     linkText = 'Contact Us';
-  }
-  // Specific job seeking phrases
-  else if (lowerMessage.includes('like to work') || lowerMessage.includes('want to join') || lowerMessage.includes('interested in working') ||
-           lowerMessage.includes('seeking for job') || lowerMessage.includes('looking for employment') || lowerMessage.includes('job seeker') ||
-           lowerMessage.includes('need to join') || lowerMessage.includes('join in work') || lowerMessage.includes('join your company') ||
-           lowerMessage.includes('i need to join')) {
-    response = `That's fantastic! 🌟 We're thrilled that you're interested in joining RK Creative Hub. 
+  } else if (portfolioIntentPattern.test(lowerMessage)) {
+    response = 'You can review our case studies and previous work to see how we handle branding, web, and creative projects.';
+    link = '/case-studies';
+    linkText = 'View Our Portfolio';
+  } else if (pricingIntentPattern.test(lowerMessage) && matchedCategory) {
+    response = `${matchedCategory.name} pricing currently includes:
 
-We believe great work happens when passionate people come together. Our team works on exciting projects across web development, design, branding, and animation.
+${formatServiceLines(matchedCategory.services)}
 
-To apply, you'll need to prepare:
-• Your resume/portfolio
-• Links to your previous work
-• A brief cover letter
+These are practical starting ranges. Final pricing depends on complexity, quantity, revisions, content readiness, and turnaround time.`;
+    link = matchedCategory.link;
+    linkText = `View ${matchedCategory.name}`;
+  } else if (pricingIntentPattern.test(lowerMessage) && matchedSpecialty && matchedSpecialty.pricingNote) {
+    response = `${matchedSpecialty.name} is available, but it is usually quoted after understanding the exact scope.
 
-Ready to start your journey with us?`;
-    link = '/apply-employee';
-    linkText = 'Start Your Application';
-  }
-  // Blog/Articles inquiry
-  else if (lowerMessage.includes('blog') || lowerMessage.includes('article') || lowerMessage.includes('news') || lowerMessage.includes('tips') || lowerMessage.includes('tutorial') || lowerMessage.includes('guide')) {
-    response = `Our blog features articles, tips, and industry insights about design, development, and creative trends.`;
-    link = '/blog';
-    linkText = 'Read Our Blog';
-  }
-  // Default - ask for clarification
-  else {
-    response = `I'm SIRA, and I'm here to help! I can assist you with:
+${matchedSpecialty.pricingNote}`;
+    link = matchedSpecialty.link;
+    linkText = `Explore ${matchedSpecialty.name}`;
+  } else if (pricingIntentPattern.test(lowerMessage)) {
+    response = `Our public services catalog currently includes pricing across categories like:
 
-🎯 Finding the right service for your creative project
-💰 Pricing and quotes for our services
-⏱️ Project timelines and planning
-👥 Information about joining our creative team
-📚 Learning about our work and expertise
+• Logo Design: ₹800 - ₹5,000+
+• Website Design: ₹2,000 - ₹30,000
+• Website Development: ₹5,000 - ₹35,000
+• E-Commerce Development: ₹15,000 - ₹1,50,000+
+• Video Editing: ₹300 - ₹6,000
+• Software Development: ₹5,000 - ₹80,000
 
-Are you looking for our services, or interested in joining our team?`;
+If you tell me the exact service, I can narrow it down further.`;
+    link = '/services';
+    linkText = 'View Service Pricing';
+  } else if (timelineIntentPattern.test(lowerMessage) && matchedCategory) {
+    response = `${matchedCategory.name} timeline guidance:
+
+${getCategoryTimeline(matchedCategory.id)}`;
+    link = matchedCategory.link;
+    linkText = `Discuss ${matchedCategory.name}`;
+  } else if (timelineIntentPattern.test(lowerMessage)) {
+    response = `Timeline depends on the service type.
+
+Simple design requests can be finished in days, websites usually take 1-4 weeks, and larger e-commerce or software builds can take several weeks based on scope and approvals.`;
+    link = '/services';
+    linkText = 'Discuss Your Project';
+  } else if (matchedCategory) {
+    response = `I can help with ${matchedCategory.name}.
+
+${matchedCategory.description}
+
+Here are the main options:
+${formatServiceLines(matchedCategory.services)}
+
+If you want, tell me which item you need and I can guide you on the likely fit.`;
+    link = matchedCategory.link;
+    linkText = `Explore ${matchedCategory.name}`;
+  } else if (matchedSpecialty) {
+    response = `I can help with ${matchedSpecialty.name}.
+
+${matchedSpecialty.description}`;
+    link = matchedSpecialty.link;
+    linkText = `Explore ${matchedSpecialty.name}`;
+  } else if (serviceIntentPattern.test(lowerMessage)) {
+    response = `We currently help across these service groups:
+
+• ID cards, logos, print designs, posters, and social media creatives
+• Video editing and Photoshop support
+• Branding packages and shop board design
+• Website design, website development, and e-commerce stores
+• Website maintenance, hosting, domains, deployment, and debugging
+• Desktop apps, custom business software, and management systems
+
+Tell me the exact service you need, and I'll point you to the right pricing category.`;
+    link = '/services';
+    linkText = 'View All Service Categories';
+  } else {
+    response = `I'm SIRA, and I can help you with service pricing, category selection, timelines, portfolio pages, and hiring information.
+
+Try asking about a specific service like logo design, website development, poster design, video editing, hosting setup, or software development.`;
     link = '/services';
     linkText = 'Explore Our Services';
   }
