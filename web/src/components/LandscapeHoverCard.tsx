@@ -27,8 +27,8 @@ const LandscapeHoverCard = ({
         className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-110"
       />
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-10 bg-gradient-to-t from-black/85 via-black/70 to-transparent p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-        <span className="mb-1 block text-xs font-medium tracking-wide text-amber-200 break-normal">{description}</span>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-10 bg-gradient-to-t from-black via-black/90 to-black/25 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <span className="mb-1 block text-xs font-medium tracking-wide text-amber-100 drop-shadow-[0_1px_1px_rgba(0,0,0,0.7)] break-normal">{description}</span>
         <h3 className="text-2xl font-bold text-white break-normal">{title}</h3>
         {ctaLabel && <span className="mt-2 inline-block text-sm font-semibold text-amber-300">{ctaLabel}</span>}
       </div>
