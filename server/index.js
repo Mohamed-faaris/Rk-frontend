@@ -178,6 +178,8 @@ app.use('/api/config', configRouter);
 
 // Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../web/public/uploads')));
+// Backward compatibility: serve legacy upload location if older files exist there.
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // ============================================
 // FRONTEND SERVING (MODE: full)

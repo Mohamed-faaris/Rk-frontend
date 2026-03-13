@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME;
 const uploadDir = isServerless 
   ? '/tmp/uploads' 
-  : path.join(__dirname, '../../public/uploads');
+  : path.join(__dirname, '../../web/public/uploads');
 
 // Ensure uploads directory exists (lazy initialization)
 let dirInitialized = false;

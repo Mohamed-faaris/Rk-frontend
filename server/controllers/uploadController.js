@@ -42,24 +42,38 @@ export const uploadFile = async (req, res) => {
 export const deleteFile = async (req, res) => {
   try {
     const { filename } = req.params;
-    const filePath = path.join(process.cwd(), 'public', 'uploads', filename);
+    const candidatePaths = [
+      path.join(process.cwd(), 'web', 'public', 'uploads', filename),
+      path.join(process.cwd(), 'public', 'uploads', filename),
+    ];
 
     // Check if file exists
     const fs = await import('fs/promises');
-    try {
-      await fs.access(filePath);
-      await fs.unlink(filePath);
-      
-      res.status(200).json({
-        success: true,
-        message: 'File deleted successfully'
-      });
-    } catch (err) {
+    let deleted = false;
+
+    for (const filePath of candidatePaths) {
+      try {
+        await fs.access(filePath);
+        await fs.unlink(filePath);
+        deleted = true;
+        break;
+      } catch {
+        // Try next candidate path.
+      }
+    }
+
+    if (!deleted) {
       res.status(404).json({
         success: false,
         message: 'File not found'
       });
+      return;
     }
+
+    res.status(200).json({
+      success: true,
+      message: 'File deleted successfully'
+    });
   } catch (error) {
     console.error('Error deleting file:', error);
     res.status(500).json({
