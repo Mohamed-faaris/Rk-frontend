@@ -155,14 +155,53 @@ export default function ManagementDashboard() {
     }
   };
 
+  const getFileUrlCandidates = (filePath?: string) => {
+    if (!filePath) return [] as string[];
+
+    const candidates = new Set<string>();
+    const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, '');
+    const normalizedPath = filePath.startsWith('/') ? filePath : `/${filePath}`;
+    const encodedPath = encodePathSegments(normalizedPath);
+
+    const primary = getFileUrl(filePath);
+    if (primary) candidates.add(primary);
+
+    // Try current frontend origin for static uploads served from web/public/uploads.
+    if (normalizedPath.startsWith('/uploads/')) {
+      candidates.add(`${window.location.origin}${encodedPath}`);
+      candidates.add(`${apiOrigin}${encodedPath}`);
+    }
+
+    // Try original absolute URL if provided by DB.
+    if (/^https?:\/\//i.test(filePath)) {
+      candidates.add(filePath);
+    }
+
+    return Array.from(candidates);
+  };
+
   const handleResumeDownload = async (resumePath: string, applicantName?: string) => {
     try {
       setError('');
-      const fileUrl = getFileUrl(resumePath);
-      const response = await fetch(fileUrl);
+      const candidates = getFileUrlCandidates(resumePath);
+      let response: Response | null = null;
+      let fileUrl = '';
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch resume: ${response.status}`);
+      for (const candidate of candidates) {
+        try {
+          const res = await fetch(candidate);
+          if (res.ok) {
+            response = res;
+            fileUrl = candidate;
+            break;
+          }
+        } catch {
+          // Try next candidate URL.
+        }
+      }
+
+      if (!response) {
+        throw new Error('Failed to fetch resume: 404');
       }
 
       const blob = await response.blob();
