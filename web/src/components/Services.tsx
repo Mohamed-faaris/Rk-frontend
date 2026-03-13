@@ -1,6 +1,3 @@
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import LandscapeHoverCard from "@/components/LandscapeHoverCard";
 import identityStarterKitImage from "@/assets/Identity Starter Kit.png";
 import campaignVisualPacksImage from "@/assets/Campaign Visual Packs.png";
@@ -10,7 +7,6 @@ import websiteGrowthBuildImage from "@/assets/Website Growth Build.png";
 import techSupportCellImage from "@/assets/Tech Support Cell.png";
 
 const Services = () => {
-  const navigate = useNavigate();
   const services = [
     {
       title: "Identity Starter Kit",
@@ -80,17 +76,6 @@ const Services = () => {
                 className={index % 2 === 0 ? "" : "lg:translate-y-2"}
               />
             ))}
-          </div>
-
-          {/* Let's Order Now Button */}
-          <div className="text-center">
-            <Button
-              onClick={() => navigate('/services')}
-              className="bg-accent hover:bg-accent/90 font-bold text-lg px-8 py-6 rounded-lg transition-all duration-300 shadow-gold hover:shadow-lg group"
-            >
-              Let's Order Now!
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
           </div>
         </div>
       </div>
