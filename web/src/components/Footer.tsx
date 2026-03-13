@@ -23,7 +23,7 @@ const Footer = () => {
       { name: "Portfolio", href: "/case-studies" },
       { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
-      { name: "Apply for Job", href: "/apply-employee" },
+      { name: "Join RKCH Team", href: "/apply-employee" },
     ],
     Company: [
       { name: "About Us", href: "/" },

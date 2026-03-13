@@ -88,7 +88,7 @@ const ApplyForEmployee = () => {
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
-          <h1 className="sr-only">Apply for Employee Position</h1>
+          <h1 className="sr-only">Apply to Join RKCH Team</h1>
           <ApplicationStatusNotice status={applicationStatus} />
 
           {/* Back Button */}
@@ -103,7 +103,7 @@ const ApplyForEmployee = () => {
 
           <Card className="border-border bg-card">
             <CardHeader className="pb-4 md:pb-6">
-              <CardTitle className="text-2xl md:text-3xl">Apply for Employee Position</CardTitle>
+              <CardTitle className="text-2xl md:text-3xl">Apply to Join RKCH Team</CardTitle>
               <CardDescription className="text-xs md:text-sm">
                 Join <span className="brand-display">RajKayal Creative Hub</span> team. Fill in all your details below.
               </CardDescription>

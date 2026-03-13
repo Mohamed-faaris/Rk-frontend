@@ -325,13 +325,13 @@ const Contact = () => {
                 </p>
               </div>
 
-              {/* Apply for Employee Button */}
+              {/* Join RKCH team button */}
               <Button 
                 className="w-full bg-accent hover:bg-accent/90 shadow-gold group"
                 onClick={() => navigate('/apply-employee')}
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Apply for Employee Position
+                Apply to Join RKCH Team
               </Button>
 
               {/* Hidden Dialog for backward compatibility */}
@@ -353,12 +353,12 @@ const Contact = () => {
                     }}
                   >
                     <FileText className="w-4 h-4 mr-2" />
-                    Apply for Employee Position
+                    Apply to Join RKCH Team
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border">
                   <DialogHeader>
-                    <DialogTitle>Apply for Employee Position</DialogTitle>
+                    <DialogTitle>Apply to Join RKCH Team</DialogTitle>
                     <DialogDescription>
                       Fill in your details below. All fields marked with * are required.
                     </DialogDescription>
