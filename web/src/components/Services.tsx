@@ -7,39 +7,39 @@ const Services = () => {
   const navigate = useNavigate();
   const services = [
     {
-      icon: Code,
-      title: "Web Design & Development",
-      description: "Custom websites built with modern technologies, optimized for performance and user experience.",
-      gradient: "from-accent/20 to-accent/10",
-    },
-    {
       icon: Palette,
-      title: "Branding & Identity",
-      description: "Comprehensive brand strategies that capture your essence and resonate with your audience.",
-      gradient: "from-accent/20 to-accent/10",
-    },
-    {
-      icon: Box,
-      title: "3D Animation",
-      description: "Stunning 3D visuals and animations that bring your concepts to life with cinematic quality.",
-      gradient: "from-accent/20 to-accent/10",
-    },
-    {
-      icon: Video,
-      title: "Video Production",
-      description: "Professional video content that tells your story and engages your audience effectively.",
+      title: "Logo & Brand Design",
+      description: "Professional logo creation, visual identity work, and brand-ready creative assets for businesses and startups.",
       gradient: "from-accent/20 to-accent/10",
     },
     {
       icon: Smartphone,
-      title: "UI/UX Design",
-      description: "Intuitive interfaces designed with user-centered principles for maximum engagement.",
+      title: "Social Media Creatives",
+      description: "Scroll-stopping post designs, ad creatives, and content packs tailored for Instagram, Facebook, and digital campaigns.",
+      gradient: "from-accent/20 to-accent/10",
+    },
+    {
+      icon: Video,
+      title: "Video Editing",
+      description: "Clean, engaging edits for reels, shorts, YouTube content, promo videos, and branded visual storytelling.",
+      gradient: "from-accent/20 to-accent/10",
+    },
+    {
+      icon: Box,
+      title: "Photoshop & Design Support",
+      description: "Photo retouching, background removal, manipulation work, posters, invitations, and polished promotional graphics.",
+      gradient: "from-accent/20 to-accent/10",
+    },
+    {
+      icon: Code,
+      title: "Website & E-Commerce Development",
+      description: "Business websites, landing pages, portfolio builds, and online stores developed for performance, reach, and growth.",
       gradient: "from-accent/20 to-accent/10",
     },
     {
       icon: Sparkles,
-      title: "Digital Strategy",
-      description: "Data-driven strategies that align with your business goals and drive measurable results.",
+      title: "Software & Tech Services",
+      description: "Custom software solutions, maintenance, hosting, deployment, bug fixing, and technical support for modern digital needs.",
       gradient: "from-accent/20 to-accent/10",
     },
   ];
