@@ -2,10 +2,12 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import LandscapeHoverCard from "@/components/LandscapeHoverCard";
-import project1 from "@/assets/project-1.jpg";
-import project2 from "@/assets/project-2.jpg";
-import project3 from "@/assets/project-3.jpg";
-import project4 from "@/assets/project-4.jpg";
+import identityStarterKitImage from "@/assets/Identity Starter Kit.png";
+import campaignVisualPacksImage from "@/assets/Campaign Visual Packs.png";
+import motionEditStudioImage from "@/assets/Motion Edit Studio.png";
+import designFixPolishImage from "@/assets/Design Fix & Polish.png";
+import websiteGrowthBuildImage from "@/assets/Website Growth Build.png";
+import techSupportCellImage from "@/assets/Tech Support Cell.png";
 
 const Services = () => {
   const navigate = useNavigate();
@@ -13,37 +15,37 @@ const Services = () => {
     {
       title: "Identity Starter Kit",
       description: "Logos, color palettes, and brand marks crafted for launch-ready businesses.",
-      image: project1,
+      image: identityStarterKitImage,
       href: "/services-overview",
     },
     {
       title: "Campaign Visual Packs",
       description: "Post series, ads, and story creatives for social and paid performance campaigns.",
-      image: project2,
+      image: campaignVisualPacksImage,
       href: "/services-overview",
     },
     {
       title: "Motion Edit Studio",
       description: "Reels, product teasers, and promo edits built to hold attention and convert.",
-      image: project3,
+      image: motionEditStudioImage,
       href: "/services-overview",
     },
     {
       title: "Design Fix & Polish",
       description: "Photo cleanup, visual refinements, posters, and print-ready edits delivered fast.",
-      image: project4,
+      image: designFixPolishImage,
       href: "/services-overview",
     },
     {
       title: "Website Growth Build",
       description: "Landing pages, business sites, and e-commerce builds focused on speed and scale.",
-      image: project1,
+      image: websiteGrowthBuildImage,
       href: "/services",
     },
     {
       title: "Tech Support Cell",
       description: "Hosting, deployment, maintenance, and custom software support for operations.",
-      image: project2,
+      image: techSupportCellImage,
       href: "/services",
     },
   ];
