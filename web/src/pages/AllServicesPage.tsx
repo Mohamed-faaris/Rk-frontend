@@ -92,7 +92,7 @@ const AllServicesPage = () => {
           <Badge className="brand-display border border-[#D4AF37]/60 bg-[#1A1305] px-4 py-1 text-[#F6D77A]">
             RajKayal Creative Hub
           </Badge>
-          <h1 className="mx-auto mt-4 max-w-full whitespace-nowrap text-xl font-bold leading-tight text-[#F8E6A2] sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl">
+          <h1 className="mx-auto mt-4 max-w-5xl text-2xl font-bold leading-tight text-[#F8E6A2] sm:text-3xl md:text-5xl lg:text-6xl">
             Design &amp; Software Service Price List
           </h1>
           <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-[#D5D5D5] sm:text-base md:text-lg">

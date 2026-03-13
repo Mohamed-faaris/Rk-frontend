@@ -102,6 +102,7 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   body {
@@ -111,6 +112,19 @@ All colors MUST be HSL.
   
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    height: auto;
   }
 
   /* Keep normal words intact; use per-component utilities only where forced wrapping is needed. */
@@ -118,6 +132,21 @@ All colors MUST be HSL.
     word-break: normal;
     overflow-wrap: normal;
     hyphens: none;
+  }
+
+  button,
+  [role='button'],
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 640px) {
+  button,
+  [role='button'] {
+    min-height: 44px;
   }
 }
 

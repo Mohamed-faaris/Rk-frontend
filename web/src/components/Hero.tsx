@@ -128,7 +128,7 @@ const Hero = () => {
 
           {/* Main Heading */}
           <div className="w-full px-4 flex justify-center items-center">
-            <h1 className="brand-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center whitespace-nowrap" style={{ filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5))' }}>
+            <h1 className="brand-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center" style={{ filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5))' }}>
               <span className="bg-gradient-to-r from-[#D4AF37] to-[#C9A961] bg-clip-text text-transparent">RajKayal</span>
               <span className="brand-display gradient-text mx-2">Creative Hub</span>
             </h1>
