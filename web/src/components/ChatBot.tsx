@@ -492,10 +492,10 @@ export default function ChatBot() {
     <>
       {/* Floating Button */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
           <button
             onClick={handleOpenChat}
-            className="group relative w-14 h-14 bg-gradient-to-br from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center"
+            className="group relative h-14 w-14 bg-gradient-to-br from-accent to-accent/80 text-accent-foreground rounded-full shadow-xl transition-all duration-300 hover:from-accent/90 hover:to-accent/70 hover:shadow-2xl hover:scale-110 flex items-center justify-center"
             aria-label="Open SIRA AI Assistant"
             title="Open SIRA AI Assistant"
           >
@@ -512,7 +512,7 @@ export default function ChatBot() {
 
           {/* Welcome Notification Popup */}
           {showNotification && (
-            <div className="absolute bottom-20 right-0 animate-in slide-in-from-bottom-2 duration-300 sm:w-80 w-72">
+            <div className="absolute bottom-20 right-0 animate-in slide-in-from-bottom-2 duration-300 w-[min(22rem,calc(100vw-1.5rem))] sm:w-80">
               <div className="bg-card border border-accent/30 rounded-xl shadow-2xl p-4 backdrop-blur-sm">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-1">
@@ -547,16 +547,16 @@ export default function ChatBot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full h-full sm:w-96 sm:h-[600px] bg-card rounded-none sm:rounded-2xl shadow-2xl flex flex-col z-50 border-t sm:border border-border/40 backdrop-blur-sm overflow-hidden">
+        <div className="fixed inset-0 z-50 flex h-[100dvh] w-full flex-col overflow-hidden bg-card shadow-2xl sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[600px] sm:w-96 sm:rounded-2xl sm:border sm:border-border/40 sm:backdrop-blur-sm">
           {/* Header */}
-          <div className="bg-gradient-to-r from-accent via-accent/90 to-primary/20 text-accent-foreground p-4 sm:p-6 flex justify-between items-center relative flex-shrink-0">
+          <div className="bg-gradient-to-r from-accent via-accent/90 to-primary/20 text-accent-foreground px-4 pb-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:p-6 flex justify-between items-center relative flex-shrink-0">
             <div className="flex-1">
               <h3 className="font-bold text-base sm:text-lg">SIRA AI Assistant</h3>
               <p className="text-xs text-accent-foreground/70 mt-0.5">Always here to help</p>
             </div>
             <button
               onClick={handleCloseChat}
-              className="hover:bg-white/20 p-2 rounded-lg transition-colors flex-shrink-0 ml-2"
+              className="hover:bg-white/20 p-2.5 rounded-lg transition-colors flex-shrink-0 ml-2"
               aria-label="Close chat"
             >
               <X size={20} />
@@ -602,7 +602,7 @@ export default function ChatBot() {
                       key={q}
                       onClick={() => handleQuestionClick(q)}
                       disabled={isLoading}
-                      className="text-left text-xs sm:text-sm bg-muted/50 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed text-foreground px-3 py-2.5 rounded-lg transition-all duration-200 border border-border/30 hover:border-accent/50 hover:shadow-md active:scale-95"
+                      className="min-h-11 text-left text-xs sm:text-sm bg-muted/50 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed text-foreground px-3 py-2.5 rounded-lg transition-all duration-200 border border-border/30 hover:border-accent/50 hover:shadow-md active:scale-95"
                     >
                       {q}
                     </button>
@@ -625,7 +625,7 @@ export default function ChatBot() {
                   className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-xs px-4 py-3 rounded-2xl text-sm break-words ${
+                    className={`max-w-[85%] sm:max-w-sm px-4 py-3 rounded-2xl text-sm break-words ${
                       msg.sender === 'user'
                         ? 'bg-accent text-accent-foreground rounded-br-none'
                         : 'bg-muted text-foreground rounded-tl-none border border-border/30'
@@ -663,21 +663,22 @@ export default function ChatBot() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-border/40 p-4 bg-card/50 backdrop-blur-sm flex-shrink-0">
+          <div className="border-t border-border/40 p-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] bg-card/50 backdrop-blur-sm flex-shrink-0">
             <div className="flex gap-2">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
+                onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
                 placeholder="Type your message..."
                 disabled={isLoading}
-                className="flex-1 px-4 py-2.5 border border-border/50 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 bg-background text-foreground text-sm placeholder-muted-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                autoComplete="off"
+                className="flex-1 min-h-11 px-4 py-2.5 border border-border/50 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 bg-background text-foreground text-sm placeholder-muted-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 onClick={() => handleSendMessage()}
                 disabled={isLoading || !inputValue.trim()}
-                className="bg-accent hover:bg-accent/90 disabled:bg-muted text-accent-foreground disabled:text-muted-foreground p-2.5 rounded-xl transition-all duration-200 hover:shadow-lg disabled:shadow-none flex-shrink-0"
+                className="min-h-11 min-w-11 bg-accent hover:bg-accent/90 disabled:bg-muted text-accent-foreground disabled:text-muted-foreground p-2.5 rounded-xl transition-all duration-200 hover:shadow-lg disabled:shadow-none flex-shrink-0"
                 aria-label="Send message"
               >
                 <Send size={18} />
