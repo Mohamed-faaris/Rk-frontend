@@ -20,8 +20,6 @@ const Footer = () => {
       { name: "3D Animation", href: "/3d-animation" },
     ],
     Resources: [
-      { name: "Portfolio", href: "/case-studies" },
-      { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
       { name: "Join RKCH Team", href: "/apply-employee" },
     ],

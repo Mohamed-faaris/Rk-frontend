@@ -236,7 +236,7 @@ const AllServicesPage = () => {
               <Link to="/contact">Get Free Consultation</Link>
             </Button>
             <Button asChild variant="outline" className="border-[#D4AF37]/50 bg-transparent text-[#F6D77A] hover:bg-[#D4AF37]/10">
-              <Link to="/case-studies">View Our Work</Link>
+              <Link to="/contact">Request Project Samples</Link>
             </Button>
           </div>
         </div>

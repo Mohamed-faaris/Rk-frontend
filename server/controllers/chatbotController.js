@@ -193,22 +193,10 @@ const specialtyServices = [
     pricingNote: '3D animation is usually quoted after scope review because duration, modeling effort, and render quality affect pricing heavily.',
   },
   {
-    name: 'Portfolio',
-    link: '/case-studies',
-    description: 'Explore previous projects, case studies, and delivery examples.',
-    keywords: ['portfolio', 'case study', 'examples', 'showcase', 'our work', 'previous work', 'past projects'],
-  },
-  {
     name: 'Career',
     link: '/apply-employee',
     description: 'Apply to join the RK Creative Hub team.',
     keywords: ['career', 'job', 'apply', 'hiring', 'vacancy', 'opening', 'join team', 'join your company'],
-  },
-  {
-    name: 'Blog',
-    link: '/blog',
-    description: 'Read our articles, updates, and creative insights.',
-    keywords: ['blog', 'article', 'news', 'insights', 'tutorial', 'guide'],
   },
 ];
 
@@ -412,9 +400,9 @@ If you already know the service you need, I can point you to the right category 
     link = '/contact';
     linkText = 'Contact Us';
   } else if (portfolioIntentPattern.test(lowerMessage)) {
-    response = 'You can review our case studies and previous work to see how we handle branding, web, and creative projects.';
-    link = '/case-studies';
-    linkText = 'View Our Portfolio';
+    response = 'You can contact us to review recent project samples and delivery examples across branding, web, and creative work.';
+    link = '/contact';
+    linkText = 'Request Project Samples';
   } else if (pricingIntentPattern.test(lowerMessage) && matchedCategory) {
     response = `${matchedCategory.name} pricing currently includes:
 
@@ -485,7 +473,7 @@ Tell me the exact service you need, and I'll point you to the right pricing cate
     link = '/services';
     linkText = 'View All Service Categories';
   } else {
-    response = `I'm SIRA, and I can help you with service pricing, category selection, timelines, portfolio pages, and hiring information.
+    response = `I'm SIRA, and I can help you with service pricing, category selection, timelines, project sample requests, and hiring information.
 
 Try asking about a specific service like logo design, website development, poster design, video editing, hosting setup, or software development.`;
     link = '/services';

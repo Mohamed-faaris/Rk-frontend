@@ -30,8 +30,6 @@ const UIUXDesignPage = lazy(() => import("./pages/UIUXDesignPage"));
 const AccountPage = lazy(() => import("./pages/AccountPage"));
 const VerifyOTP = lazy(() => import("./pages/VerifyOTP"));
 const ManagementDashboard = lazy(() => import("./pages/ManagementDashboard"));
-const BlogPage = lazy(() => import("./pages/BlogPage"));
-const CaseStudiesPage = lazy(() => import("./pages/CaseStudiesPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
@@ -89,8 +87,6 @@ const AppContent = () => {
         <Route path="/web-development" element={<Suspense fallback={<PageLoader />}><WebDevelopmentPage /></Suspense>} />
         <Route path="/3d-animation" element={<Suspense fallback={<PageLoader />}><Animation3DPage /></Suspense>} />
         <Route path="/uiux-design" element={<Suspense fallback={<PageLoader />}><UIUXDesignPage /></Suspense>} />
-        <Route path="/blog" element={<main><Suspense fallback={<PageLoader />}><BlogPage /></Suspense></main>} />
-        <Route path="/case-studies" element={<main><Suspense fallback={<PageLoader />}><CaseStudiesPage /></Suspense></main>} />
         <Route path="/privacy-policy" element={<main><Suspense fallback={<PageLoader />}><PrivacyPolicyPage /></Suspense></main>} />
         <Route path="/terms-of-service" element={<main><Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense></main>} />
         <Route path="/contact" element={<main><Suspense fallback={<PageLoader />}><ContactPage /></Suspense></main>} />

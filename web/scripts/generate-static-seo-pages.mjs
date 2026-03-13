@@ -98,7 +98,7 @@ const servicesMarkup = `
           <p style="font-size:1.02rem;line-height:1.8;color:#d7d7d7;max-width:900px;">If your project includes multiple deliverables, urgent timelines, or ongoing support, contact us for a bundled plan. We can package design, development, content preparation, deployment, and maintenance into one proposal built around your goals.</p>
           <p style="margin-top:18px;display:flex;flex-wrap:wrap;gap:16px;">
             <a href="/contact" style="background:#d4af37;color:#111;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:700;">Get free consultation</a>
-            <a href="/case-studies" style="border:1px solid rgba(212,175,55,.45);color:#f6d77a;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600;">View our work</a>
+            <a href="/services" style="border:1px solid rgba(212,175,55,.45);color:#f6d77a;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600;">View our services</a>
           </p>
         </section>
       </main>

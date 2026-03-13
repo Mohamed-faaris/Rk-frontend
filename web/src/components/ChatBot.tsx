@@ -274,9 +274,9 @@ export default function ChatBot() {
     // Portfolio
     if (/portfolio|case study|previous work|what have you done|examples|show me your work/.test(msg)) {
       return {
-        response: 'Browse our case studies and previous project work across branding, websites, and creative design.',
-        link: '/case-studies',
-        linkText: 'View Our Portfolio',
+        response: 'You can contact us for recent project samples and delivery examples across branding, websites, and creative design.',
+        link: '/contact',
+        linkText: 'Request Project Samples',
       };
     }
 
