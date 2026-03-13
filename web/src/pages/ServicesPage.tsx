@@ -1,80 +1,28 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Palette, Code, Box, Video, Smartphone, Sparkles, ArrowRight, Star, IndianRupee } from "lucide-react";
+import { ArrowRight, IndianRupee } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GradientBlinds from "@/components/GradientBlinds.tsx";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from '@/context/AuthContext';
+import { serviceCategories } from '@/lib/serviceCatalog';
 
 const ServicesPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const services = [
-    {
-      icon: Code,
-      title: "Web Design & Development",
-      description: "Custom websites built with modern technologies, optimized for performance and user experience.",
-      gradient: "from-accent/20 to-accent/10",
-      features: ["Responsive Design", "SEO Optimized", "Fast Loading", "Mobile First"],
-      startingPrice: "₹2,07,500",
-      timeline: "2-4 weeks",
-      popular: true
-    },
-    {
-      icon: Palette,
-      title: "Branding & Identity",
-      description: "Comprehensive brand strategies that capture your essence and resonate with your audience.",
-      gradient: "from-accent/20 to-accent/10",
-      features: ["Logo Design", "Brand Guidelines", "Color Palette", "Typography"],
-      startingPrice: "₹1,24,500",
-      timeline: "1-2 weeks",
-      popular: false
-    },
-    {
-      icon: Box,
-      title: "3D Animation",
-      description: "Stunning 3D visuals and animations that bring your concepts to life with cinematic quality.",
-      gradient: "from-accent/20 to-accent/10",
-      features: ["3D Modeling", "Motion Graphics", "Product Visualization", "Character Animation"],
-      startingPrice: "₹2,49,000",
-      timeline: "3-6 weeks",
-      popular: false
-    },
-    {
-      icon: Video,
-      title: "Video Production",
-      description: "Professional video content that tells your story and engages your audience effectively.",
-      gradient: "from-accent/20 to-accent/10",
-      features: ["Script Writing", "HD Video", "Editing", "Sound Design"],
-      startingPrice: "₹1,66,000",
-      timeline: "2-4 weeks",
-      popular: false
-    },
-    {
-      icon: Smartphone,
-      title: "UI/UX Design",
-      description: "Intuitive interfaces designed with user-centered principles for maximum engagement.",
-      gradient: "from-accent/20 to-accent/10",
-      features: ["User Research", "Wireframing", "Prototyping", "Usability Testing"],
-      startingPrice: "₹1,49,400",
-      timeline: "2-3 weeks",
-      popular: false
-    },
-    {
-      icon: Sparkles,
-      title: "Digital Strategy",
-      description: "Data-driven strategies that align with your business goals and drive measurable results.",
-      gradient: "from-accent/20 to-accent/10",
-      features: ["Market Analysis", "Content Strategy", "Social Media", "Performance Tracking"],
-      startingPrice: "₹99,600",
-      timeline: "1-2 weeks",
-      popular: false
-    },
-  ];
+  const categoryTabs = useMemo(
+    () => [{ id: 'all', name: 'All Services' }, ...serviceCategories.map((category) => ({ id: category.id, name: category.title }))],
+    [],
+  );
+
+  const filteredCategories = selectedCategory === 'all'
+    ? serviceCategories
+    : serviceCategories.filter((category) => category.id === selectedCategory);
 
   const handleOrderService = (serviceTitle: string) => {
     if (!isAuthenticated) {
@@ -119,84 +67,96 @@ const ServicesPage = () => {
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold gradient-text" style={{
               textShadow: '0 0 30px rgba(212, 175, 55, 0.6), 0 0 60px rgba(244, 197, 66, 0.4), 0 4px 20px rgba(0, 0, 0, 0.8)'
             }}>
-              Our Services
+              Services Price Catalog
             </h1>
             <p className="text-base md:text-lg lg:text-2xl text-white max-w-2xl mx-auto" style={{
               textShadow: '0 2px 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.3)'
             }}>
-              Fresh ideas meet cutting-edge technology. As a newly launched creative studio, 
-              we're ready to bring your vision to life with passion and innovation.
+              Browse service pricing by category for branding, print, websites, e-commerce, maintenance, and custom software work.
             </p>
+            <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
+              {categoryTabs.slice(1, 7).map((tab) => (
+                <Badge key={tab.id} variant="outline" className="shrink-0 border-[#D4AF37]/50 bg-black/30 text-[#F6D77A]">
+                  {tab.name}
+                </Badge>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="py-12 md:py-16 lg:py-24 relative overflow-hidden">
+      <section className="sticky top-0 z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:py-4">
+        <div className="sr-only">
+          <h2 id="pricing-filters">Filter service categories</h2>
+        </div>
+        <div className="mx-auto w-full max-w-screen-xl overflow-hidden px-3 sm:px-4">
+          <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
+            {categoryTabs.map((category) => (
+              <Button
+                key={category.id}
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedCategory(category.id)}
+                className={`h-9 shrink-0 rounded-full border px-3 text-xs sm:px-4 sm:text-sm ${
+                  selectedCategory === category.id
+                    ? 'border-[#D4AF37] bg-[#D4AF37] text-black hover:bg-[#c9a328]'
+                    : 'border-[#D4AF37]/40 bg-transparent text-[#EED27A] hover:bg-[#D4AF37]/10'
+                }`}
+              >
+                {category.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        {/* Content */}
+      <section id="services-content" aria-labelledby="pricing-list-heading" className="py-12 md:py-16 lg:py-24 relative overflow-hidden">
         <div className="container mx-auto px-4" style={{ position: 'relative', zIndex: 10 }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleOrderService(service.title)}
-                  className="group relative text-left transition-all duration-300 rounded-lg overflow-hidden cursor-pointer"
-                >
-                  <Card className="relative bg-card border-border hover:border-accent/50 transition-all duration-300 hover:shadow-gold overflow-hidden h-full before:absolute before:inset-0 before:bg-gradient-to-br before:from-accent/0 before:via-accent/20 before:to-accent/0 before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none">
-                    {service.popular && (
-                      <div className="absolute -top-0 -right-0 z-10">
-                        <div className="bg-accent px-8 py-1.5 shadow-lg transform rotate-45 translate-x-7 translate-y-4 flex items-center justify-center">
-                          <Star className="w-3 h-3 mr-1 text-white dark:text-black" />
-                          <span className="text-xs font-bold text-white dark:text-black">Popular</span>
+          <div className="mb-8 max-w-3xl">
+            <h2 id="pricing-list-heading" className="text-2xl font-semibold text-[#F6D77A] sm:text-3xl">Service pricing by category</h2>
+            <p className="mt-3 text-sm leading-7 text-[#E5E5E5] sm:text-base">
+              Remove the guesswork and compare pricing across design, branding, websites, maintenance, and software development categories from one catalog.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-2 lg:gap-8 max-w-7xl mx-auto">
+            {filteredCategories.map((category) => (
+              <Card
+                key={category.id}
+                className="border-[#D4AF37]/25 bg-gradient-to-b from-[#121212] to-[#0B0B0B] text-white shadow-[0_0_0_1px_rgba(212,175,55,0.05)]"
+              >
+                <CardHeader className="border-b border-[#D4AF37]/20 px-4 py-3 md:px-6 md:py-4">
+                  <CardTitle className="text-base font-semibold text-[#F6D77A] sm:text-xl">{category.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="px-3 pt-4 sm:px-6 sm:pt-5">
+                  <div className="space-y-2">
+                    {category.services.map((service) => (
+                      <div
+                        key={`${category.id}-${service.name}`}
+                        className="grid grid-cols-[1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-2.5 transition-colors hover:border-[#D4AF37]/20 hover:bg-[#D4AF37]/5 active:bg-[#D4AF37]/10"
+                      >
+                        <p className="min-w-0 break-words text-xs leading-relaxed text-[#EFEFEF] sm:text-sm md:text-[15px]">{service.name}</p>
+                        <div className="flex shrink-0 items-center justify-end whitespace-nowrap text-xs font-semibold text-[#F6D77A] sm:text-sm md:text-[15px]">
+                          <IndianRupee className="mr-0.5 h-3 w-3 sm:h-4 sm:w-4" />
+                          <span>{service.price.replace('₹', '')}</span>
                         </div>
                       </div>
-                    )}
+                    ))}
+                  </div>
 
-                    <CardHeader className="text-center pb-3 md:pb-4">
-                      <div className={`w-12 h-12 md:w-16 md:h-16 mx-auto rounded-2xl bg-gradient-to-r ${service.gradient} flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300 border border-accent/30`}>
-                        <IconComponent className="w-6 h-6 md:w-8 md:h-8 text-accent" />
-                      </div>
-                      <CardTitle className="text-base md:text-lg lg:text-xl font-bold text-foreground dark:text-white mb-2">
-                        {service.title}
-                      </CardTitle>
-                      <CardDescription className="text-xs md:text-sm text-foreground dark:text-white">
-                        {service.description}
-                      </CardDescription>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4 md:space-y-6 flex flex-col justify-between h-full">
-                      <div>
-                        <div className="space-y-2 md:space-y-3">
-                          <div className="flex justify-between items-center text-xs md:text-sm">
-                            <span className="text-foreground dark:text-white">Starting at</span>
-                            <span className="text-lg md:text-2xl font-bold text-accent">{service.startingPrice}</span>
-                          </div>
-                          <div className="flex justify-between items-center text-xs md:text-sm">
-                            <span className="text-foreground dark:text-white">Timeline</span>
-                            <span className="text-foreground dark:text-white font-medium">{service.timeline}</span>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2 mt-4 md:mt-6">
-                          <h4 className="font-semibold text-xs md:text-sm text-foreground dark:text-white">What's included:</h4>
-                          <ul className="space-y-1">
-                            {service.features.map((feature, idx) => (
-                              <li key={idx} className="text-xs md:text-sm text-foreground dark:text-white flex items-center">
-                                <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-accent rounded-full mr-2 flex-shrink-0" />
-                                {feature}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </button>
-              );
-            })}
+                  <div className="mt-5 flex justify-end">
+                    <Button
+                      onClick={() => handleOrderService(category.title)}
+                      size="sm"
+                      className="h-9 bg-[#D4AF37] px-4 text-xs font-semibold text-black hover:bg-[#C59B2F] sm:h-10 sm:px-5 sm:text-sm"
+                    >
+                      <span className="hidden sm:inline">Enquire {category.title}</span>
+                      <span className="sm:hidden">Enquire Now</span>
+                      <ArrowRight className="ml-1.5 h-3.5 w-3.5 sm:ml-2 sm:h-4 sm:w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
