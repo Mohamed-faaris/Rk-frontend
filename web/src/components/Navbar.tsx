@@ -180,13 +180,13 @@ const Navbar = () => {
           {/* Logo */}
           <a href="#home" onClick={handleLogoClick} className="flex items-center space-x-2 md:space-x-3 group cursor-pointer min-w-0">
             <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-9 w-9 md:h-12 md:w-12 flex-shrink-0 drop-shadow-[0_0_8px_rgba(253,185,19,0.3)] transition-all duration-300" />
-            <span className="brand-display max-w-[9.5rem] text-[11px] leading-tight bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent sm:max-w-[11rem] sm:text-xs md:max-w-none md:text-lg md:whitespace-nowrap">
+            <span className="brand-display max-w-[9.5rem] text-[11px] leading-tight bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent sm:max-w-[11rem] sm:text-xs md:max-w-[12rem] md:text-sm lg:max-w-none lg:text-base xl:text-lg xl:whitespace-nowrap">
               RajKayal Creative Hub
             </span>
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden xl:flex items-center space-x-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -264,7 +264,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="hidden items-center space-x-2 md:flex">
+                  <Button variant="ghost" className="hidden items-center space-x-2 lg:flex">
                     <User className="h-4 w-4" />
                     <span className="hidden sm:inline">{user?.name}</span>
                   </Button>
@@ -297,14 +297,14 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => navigate('/login')} className="hidden md:inline-flex">
+              <Button onClick={() => navigate('/login')} className="hidden lg:inline-flex">
                 Login
               </Button>
             )}
 
             {/* Management Dashboard Link for Desktop */}
             {isAuthenticated && user?.role === 'admin' && (
-              <Button variant="outline" onClick={() => navigate('/management')} className="hidden md:inline-flex bg-transparent border-border text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent">
+              <Button variant="outline" onClick={() => navigate('/management')} className="hidden xl:inline-flex bg-transparent border-border text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent">
                 Management
               </Button>
             )}
@@ -313,7 +313,7 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="xl:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
@@ -329,7 +329,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed left-0 right-0 top-16 z-40 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-border bg-background/95 py-4 backdrop-blur-xl animate-fade-in">
+          <div className="xl:hidden fixed left-0 right-0 top-16 z-40 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-border bg-background/95 py-4 backdrop-blur-xl animate-fade-in md:top-20 md:max-h-[calc(100vh-5rem)]">
             <div className="flex flex-col space-y-1 px-4 pb-4">
               {navLinks.map((link) => (
                 <a
