@@ -130,8 +130,8 @@ const OrderServicePage = () => {
             Back to Services
           </Button>
 
-          <h1 className="text-3xl sm:text-4xl font-bold gradient-text mb-2 break-words">Order {serviceName}</h1>
-          <p className="text-muted-foreground break-words">Fill out the details below to place your order</p>
+          <h1 className="text-3xl sm:text-4xl font-bold gradient-text mb-2 break-normal">Order {serviceName}</h1>
+          <p className="text-muted-foreground break-normal">Fill out the details below to place your order</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -144,7 +144,7 @@ const OrderServicePage = () => {
               <CardContent className="space-y-4">
                 <div>
                   <span className="text-muted-foreground">Selected Service</span>
-                  <div className="mt-2 text-xl font-semibold text-foreground break-words">
+                  <div className="mt-2 text-xl font-semibold text-foreground break-normal">
                     {serviceName || 'General Service'}
                   </div>
                 </div>

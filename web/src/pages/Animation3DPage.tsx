@@ -207,11 +207,11 @@ const Animation3DPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
                     <Box className="w-6 h-6 text-accent" />
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-bold break-words">
+                  <h1 className="text-4xl md:text-5xl font-bold break-normal">
                     3D Art & <span className="gradient-text">Animation</span>
                   </h1>
                 </div>
-                <p className="text-xl text-muted-foreground break-words">
+                <p className="text-xl text-muted-foreground break-normal">
                   Stunning 3D visuals that bring imagination to life
                 </p>
               </div>
@@ -459,7 +459,7 @@ const Animation3DPage = () => {
                           <Badge variant="outline" className="mb-2 border-accent/50 text-accent">
                             {animation.style}
                           </Badge>
-                          <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-words">
+                          <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
                             {animation.title}
                           </h3>
                           <p className="text-muted-foreground mt-2">{animation.description}</p>

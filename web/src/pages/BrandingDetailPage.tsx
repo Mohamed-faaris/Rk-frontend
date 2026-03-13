@@ -397,7 +397,7 @@ const BrandingDetailPage = () => {
           {/* Details Section */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 break-words">{item.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 break-normal">{item.title}</h1>
               
               {item.featured && (
                 <Badge variant="default" className="mb-4">
@@ -424,7 +424,7 @@ const BrandingDetailPage = () => {
             <Card>
               <CardContent className="pt-6">
                 <h2 className="text-xl font-semibold mb-3">Description</h2>
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-words">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-normal">
                   {item.description}
                 </p>
               </CardContent>

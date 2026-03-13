@@ -1340,7 +1340,7 @@ export default function ManagementDashboard() {
                                                     href={getFileUrl(editingApplication.resume)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-xs text-accent hover:underline break-all block"
+                                                    className="text-xs text-accent hover:underline break-words block"
                                                   >
                                                     {getFileUrl(editingApplication.resume)}
                                                   </a>

@@ -203,10 +203,10 @@ const Contact = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-words">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Get in <span className="gradient-text">Touch</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-words">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               Ready to start your next project? We'd love to hear from you.
             </p>
           </div>
@@ -314,10 +314,10 @@ const Contact = () => {
             {/* Contact Information */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-foreground break-words">
+                <h3 className="text-2xl font-bold text-foreground break-normal">
                   Contact Information
                 </h3>
-                <p className="text-muted-foreground leading-relaxed break-words">
+                <p className="text-muted-foreground leading-relaxed break-normal">
                   We're here to answer any questions you may have about our services. 
                   Reach out to us and we'll respond as soon as we can.
                 </p>
@@ -581,10 +581,10 @@ const Contact = () => {
                       <info.icon className="w-5 h-5 text-accent" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm text-muted-foreground mb-1 break-words">
+                      <div className="text-sm text-muted-foreground mb-1 break-normal">
                         {info.label}
                       </div>
-                      <div className="text-foreground font-medium break-words">
+                      <div className="text-foreground font-medium break-normal">
                         {info.value}
                       </div>
                     </div>
@@ -594,7 +594,7 @@ const Contact = () => {
 
               {/* Office Hours */}
               <div className="p-6 rounded-lg bg-card border border-border">
-                <h4 className="text-lg font-bold text-foreground mb-4 break-words">
+                <h4 className="text-lg font-bold text-foreground mb-4 break-normal">
                   Office Hours
                 </h4>
                 <div className="space-y-2 text-sm">

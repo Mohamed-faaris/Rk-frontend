@@ -172,10 +172,10 @@ const TermsOfServicePage = () => {
                 <FileText className="w-10 h-10 text-accent" />
               </div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 break-words">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 break-normal">
               Terms of <span className="gradient-text">Service</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-4 break-words">
+            <p className="text-lg text-muted-foreground mb-4 break-normal">
               Please read these terms carefully before using our services. These terms govern your use of RajKayal Digital Studio's services.
             </p>
             <Badge className="bg-accent shadow-gold">
@@ -207,11 +207,11 @@ const TermsOfServicePage = () => {
                   <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
                     <section.icon className="w-6 h-6 text-accent" />
                   </div>
-                  <span className="text-xl md:text-2xl break-words">{section.title}</span>
+                  <span className="text-xl md:text-2xl break-normal">{section.title}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed mb-4 break-words">
+                <p className="text-muted-foreground leading-relaxed mb-4 break-normal">
                   {section.content}
                 </p>
                 {section.list && (
@@ -219,7 +219,7 @@ const TermsOfServicePage = () => {
                     {section.list.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-muted-foreground">
                         <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0" />
-                        <span className="break-words">{item}</span>
+                        <span className="break-normal">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -236,18 +236,18 @@ const TermsOfServicePage = () => {
           <Card className="border-accent/30 bg-card">
             <CardContent className="p-8 text-center">
               <CheckCircle className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-4 break-words">Agreement and Contact</h2>
-              <p className="text-muted-foreground mb-6 break-words">
+              <h2 className="text-2xl font-bold mb-4 break-normal">Agreement and Contact</h2>
+              <p className="text-muted-foreground mb-6 break-normal">
                 By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you have any questions or need clarification, please contact us.
               </p>
               <div className="space-y-2 text-center">
                 <p className="text-foreground">
-                  <strong>Email:</strong> <a href="mailto:rajkayal7281@gmail.com" className="text-accent hover:underline break-words">rajkayal7281@gmail.com</a>
+                  <strong>Email:</strong> <a href="mailto:rajkayal7281@gmail.com" className="text-accent hover:underline break-normal">rajkayal7281@gmail.com</a>
                 </p>
                 <p className="text-foreground">
                   <strong>Phone:</strong> <a href="tel:+918754616454" className="text-accent hover:underline">+91 8754616454</a>
                 </p>
-                <p className="text-foreground break-words">
+                <p className="text-foreground break-normal">
                   <strong>Location:</strong> Trichy, Tamil Nadu, India
                 </p>
               </div>

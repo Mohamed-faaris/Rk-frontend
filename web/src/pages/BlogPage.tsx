@@ -113,10 +113,10 @@ const BlogPage = () => {
             <Badge className="mb-3 md:mb-4 bg-accent shadow-gold text-xs md:text-sm py-1 md:py-1.5">
               Insights & Resources
             </Badge>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 break-words">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 break-normal">
               Our <span className="gradient-text">Blog</span>
             </h1>
-            <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto break-words">
+            <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto break-normal">
               Stay updated with the latest insights, trends, and best practices in digital design and development.
             </p>
           </div>
@@ -203,12 +203,12 @@ const BlogPage = () => {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors break-words line-clamp-2">
+                      <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors break-normal line-clamp-2">
                         {post.title}
                       </h3>
 
                       {/* Excerpt */}
-                      <p className="text-muted-foreground line-clamp-3 break-words">
+                      <p className="text-muted-foreground line-clamp-3 break-normal">
                         {post.excerpt}
                       </p>
 
@@ -242,10 +242,10 @@ const BlogPage = () => {
       {/* CTA Section */}
       <section className="py-12 md:py-16 lg:py-24 px-4 bg-secondary/30">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 break-words">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 break-normal">
             Want to Stay <span className="gradient-text">Updated</span>?
           </h2>
-          <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-6 md:mb-8 break-words">
+          <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-6 md:mb-8 break-normal">
             Subscribe to our newsletter for the latest insights and exclusive content delivered to your inbox.
           </p>
           <div className="flex flex-col sm:flex-row gap-2 md:gap-4 max-w-md mx-auto">

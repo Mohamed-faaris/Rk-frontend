@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap');
+
 /* stylelint-disable at-rule-no-unknown */
 @tailwind base;
 @tailwind components;
@@ -111,11 +113,11 @@ All colors MUST be HSL.
     scroll-behavior: smooth;
   }
 
-  /* Prevent text overflow globally */
+  /* Keep normal words intact; use per-component utilities only where forced wrapping is needed. */
   h1, h2, h3, h4, h5, h6, p, span, div {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
   }
 }
 
@@ -132,6 +134,12 @@ All colors MUST be HSL.
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .brand-display {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
   
   .animate-fade-in-up {

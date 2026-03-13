@@ -140,7 +140,7 @@ export default function Register() {
                   Create <span className="gradient-text">Account</span>
                 </CardTitle>
                 <CardDescription className="text-base">
-                  Join RajKayal Creative Hub and start your journey
+                  Join <span className="brand-display">RajKayal Creative Hub</span> and start your journey
                 </CardDescription>
               </div>
             </CardHeader>

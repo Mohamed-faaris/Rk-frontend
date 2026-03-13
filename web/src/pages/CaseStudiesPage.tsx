@@ -143,10 +143,10 @@ const CaseStudiesPage = () => {
             <Badge className="mb-4 bg-accent shadow-gold">
               Success Stories
             </Badge>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 break-words">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 break-normal">
               Case <span className="gradient-text">Studies</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-words">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               Discover how we've helped businesses transform their digital presence and achieve remarkable results.
             </p>
           </div>
@@ -200,20 +200,20 @@ const CaseStudiesPage = () => {
                       <Badge className="mb-3 bg-accent shadow-gold">
                         {study.industry}
                       </Badge>
-                      <h2 className="text-3xl font-bold mb-2 break-words">{study.title}</h2>
-                      <p className="text-muted-foreground break-words">Client: {study.client}</p>
+                      <h2 className="text-3xl font-bold mb-2 break-normal">{study.title}</h2>
+                      <p className="text-muted-foreground break-normal">Client: {study.client}</p>
                     </div>
 
                     {/* Challenge */}
                     <div>
                       <h3 className="text-lg font-semibold mb-2 text-foreground">Challenge</h3>
-                      <p className="text-muted-foreground break-words">{study.challenge}</p>
+                      <p className="text-muted-foreground break-normal">{study.challenge}</p>
                     </div>
 
                     {/* Solution */}
                     <div>
                       <h3 className="text-lg font-semibold mb-2 text-foreground">Solution</h3>
-                      <p className="text-muted-foreground break-words">{study.solution}</p>
+                      <p className="text-muted-foreground break-normal">{study.solution}</p>
                     </div>
 
                     {/* Results */}
@@ -224,7 +224,7 @@ const CaseStudiesPage = () => {
                           <div key={idx} className="text-center p-4 rounded-lg bg-secondary/30 border border-border">
                             <result.icon className="w-6 h-6 text-accent mx-auto mb-2" />
                             <div className="text-2xl font-bold text-accent mb-1">{result.value}</div>
-                            <div className="text-xs text-muted-foreground break-words">{result.metric}</div>
+                            <div className="text-xs text-muted-foreground break-normal">{result.metric}</div>
                           </div>
                         ))}
                       </div>
@@ -241,7 +241,7 @@ const CaseStudiesPage = () => {
 
                     {/* Testimonial */}
                     <div className="p-4 rounded-lg bg-accent/5 border-l-4 border-accent">
-                      <p className="text-foreground italic break-words">"{study.testimonial}"</p>
+                      <p className="text-foreground italic break-normal">"{study.testimonial}"</p>
                     </div>
                   </div>
                 </div>
@@ -254,10 +254,10 @@ const CaseStudiesPage = () => {
       {/* CTA Section */}
       <section className="py-16 px-4 bg-secondary/30">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 break-words">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 break-normal">
             Ready to Create Your <span className="gradient-text">Success Story</span>?
           </h2>
-          <p className="text-lg text-muted-foreground mb-8 break-words">
+          <p className="text-lg text-muted-foreground mb-8 break-normal">
             Let's discuss how we can help you achieve similar results for your business.
           </p>
           <Button asChild className="bg-accent hover:bg-accent/90 shadow-gold group">

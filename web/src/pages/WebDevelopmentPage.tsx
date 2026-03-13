@@ -207,11 +207,11 @@ const WebDevelopmentPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
                     <Code2 className="w-6 h-6 text-accent" />
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-bold break-words">
+                  <h1 className="text-4xl md:text-5xl font-bold break-normal">
                     Web Design & <span className="gradient-text">Development</span>
                   </h1>
                 </div>
-                <p className="text-xl text-muted-foreground break-words">
+                <p className="text-xl text-muted-foreground break-normal">
                   Cutting-edge websites that combine stunning design with powerful functionality
                 </p>
               </div>
@@ -459,7 +459,7 @@ const WebDevelopmentPage = () => {
                           <Badge variant="outline" className="mb-2 border-accent/50 text-accent">
                             {project.category}
                           </Badge>
-                          <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-words">
+                          <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
                             {project.title}
                           </h3>
                           <p className="text-muted-foreground mt-2">{project.description}</p>

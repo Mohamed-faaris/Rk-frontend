@@ -53,10 +53,10 @@ const Services = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-words">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Our <span className="gradient-text">Services</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-words">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               Comprehensive digital solutions tailored to elevate your brand and achieve your goals.
             </p>
           </div>
@@ -78,10 +78,10 @@ const Services = () => {
                     <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors group-hover:scale-110 duration-300">
                       <service.icon className="w-7 h-7 text-accent" />
                     </div>
-                    <h3 className="text-xl font-bold mb-3 text-foreground break-words">
+                    <h3 className="text-xl font-bold mb-3 text-foreground break-normal">
                       {service.title}
                     </h3>
-                    <p className="text-muted-foreground leading-relaxed break-words">
+                    <p className="text-muted-foreground leading-relaxed break-normal">
                       {service.description}
                     </p>
                   </div>

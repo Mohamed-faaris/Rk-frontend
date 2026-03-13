@@ -202,8 +202,8 @@ const OrderDetailsPage = () => {
 
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 break-words">{order.title}</h1>
-              <p className="text-muted-foreground break-words">{order.service}</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 break-normal">{order.title}</h1>
+              <p className="text-muted-foreground break-normal">{order.service}</p>
             </div>
             <div className="flex items-center space-x-3">
               {getStatusIcon(order.status)}
@@ -225,7 +225,7 @@ const OrderDetailsPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed break-words">{order.description}</p>
+                <p className="text-muted-foreground leading-relaxed break-normal">{order.description}</p>
               </CardContent>
             </Card>
 
@@ -236,7 +236,7 @@ const OrderDetailsPage = () => {
                   <CardTitle className="text-foreground">Additional Requirements</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground leading-relaxed break-words">{order.requirements}</p>
+                  <p className="text-muted-foreground leading-relaxed break-normal">{order.requirements}</p>
                 </CardContent>
               </Card>
             )}
@@ -253,8 +253,8 @@ const OrderDetailsPage = () => {
                 <CardContent className="space-y-4">
                   {order.notes.map((note, index) => (
                     <div key={index} className="border-l-2 border-accent pl-4">
-                      <p className="text-muted-foreground mb-2 break-words">{note.message}</p>
-                      <div className="flex items-center text-sm text-muted-foreground break-words">
+                      <p className="text-muted-foreground mb-2 break-normal">{note.message}</p>
+                      <div className="flex items-center text-sm text-muted-foreground break-normal">
                         <User className="w-3 h-3 mr-1" />
                         {note.author.name} • {formatDate(note.createdAt)}
                       </div>

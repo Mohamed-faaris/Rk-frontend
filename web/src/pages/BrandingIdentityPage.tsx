@@ -213,10 +213,10 @@ const BrandingIdentityPage = () => {
                 Premium Portfolio
               </Badge>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold break-words">
+            <h1 className="text-5xl md:text-7xl font-bold break-normal">
               Luxury <span className="gradient-text">Branding Identity</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl break-words">
+            <p className="text-xl text-muted-foreground max-w-2xl break-normal">
               Explore our collection of premium branding projects. Where sophistication meets
               creativity in every design.
             </p>
@@ -474,7 +474,7 @@ const BrandingIdentityPage = () => {
                     {/* Project Info */}
                     <div className="p-6 space-y-3">
                       <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors break-words">
+                        <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
                           {item.title}
                         </h3>
                         <Badge variant="outline" className="text-xs">

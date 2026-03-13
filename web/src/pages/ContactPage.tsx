@@ -156,7 +156,7 @@ export default function ContactPage() {
                     <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Email</h3>
                     <a
                       href="mailto:rajkayal7281@gmail.com"
-                      className="text-foreground/70 dark:text-foreground/80 hover:text-gold transition-colors text-xs md:text-sm break-all"
+                      className="text-foreground/70 dark:text-foreground/80 hover:text-gold transition-colors text-xs md:text-sm break-words"
                     >
                       rajkayal7281@gmail.com
                     </a>

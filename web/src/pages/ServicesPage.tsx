@@ -134,7 +134,7 @@ const ServicesPage = () => {
                         key={`${category.id}-${service.name}`}
                         className="grid grid-cols-[1fr_auto] items-center gap-2 rounded-md border border-transparent px-2 py-2.5 transition-colors hover:border-[#D4AF37]/20 hover:bg-[#D4AF37]/5 active:bg-[#D4AF37]/10"
                       >
-                        <p className="min-w-0 break-words text-xs leading-relaxed text-[#EFEFEF] sm:text-sm md:text-[15px]">{service.name}</p>
+                        <p className="min-w-0 break-normal text-xs leading-relaxed text-[#EFEFEF] sm:text-sm md:text-[15px]">{service.name}</p>
                         <div className="flex shrink-0 items-center justify-end whitespace-nowrap text-xs font-semibold text-[#F6D77A] sm:text-sm md:text-[15px]">
                           <IndianRupee className="mr-0.5 h-3 w-3 sm:h-4 sm:w-4" />
                           <span>{service.price.replace('₹', '')}</span>

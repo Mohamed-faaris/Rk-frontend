@@ -124,8 +124,8 @@ const OrdersPage = () => {
         <div className="mb-6 md:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-4">
             <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-2 break-words">My Orders</h1>
-              <p className="text-xs md:text-sm text-muted-foreground break-words">Track and manage your project orders</p>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-2 break-normal">My Orders</h1>
+              <p className="text-xs md:text-sm text-muted-foreground break-normal">Track and manage your project orders</p>
             </div>
             <Button
               onClick={() => navigate('/')}

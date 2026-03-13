@@ -88,7 +88,7 @@ const Footer = () => {
           <div className="space-y-4 sm:space-y-5">
             <div className="flex items-center space-x-2 sm:space-x-3 group cursor-pointer" onClick={handleLogoClick}>
               <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-10 sm:h-12 w-10 sm:w-12 flex-shrink-0 drop-shadow-[0_0_10px_rgba(253,185,19,0.4)] transition-all duration-300" />
-              <span className="font-bold text-sm sm:text-base md:text-lg bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent">
+              <span className="brand-display font-bold text-sm sm:text-base md:text-lg bg-gradient-to-r from-[#FDB913] to-[#D4A520] bg-clip-text text-transparent">
                 RajKayal Creative Hub
               </span>
             </div>

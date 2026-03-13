@@ -15,9 +15,9 @@ const NotFound = () => {
       <Navbar />
       <div className="flex items-center justify-center min-h-screen pt-20">
         <div className="text-center">
-          <h1 className="mb-4 text-6xl font-bold gradient-text break-words">404</h1>
-          <p className="mb-4 text-xl text-muted-foreground break-words">Oops! Page not found</p>
-          <a href="/" className="text-accent underline hover:text-accent/80 transition-colors break-words">
+          <h1 className="mb-4 text-6xl font-bold gradient-text break-normal">404</h1>
+          <p className="mb-4 text-xl text-muted-foreground break-normal">Oops! Page not found</p>
+          <a href="/" className="text-accent underline hover:text-accent/80 transition-colors break-normal">
             Return to Home
           </a>
         </div>

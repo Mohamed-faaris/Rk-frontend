@@ -101,10 +101,10 @@ const PrivacyPolicyPage = () => {
                 <Shield className="w-10 h-10 text-accent" />
               </div>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 break-words">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 break-normal">
               Privacy <span className="gradient-text">Policy</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-4 break-words">
+            <p className="text-lg text-muted-foreground mb-4 break-normal">
               Your privacy is important to us. This policy outlines how RajKayal Digital Studio collects, uses, and protects your information.
             </p>
             <Badge className="bg-accent shadow-gold">
@@ -119,10 +119,10 @@ const PrivacyPolicyPage = () => {
         <div className="container mx-auto max-w-4xl">
           <Card className="border-border bg-card">
             <CardContent className="p-8">
-              <p className="text-muted-foreground leading-relaxed mb-4 break-words">
+              <p className="text-muted-foreground leading-relaxed mb-4 break-normal">
                 At RajKayal Digital Studio, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains our practices regarding the collection, use, and disclosure of information that we receive through our website and services.
               </p>
-              <p className="text-muted-foreground leading-relaxed break-words">
+              <p className="text-muted-foreground leading-relaxed break-normal">
                 By using our services, you agree to the terms outlined in this Privacy Policy. We encourage you to read this document carefully and contact us if you have any questions or concerns.
               </p>
             </CardContent>
@@ -140,7 +140,7 @@ const PrivacyPolicyPage = () => {
                   <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
                     <section.icon className="w-6 h-6 text-accent" />
                   </div>
-                  <span className="text-2xl break-words">{section.title}</span>
+                  <span className="text-2xl break-normal">{section.title}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -148,7 +148,7 @@ const PrivacyPolicyPage = () => {
                   {section.content.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3 text-muted-foreground">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0" />
-                      <span className="break-words">{item}</span>
+                      <span className="break-normal">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -168,11 +168,11 @@ const PrivacyPolicyPage = () => {
                 <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
                   <Database className="w-6 h-6 text-accent" />
                 </div>
-                <span className="text-2xl break-words">Data Retention</span>
+                <span className="text-2xl break-normal">Data Retention</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground leading-relaxed break-words">
+              <p className="text-muted-foreground leading-relaxed break-normal">
                 We retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, comply with legal obligations, resolve disputes, and enforce our agreements. When information is no longer needed, it is securely deleted or anonymized.
               </p>
             </CardContent>
@@ -185,11 +185,11 @@ const PrivacyPolicyPage = () => {
                 <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
                   <Shield className="w-6 h-6 text-accent" />
                 </div>
-                <span className="text-2xl break-words">Children's Privacy</span>
+                <span className="text-2xl break-normal">Children's Privacy</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground leading-relaxed break-words">
+              <p className="text-muted-foreground leading-relaxed break-normal">
                 Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If we become aware that we have collected information from a child, we will take steps to delete such information promptly.
               </p>
             </CardContent>
@@ -202,11 +202,11 @@ const PrivacyPolicyPage = () => {
                 <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center">
                   <FileText className="w-6 h-6 text-accent" />
                 </div>
-                <span className="text-2xl break-words">Policy Updates</span>
+                <span className="text-2xl break-normal">Policy Updates</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground leading-relaxed break-words">
+              <p className="text-muted-foreground leading-relaxed break-normal">
                 We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. We will notify you of any significant changes by posting the new policy on our website and updating the "Last Updated" date. We encourage you to review this policy periodically.
               </p>
             </CardContent>
@@ -220,8 +220,8 @@ const PrivacyPolicyPage = () => {
           <Card className="border-border bg-card">
             <CardContent className="p-8 text-center">
               <Mail className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-4 break-words">Questions About Privacy?</h2>
-              <p className="text-muted-foreground mb-6 break-words">
+              <h2 className="text-2xl font-bold mb-4 break-normal">Questions About Privacy?</h2>
+              <p className="text-muted-foreground mb-6 break-normal">
                 If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please don't hesitate to contact us.
               </p>
               <div className="space-y-2">
@@ -231,7 +231,7 @@ const PrivacyPolicyPage = () => {
                 <p className="text-foreground">
                   <strong>Phone:</strong> <a href="tel:+918754616454" className="text-accent hover:underline">+91 8754616454</a>
                 </p>
-                <p className="text-foreground break-words">
+                <p className="text-foreground break-normal">
                   <strong>Location:</strong> Trichy, Tamil Nadu, India
                 </p>
               </div>

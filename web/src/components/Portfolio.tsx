@@ -53,10 +53,10 @@ const Portfolio = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-words">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Featured <span className="gradient-text">Projects</span>
             </h2>
-            <p className="text-xl text-foreground max-w-2xl mx-auto break-words">
+            <p className="text-xl text-foreground max-w-2xl mx-auto break-normal">
               Explore our latest work and see how we bring creative visions to life.
             </p>
           </div>
@@ -90,13 +90,13 @@ const Portfolio = () => {
 
                       {/* Project Info */}
                       <div className="p-6 space-y-2">
-                        <div className="text-sm text-accent font-medium break-words">
+                        <div className="text-sm text-accent font-medium break-normal">
                           {project.category}
                         </div>
-                        <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-words">
+                        <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
                           {project.title}
                         </h3>
-                        <p className="text-muted-foreground break-words">
+                        <p className="text-muted-foreground break-normal">
                           {project.description}
                         </p>
                       </div>
@@ -129,13 +129,13 @@ const Portfolio = () => {
 
                     {/* Project Info */}
                     <div className="p-6 space-y-2">
-                      <div className="text-sm text-accent font-medium break-words">
+                      <div className="text-sm text-accent font-medium break-normal">
                         {project.category}
                       </div>
-                      <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-words">
+                      <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
                         {project.title}
                       </h3>
-                      <p className="text-muted-foreground break-words">
+                      <p className="text-muted-foreground break-normal">
                         {project.description}
                       </p>
                     </div>

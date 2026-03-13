@@ -122,7 +122,7 @@ const ApplyForEmployee = () => {
             <CardHeader className="pb-4 md:pb-6">
               <CardTitle className="text-2xl md:text-3xl">Apply for Employee Position</CardTitle>
               <CardDescription className="text-xs md:text-sm">
-                Join RajKayal Creative Hub team. Fill in all your details below.
+                Join <span className="brand-display">RajKayal Creative Hub</span> team. Fill in all your details below.
               </CardDescription>
             </CardHeader>
 

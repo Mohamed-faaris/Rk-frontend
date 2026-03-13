@@ -44,10 +44,10 @@ const Testimonials = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-words">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Client <span className="gradient-text">Testimonials</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-words">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               Don't just take our word for it - hear what our clients have to say.
             </p>
           </div>
@@ -68,16 +68,16 @@ const Testimonials = () => {
               </div>
 
               {/* Content */}
-              <blockquote className="text-xl md:text-2xl text-foreground leading-relaxed mb-8 relative z-10 break-words">
+              <blockquote className="text-xl md:text-2xl text-foreground leading-relaxed mb-8 relative z-10 break-normal">
                 "{testimonials[currentIndex].content}"
               </blockquote>
 
               {/* Author Info */}
               <div className="space-y-1">
-                <div className="font-bold text-lg text-foreground break-words">
+                <div className="font-bold text-lg text-foreground break-normal">
                   {testimonials[currentIndex].name}
                 </div>
-                <div className="text-muted-foreground break-words">
+                <div className="text-muted-foreground break-normal">
                   {testimonials[currentIndex].role}
                 </div>
               </div>
