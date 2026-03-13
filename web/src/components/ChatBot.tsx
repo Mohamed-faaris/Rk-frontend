@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import chatbotService from '@/lib/chatbotService';
 import { logger } from '@/lib/logger';
+import { serviceCategories } from '@/lib/serviceCatalog';
 
 interface Message {
   id: string;
@@ -14,55 +15,144 @@ interface Message {
   suggestedLinkText?: string;
 }
 
-// Service categories with keywords for smart detection
-const SERVICE_CATEGORIES = {
-  webDevelopment: {
-    name: 'Web Development',
-    link: '/web-development',
-    keywords: ['web', 'website', 'web development', 'web app', 'frontend', 'backend', 'full stack', 'build website', 'develop website', 'responsive']
-  },
-  branding: {
-    name: 'Branding & Identity',
-    link: '/branding-identity',
-    keywords: ['brand', 'branding', 'identity', 'logo', 'logo design', 'visual identity', 'brand design', 'corporate identity']
-  },
-  uiux: {
+// Natural language intent map — conversational phrases mapped to service category IDs
+const NL_INTENTS: { patterns: string[]; categoryId: string }[] = [
+  // Photoshop / Image editing
+  { patterns: ['edit my photo', 'edit photo', 'edit my image', 'edit image', 'photo edit', 'need to edit photo', 'fix my photo', 'fix photo', 'enhance photo', 'enhance image', 'photo editing needed', 'image editing needed'], categoryId: 'photoshop-services' },
+  { patterns: ['retouch', 'photo retouch', 'skin retouch', 'face retouch', 'remove wrinkles', 'clear photo'], categoryId: 'photoshop-services' },
+  { patterns: ['remove background', 'remove bg', 'cut background', 'cut out background', 'transparent background', 'background cut out', 'erase background'], categoryId: 'photoshop-services' },
+  { patterns: ['photo manipulation', 'image manipulation', 'composite photo', 'montage photo'], categoryId: 'photoshop-services' },
+  // Logo Design
+  { patterns: ['need a logo', 'i need a logo', 'want a logo', 'create a logo', 'make a logo', 'design a logo', 'get a logo', 'logo for my business', 'logo for my brand', 'new logo needed', 'need logo'], categoryId: 'logo-design' },
+  // ID Card
+  { patterns: ['need id card', 'make id card', 'design id card', 'id card for school', 'id card for college', 'id badge', 'student id card', 'employee id card', 'staff id', 'need identity card'], categoryId: 'id-card' },
+  // Printing
+  { patterns: ['visiting card', 'visiting cards', 'business card', 'business cards', 'name card', 'need visiting card', 'design business card', 'print visiting card'], categoryId: 'printing-designs' },
+  { patterns: ['letterhead design', 'need letterhead', 'company letterhead', 'official letterhead', 'design letterhead'], categoryId: 'printing-designs' },
+  { patterns: ['invoice design', 'bill book design', 'bill design', 'receipt design', 'challan design', 'bill book needed'], categoryId: 'printing-designs' },
+  { patterns: ['envelope design', 'design envelope', 'envelope needed'], categoryId: 'printing-designs' },
+  // Advertisement
+  { patterns: ['need a poster', 'make a poster', 'design a poster', 'event poster', 'poster for event', 'create poster', 'promo poster', 'poster needed'], categoryId: 'advertisement-designs' },
+  { patterns: ['need a flyer', 'make a flyer', 'design a flyer', 'event flyer', 'product flyer', 'flyer needed'], categoryId: 'advertisement-designs' },
+  { patterns: ['banner design', 'make a banner', 'design a banner', 'flex design', 'hoarding design', 'outdoor banner', 'standee design', 'banner needed'], categoryId: 'advertisement-designs' },
+  // Social Media
+  { patterns: ['instagram post', 'instagram design', 'facebook post', 'facebook design', 'social media post', 'social media design', 'social media creative', 'post design', 'social posts', 'content design', 'need social media content'], categoryId: 'social-media-designs' },
+  { patterns: ['instagram ad', 'facebook ad', 'social media ad', 'paid ad design', 'ad creative', 'social ad'], categoryId: 'social-media-designs' },
+  // Video Editing
+  { patterns: ['edit my video', 'edit a video', 'need video editing', 'video edit needed', 'video editor needed', 'cut my video', 'trim video', 'video editing service'], categoryId: 'video-editing' },
+  { patterns: ['edit youtube', 'youtube editing', 'edit youtube video', 'youtube video editor', 'edit my youtube', 'youtube video editing needed'], categoryId: 'video-editing' },
+  { patterns: ['edit my reel', 'reel editing', 'reel edit', 'edit reel', 'instagram reel', 'edit shorts', 'shorts editing', 'reel needed'], categoryId: 'video-editing' },
+  { patterns: ['promo video', 'promotional video', 'ad video', 'product video', 'commercial video', 'advertisement video', 'video for my brand'], categoryId: 'video-editing' },
+  // Branding
+  { patterns: ['shop board', 'signboard', 'sign board', 'shop sign', 'name board', 'shop name board', 'store sign'], categoryId: 'branding-designs' },
+  { patterns: ['vehicle design', 'lorry design', 'truck design', 'van design', 'car wrap', 'vehicle branding', 'lorry branding'], categoryId: 'branding-designs' },
+  { patterns: ['complete branding', 'full branding', 'brand kit', 'branding package', 'brand package', 'full brand design'], categoryId: 'branding-designs' },
+  // Website Design
+  { patterns: ['design my website', 'need website design', 'web design needed', 'create landing page', 'landing page design', 'need a landing page', 'make landing page', 'landing page needed'], categoryId: 'website-design' },
+  // Website Development
+  { patterns: ['make a website', 'build a website', 'create a website', 'need a website', 'i need a website', 'develop a website', 'want a website', 'get a website', 'new website', 'website for my business', 'website for my shop', 'website for school', 'website for college', 'personal website', 'portfolio website needed', 'blog website needed'], categoryId: 'website-development' },
+  // E-Commerce
+  { patterns: ['online store', 'sell online', 'start online shop', 'ecommerce website', 'e-commerce website', 'shopping website', 'sell my products online', 'online selling', 'product website', 'need online shop', 'want to sell online'], categoryId: 'ecommerce-development' },
+  // Software Development
+  { patterns: ['school management', 'college management', 'shop management', 'inventory management', 'management software', 'management system', 'business management system', 'erp system'], categoryId: 'software-development' },
+  { patterns: ['desktop app', 'desktop application', 'desktop software', 'windows application', 'custom software', 'business software', 'office software', 'need application'], categoryId: 'software-development' },
+  // Web Maintenance
+  { patterns: ['fix my website', 'website not working', 'website broken', 'update my website', 'website support', 'monthly website support', 'website stopped working'], categoryId: 'web-maintenance' },
+  // Tech Services
+  { patterns: ['hosting setup', 'set up hosting', 'need hosting', 'web hosting setup', 'website hosting needed'], categoryId: 'tech-services' },
+  { patterns: ['domain setup', 'register domain', 'need a domain', 'domain registration', 'buy a domain', 'domain for my website'], categoryId: 'tech-services' },
+  { patterns: ['deploy website', 'website deployment', 'launch my website', 'go live', 'put website online', 'publish website'], categoryId: 'tech-services' },
+  { patterns: ['fix bugs', 'bug fixing', 'debug code', 'fix code error', 'code debugging', 'code not working', 'website has errors'], categoryId: 'tech-services' },
+];
+
+const SIRA_SPECIALTY_SERVICES = [
+  {
     name: 'UI/UX Design',
     link: '/uiux-design',
-    keywords: ['ui', 'ux', 'interface', 'user experience', 'ui design', 'ux design', 'app design', 'interface design', 'wireframe']
+    icon: '✨',
+    description: 'User experience design, wireframes, user flows, and interface systems for apps and websites.',
+    keywords: ['ui', 'ux', 'user experience', 'interface design', 'wireframe', 'prototype', 'app design', 'user interface', 'ui design', 'ux design'],
+    nlPatterns: ['design my app', 'app interface', 'app screens', 'need ux design', 'need ui design', 'user flow', 'wireframe design', 'prototype design', 'mobile app design', 'app layout'],
+    pricingNote: 'UI/UX projects are quoted based on screen count, user flows, research depth, prototyping needs, and revisions.',
   },
-  animation3d: {
+  {
     name: '3D Animation',
     link: '/3d-animation',
-    keywords: ['3d', 'animation', '3d animation', 'motion', 'motion graphics', 'visual effects', 'vfx', 'rendering', 'animated']
+    icon: '🎬',
+    description: '3D animation, product visualization, motion graphics, and rendered scenes.',
+    keywords: ['3d', '3d animation', 'motion graphics', 'vfx', 'rendering', 'visual effects', '3d model'],
+    nlPatterns: ['3d animation', '3d model', 'product animation', 'product 3d', 'animated explainer', '3d render', 'motion graphic', 'animated logo'],
+    pricingNote: '3D animation pricing depends on duration, modeling complexity, and render quality. Contact us for a scope-based quote.',
   },
-  services: {
-    name: 'All Services',
-    link: '/services',
-    keywords: ['order', 'services', 'offerings', 'what do you offer', 'your services']
-  },
-  portfolio: {
-    name: 'Portfolio',
-    link: '/#portfolio',
-    keywords: ['portfolio', 'case study', 'showcase', 'examples', 'previous work', 'show me your work', 'your projects', 'featured projects', 'our work', 'past projects']
-  },
-  career: {
-    name: 'Career',
-    link: '/apply-employee',
-    keywords: ['join team', 'team member', 'employment opportunity', 'vacancy', 'opening', 'position available', 'hiring', 'recruitment']
-  },
-  blog: {
-    name: 'Blog',
-    link: '/blog',
-    keywords: ['blog', 'article', 'news', 'insights', 'tutorial', 'guide']
+];
+
+const CATEGORY_ICONS: Record<string, string> = {
+  'id-card': '🪪', 'logo-design': '🎨', 'printing-designs': '🖨️',
+  'advertisement-designs': '📢', 'social-media-designs': '📱', 'video-editing': '🎬',
+  'photoshop-services': '🖼️', 'branding-designs': '🏪', 'website-design': '🖥️',
+  'website-development': '💻', 'ecommerce-development': '🛒', 'web-maintenance': '🔧',
+  'software-development': '⚙️', 'tech-services': '🌐',
+};
+
+const CATEGORY_TIMELINES: Record<string, string> = {
+  'id-card': 'ID card designs are usually delivered in 1-2 working days.',
+  'logo-design': 'Logo design typically takes 2-4 working days depending on the package and revision rounds.',
+  'printing-designs': 'Print design files are usually ready in 1-3 working days.',
+  'advertisement-designs': 'Poster, flyer, and banner designs usually take 1-3 working days.',
+  'social-media-designs': 'Social media posts and creatives are usually delivered in 1-2 working days.',
+  'video-editing': 'Video editing timelines range from 1-5 days based on footage length, subtitles, and revisions.',
+  'photoshop-services': 'Photo editing and retouching is usually completed in 1-3 working days.',
+  'branding-designs': 'Individual branding items (shop boards, vehicle designs) take 1-3 days; full packages take 3-7 days.',
+  'website-design': 'Website design ranges from 1-3 weeks depending on page count and content readiness.',
+  'website-development': 'Website development typically takes 2-4 weeks based on features and complexity.',
+  'ecommerce-development': 'E-commerce builds take 3-10 weeks depending on product count and integrations.',
+  'web-maintenance': 'Bug fixes and small updates are usually handled within 1-3 working days.',
+  'software-development': 'Custom software projects take 2-8+ weeks depending on scope and testing needs.',
+  'tech-services': 'Hosting setup, domain registration, and deployment tasks are usually done in 1-2 working days.',
+};
+
+const _formatServiceLines = (services: { name: string; price: string }[]) =>
+  services.map((s) => `• ${s.name}: ${s.price}`).join('\n');
+
+const _findCatalogMatchByNL = (msg: string) => {
+  // First pass: check natural language intent phrases
+  for (const intent of NL_INTENTS) {
+    for (const pattern of intent.patterns) {
+      if (msg.includes(pattern)) {
+        return serviceCategories.find((c) => c.id === intent.categoryId) ?? null;
+      }
+    }
   }
+  // Second pass: score by category title + service name
+  let bestMatch = null;
+  let highestScore = 0;
+  for (const category of serviceCategories) {
+    let score = 0;
+    if (msg.includes(category.title.toLowerCase())) score += 10;
+    for (const svc of category.services) {
+      if (msg.includes(svc.name.toLowerCase())) score += 6;
+    }
+    for (const word of category.id.split('-')) {
+      if (word.length > 3 && msg.includes(word)) score += 1;
+    }
+    if (score > highestScore) { highestScore = score; bestMatch = category; }
+  }
+  return highestScore > 0 ? bestMatch : null;
+};
+
+const _findSpecialtyMatchByNL = (msg: string) => {
+  for (const s of SIRA_SPECIALTY_SERVICES) {
+    for (const p of s.nlPatterns) { if (msg.includes(p)) return s; }
+    for (const kw of s.keywords) { if (msg.includes(kw)) return s; }
+  }
+  return null;
 };
 
 const QUICK_QUESTIONS = [
-  'Tell me about your services',
-  "What's the pricing?",
-  'Show me your portfolio',
-  'How can I apply?'
+  'What services do you offer?',
+  'I need to edit my photo',
+  'How much does a website cost?',
+  'I need a logo for my business',
 ];
 
 export default function ChatBot() {
@@ -138,185 +228,140 @@ export default function ChatBot() {
     }
   }, [user, hasSeenWelcome]);
 
-  // Smart keyword matching for intent detection
+  // Smart NL-based intent detection using full service catalog
   const detectServiceAndResponse = useCallback((userMessage: string) => {
-    const lowerMessage = userMessage.toLowerCase().trim();
-    
-    // Bye detection with different send-off messages
-    if (/\b(bye|goodbye|see you|farewell|take care|see ya|later|cya|adios|ciao)\b/.test(lowerMessage)) {
-      const sendOffMessages = [
-        "👋 Goodbye! It was great chatting with you. Feel free to come back anytime!",
-        "🌟 Take care! Looking forward to our next conversation. Have a wonderful day!",
+    const msg = userMessage.toLowerCase().trim();
+
+    // Bye
+    if (/\b(bye|goodbye|see you|farewell|take care|see ya|later|cya|adios|ciao)\b/.test(msg)) {
+      const offs = [
+        '👋 Goodbye! It was great chatting with you. Feel free to come back anytime!',
+        '🌟 Take care! Looking forward to our next conversation. Have a wonderful day!',
         "🚀 Until next time! Don't hesitate to reach out when you need creative solutions.",
         "✨ Farewell! Remember, we're always here to help with your creative projects.",
-        "💫 See you soon! Thanks for exploring RK Creative Hub with me.",
-        "🎨 Goodbye for now! Keep creating amazing things!",
-        "🌈 Take care and stay creative! Come back anytime you need inspiration.",
-        "⭐ Farewell! Your next creative journey awaits. Safe travels!",
-        "🎭 Until we meet again! Keep the creative spark alive.",
-        "🎯 Goodbye! Ready to help whenever you're ready to create something amazing."
+        '💫 See you soon! Thanks for exploring RK Creative Hub with me.',
       ];
-      
-      const randomMessage = sendOffMessages[Math.floor(Math.random() * sendOffMessages.length)];
-      
-      return {
-        response: randomMessage,
-        link: null,
-        linkText: null
-      };
-    }
-    
-    // Greeting detection
-    if (/^(hello|hi|hey|greetings|start|help|what can you do)\b/.test(lowerMessage)) {
-      return {
-        response: `👋 Hello ${user?.name || 'there'}! I'm SIRA, your AI Assistant at RK Creative Hub. I'm here to help you find the perfect service. What would you like to know?`,
-        link: null,
-        linkText: null
-      };
+      return { response: offs[Math.floor(Math.random() * offs.length)], link: null, linkText: null };
     }
 
-    // Job seeking / career inquiry - specifically for people wanting to work for us
-    if (/work for you|work with you|join your team|join the team|looking for job|seeking job|want to work|apply for job|job application|employment|join company|need to join|join in work|want to join|interested in joining|join your company|i need to join/i.test(lowerMessage)) {
+    // Greeting
+    if (/^(hello|hi|hey|greetings|start|help|what can you do)\b/.test(msg)) {
       return {
-        response: `That's wonderful! 🎉 We're always excited to welcome talented creative professionals to our team.
-
-We regularly hire for positions in:
-• Web Development & Design
-• UI/UX Design
-• 3D Animation & Motion Graphics
-• Branding & Identity Design
-• Project Management
-
-Ready to join RK Creative Hub? We'd love to see your portfolio and discuss opportunities!`,
-        link: '/apply-employee',
-        linkText: 'Apply for a Position'
-      };
-    }
-
-    // Specific job seeking phrases
-    if (/like to work|want to join|interested in working|seeking for job|looking for employment|job seeker/i.test(lowerMessage)) {
-      return {
-        response: `That's fantastic! 🌟 We're thrilled that you're interested in joining RK Creative Hub.
-
-We believe great work happens when passionate people come together. Our team works on exciting projects across web development, design, branding, and animation.
-
-To apply, you'll need to prepare:
-• Your resume/portfolio
-• Links to your previous work
-• A brief cover letter
-
-Ready to start your journey with us?`,
-        link: '/apply-employee',
-        linkText: 'Start Your Application'
-      };
-    }
-
-    // Count keyword matches for each service
-    let bestMatch = null;
-    let maxMatches = 0;
-
-    try {
-      for (const [key, service] of Object.entries(SERVICE_CATEGORIES)) {
-        if (!service || !service.keywords) continue;
-        
-        const matches = service.keywords.filter(keyword => 
-          lowerMessage.includes(keyword.toLowerCase())
-        ).length;
-        
-        if (matches > maxMatches) {
-          maxMatches = matches;
-          bestMatch = service;
-        }
-      }
-    } catch (error) {
-      logger.error('Error in service matching:', error);
-      // Continue with default response
-    }
-
-    // Pricing inquiry
-    if (/price|cost|how much|pricing|quote|budget/.test(lowerMessage)) {
-      return {
-        response: `💰 Our pricing varies by project complexity:
-
-🌐 Website Design & Development: ₹5,000 - ₹6,00,000
-🎨 Branding & Identity: Custom Pricing
-✨ UI/UX Designing: ₹5,000 - ₹50,000 (per Screen)
-🎬 3D Animation: ₹2,111 - ₹8,00,000 (per Minute)
-📹 Video Editing: ₹5,000 - ₹15,000 (per Hour)
-📊 Digital Strategy: ₹10,000 - ₹2,00,000 (per Month)
-
-Would you like a personalized quote?`,
+        response: `👋 Hello ${user?.name || 'there'}! I'm SIRA, your AI Assistant at RK Creative Hub.\n\nJust describe what you need in plain words and I'll suggest the right service — for example:\n💬 "I need to edit my photo"\n💬 "Build me a website"\n💬 "Design a logo for my business"`,
         link: '/services',
-        linkText: 'View All Services'
+        linkText: 'Browse All Services',
       };
     }
 
-    // Timeline inquiry
-    if (/time|how long|duration|timeline|how fast|deadline/.test(lowerMessage)) {
+    // Career / Job
+    if (/work for you|work with you|join your team|join the team|looking for job|seeking job|want to work|apply for job|job application|employment|join company|need to join|join in work|want to join|interested in joining|join your company|i need to join|like to work|interested in working|seeking for job|looking for employment|job seeker/i.test(msg)) {
       return {
-        response: `⏱️ Project timelines depend on complexity:
-        
-📌 Small Projects: 1-2 weeks
-📌 Medium Projects: 2-4 weeks
-📌 Large Projects: 4-8+ weeks
-
-Let's discuss your specific timeline needs!`,
-        link: '/services',
-        linkText: 'Discuss Timeline'
+        response: `That's wonderful! 🎉 We're always looking for talented creative professionals.\n\nWe work across web development, UI/UX design, branding, animation, and video production.\n\nHave your resume, portfolio, and a short intro ready before applying.`,
+        link: '/apply-employee',
+        linkText: 'Apply for a Position',
       };
     }
 
-    // Contact inquiry
-    if (/contact|call|reach|email|phone|get in touch/.test(lowerMessage)) {
+    // Contact
+    if (/contact|call|reach|email|phone|get in touch/.test(msg)) {
       return {
-        response: `📞 You can reach us:
-
-📧 Email: rajkayal7281@gmail.com
-📱 Phone: Available during business hours
-💬 Chat: You're already here!
-📋 Contact Form: Available on our contact page
-
-How can we assist you?`,
+        response: `📞 You can reach us:\n\n📧 Email: rajkayal7281@gmail.com\n💬 Chat: Right here in SIRA!\n📋 Contact page: Best for project briefs`,
         link: '/contact',
-        linkText: 'Contact Us'
+        linkText: 'Contact Us',
       };
     }
 
-    // Service detected with keywords matched
-    if (bestMatch && maxMatches > 0) {
+    // Portfolio
+    if (/portfolio|case study|previous work|what have you done|examples|show me your work/.test(msg)) {
       return {
-        response: `Perfect! You're looking for ${bestMatch.name}. 
-
-${bestMatch.name === 'Web Development' ? '🌐 We build fast, scalable, and beautiful web applications and responsive websites tailored to your needs.' :
-bestMatch.name === 'Branding & Identity' ? '🎨 We create complete branding solutions including logos, brand guidelines, and visual identities.' :
-bestMatch.name === 'UI/UX Design' ? '✨ We design beautiful and intuitive user interfaces with exceptional user experiences.' :
-bestMatch.name === '3D Animation' ? '🎬 We produce professional 3D animations, motion graphics, and visual effects.' :
-bestMatch.name === 'All Services' ? '🌟 We offer a complete suite of creative services. Let me show you everything we can do!' :
-bestMatch.name === 'Portfolio' ? '📁 Check out our impressive portfolio of completed projects!' :
-bestMatch.name === 'Career' ? '🚀 Join our talented creative team!' :
-'📚 Read our latest insights and articles!'}
-
-Let me show you more details!`,
-        link: bestMatch.link,
-        linkText: `View ${bestMatch.name}`
+        response: 'Browse our case studies and previous project work across branding, websites, and creative design.',
+        link: '/case-studies',
+        linkText: 'View Our Portfolio',
       };
     }
 
-    // Default response showing all options
+    const matchedCategory = _findCatalogMatchByNL(msg);
+    const matchedSpecialty = _findSpecialtyMatchByNL(msg);
+    const hasPricingIntent = /price|cost|how much|pricing|quote|budget|rate|charges/.test(msg);
+    const hasTimelineIntent = /how long|timeline|delivery|deadline|how fast|duration/.test(msg);
+
+    // Pricing + specific category
+    if (hasPricingIntent && matchedCategory) {
+      return {
+        response: `${CATEGORY_ICONS[matchedCategory.id] ?? '✨'} ${matchedCategory.title} pricing:\n\n${_formatServiceLines(matchedCategory.services)}\n\nThese are starting ranges. Final cost depends on complexity, revisions, and turnaround.`,
+        link: '/services',
+        linkText: `View ${matchedCategory.title}`,
+      };
+    }
+
+    // Pricing + specialty
+    if (hasPricingIntent && matchedSpecialty?.pricingNote) {
+      return {
+        response: `${matchedSpecialty.icon} ${matchedSpecialty.name} is available but usually quoted after understanding the scope.\n\n${matchedSpecialty.pricingNote}`,
+        link: matchedSpecialty.link,
+        linkText: `Explore ${matchedSpecialty.name}`,
+      };
+    }
+
+    // General pricing overview
+    if (hasPricingIntent) {
+      return {
+        response: `💰 Quick pricing overview:\n\n🎨 Logo Design: ₹800 - ₹5,000+\n🖨️ Print Designs: ₹150 - ₹800\n📢 Posters / Banners: ₹500 - ₹2,000\n📱 Social Media Posts: ₹200 - ₹700\n🎬 Video Editing: ₹300 - ₹6,000\n🖼️ Photo Editing: ₹50 - ₹1,500\n🖥️ Website Design: ₹2,000 - ₹30,000\n💻 Website Dev: ₹5,000 - ₹35,000\n🛒 E-Commerce: ₹15,000 - ₹1,50,000+\n⚙️ Software Dev: ₹5,000 - ₹80,000\n\nTell me the specific service for exact pricing!`,
+        link: '/services',
+        linkText: 'View Full Pricing Catalog',
+      };
+    }
+
+    // Timeline + specific category
+    if (hasTimelineIntent && matchedCategory) {
+      return {
+        response: `⏱️ ${matchedCategory.title} delivery:\n\n${CATEGORY_TIMELINES[matchedCategory.id] ?? 'Delivery depends on complexity, content readiness, and revision rounds.'}`,
+        link: '/services',
+        linkText: `Enquire ${matchedCategory.title}`,
+      };
+    }
+
+    // General timeline
+    if (hasTimelineIntent) {
+      return {
+        response: `⏱️ Delivery by type:\n\n📌 Design work (logos, posters, IDs): 1-3 working days\n📌 Video editing: 1-5 working days\n📌 Website design: 1-3 weeks\n📌 Website development: 2-4 weeks\n📌 E-commerce / software: 3-10+ weeks\n\nTell me which service and I'll give a more precise estimate.`,
+        link: '/services',
+        linkText: 'Discuss Your Project',
+      };
+    }
+
+    // Matched catalog category (including NL intents like "edit my photo")
+    if (matchedCategory) {
+      return {
+        response: `${CATEGORY_ICONS[matchedCategory.id] ?? '✨'} Based on what you described, I'd suggest our ${matchedCategory.title} service.\n\nHere are the options:\n${_formatServiceLines(matchedCategory.services)}\n\nWould you like to place an enquiry for this?`,
+        link: '/services',
+        linkText: `Explore ${matchedCategory.title}`,
+      };
+    }
+
+    // Matched specialty service
+    if (matchedSpecialty) {
+      return {
+        response: `${matchedSpecialty.icon} Based on what you described, I'd suggest our ${matchedSpecialty.name} service.\n\n${matchedSpecialty.description}`,
+        link: matchedSpecialty.link,
+        linkText: `Explore ${matchedSpecialty.name}`,
+      };
+    }
+
+    // Services overview intent
+    if (/service|services|offer|offering|catalog|what do you do/.test(msg)) {
+      return {
+        response: `Here's what we help with:\n\n🪪 ID Card Designs\n🎨 Logo Design\n🖨️ Printing Designs (visiting cards, letterheads)\n📢 Advertisement Designs (posters, banners)\n📱 Social Media Designs\n🎬 Video Editing\n🖼️ Photoshop Services\n🏪 Branding (shop boards, vehicle designs)\n🖥️ Website Design\n💻 Website Development\n🛒 E-Commerce Stores\n🔧 Web Maintenance\n⚙️ Software Development\n🌐 Hosting, Domains & Deployment\n✨ UI/UX Design\n🎬 3D Animation\n\nJust describe your need and I'll match you to the right service!`,
+        link: '/services',
+        linkText: 'View Pricing Catalog',
+      };
+    }
+
+    // Default fallback
     return {
-      response: `🌟 Here's what we offer:
-
-🌐 Web Development - Custom web apps & responsive websites
-🎨 Branding & Identity - Complete brand design
-✨ UI/UX Design - Beautiful, intuitive interfaces
-🎬 3D Animation - Professional animations & effects
-📁 Portfolio - See our previous work
-🚀 Career - Join our creative team
-📚 Blog - Industry insights
-
-Are you looking for our services, or interested in joining our team?`,
+      response: `🤔 I didn't quite catch that. Try describing what you need, for example:\n\n💬 "I need to edit my photo"\n💬 "Build me a website for my business"\n💬 "Design a logo for my brand"\n💬 "How much does video editing cost?"\n💬 "I need a poster for my event"\n\nI'll suggest the right service right away!`,
       link: '/services',
-      linkText: 'View All Services'
+      linkText: 'Browse All Services',
     };
   }, [user?.name]);
 

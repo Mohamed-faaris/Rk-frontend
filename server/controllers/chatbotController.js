@@ -261,7 +261,68 @@ const getCategoryTimeline = (categoryId) => {
   }
 };
 
+// Natural language intent map — conversational phrases mapped to catalog category IDs
+const naturalLanguageIntents = [
+  // Photoshop / Image editing
+  { patterns: ['edit my photo', 'edit photo', 'edit my image', 'edit image', 'photo edit', 'need to edit photo', 'fix my photo', 'fix photo', 'enhance photo', 'enhance image', 'photo editing needed', 'image editing needed'], categoryId: 'photoshop-services' },
+  { patterns: ['retouch', 'photo retouch', 'skin retouch', 'face retouch', 'remove wrinkles', 'clear photo'], categoryId: 'photoshop-services' },
+  { patterns: ['remove background', 'remove bg', 'cut background', 'cut out background', 'transparent background', 'background cut out', 'erase background'], categoryId: 'photoshop-services' },
+  { patterns: ['photo manipulation', 'image manipulation', 'composite photo', 'montage photo'], categoryId: 'photoshop-services' },
+  // Logo Design
+  { patterns: ['need a logo', 'i need a logo', 'want a logo', 'create a logo', 'make a logo', 'design a logo', 'get a logo', 'logo for my business', 'logo for my brand', 'new logo needed', 'need logo'], categoryId: 'logo-design' },
+  // ID Card
+  { patterns: ['need id card', 'make id card', 'design id card', 'id card for school', 'id card for college', 'id badge', 'student id card', 'employee id card', 'staff id', 'need identity card'], categoryId: 'id-card' },
+  // Printing
+  { patterns: ['visiting card', 'visiting cards', 'business card', 'business cards', 'name card', 'need visiting card', 'design business card'], categoryId: 'printing-designs' },
+  { patterns: ['letterhead design', 'need letterhead', 'company letterhead', 'official letterhead'], categoryId: 'printing-designs' },
+  { patterns: ['invoice design', 'bill book design', 'bill design', 'receipt design', 'challan design'], categoryId: 'printing-designs' },
+  { patterns: ['envelope design', 'design envelope'], categoryId: 'printing-designs' },
+  // Advertisement
+  { patterns: ['need a poster', 'make a poster', 'design a poster', 'event poster', 'poster for event', 'create poster', 'promo poster', 'poster needed'], categoryId: 'advertisement-designs' },
+  { patterns: ['need a flyer', 'make a flyer', 'design a flyer', 'event flyer', 'product flyer', 'flyer needed'], categoryId: 'advertisement-designs' },
+  { patterns: ['banner design', 'make a banner', 'design a banner', 'flex design', 'hoarding design', 'outdoor banner', 'standee design'], categoryId: 'advertisement-designs' },
+  // Social Media
+  { patterns: ['instagram post', 'instagram design', 'facebook post', 'facebook design', 'social media post', 'social media design', 'social media creative', 'post design', 'social posts', 'content design'], categoryId: 'social-media-designs' },
+  { patterns: ['instagram ad', 'facebook ad', 'social media ad', 'paid ad design', 'ad creative', 'social ad'], categoryId: 'social-media-designs' },
+  // Video Editing
+  { patterns: ['edit my video', 'edit a video', 'need video editing', 'video edit needed', 'video editor needed', 'cut my video', 'trim video'], categoryId: 'video-editing' },
+  { patterns: ['edit youtube', 'youtube editing', 'edit youtube video', 'youtube video editor', 'edit my youtube'], categoryId: 'video-editing' },
+  { patterns: ['edit my reel', 'reel editing', 'reel edit', 'edit reel', 'instagram reel', 'edit shorts', 'shorts editing'], categoryId: 'video-editing' },
+  { patterns: ['promo video', 'promotional video', 'ad video', 'product video', 'commercial video', 'advertisement video'], categoryId: 'video-editing' },
+  // Branding
+  { patterns: ['shop board', 'signboard', 'sign board', 'shop sign', 'name board', 'store sign'], categoryId: 'branding-designs' },
+  { patterns: ['vehicle design', 'lorry design', 'truck design', 'van design', 'car wrap', 'vehicle branding'], categoryId: 'branding-designs' },
+  { patterns: ['complete branding', 'full branding', 'brand kit', 'branding package', 'brand package'], categoryId: 'branding-designs' },
+  // Website Design
+  { patterns: ['design my website', 'need website design', 'web design needed', 'create landing page', 'landing page design', 'need a landing page', 'make landing page'], categoryId: 'website-design' },
+  // Website Development
+  { patterns: ['make a website', 'build a website', 'create a website', 'need a website', 'i need a website', 'develop a website', 'want a website', 'get a website', 'new website', 'website for my business', 'website for my shop', 'website for school', 'website for college', 'personal website'], categoryId: 'website-development' },
+  // E-Commerce
+  { patterns: ['online store', 'sell online', 'start online shop', 'ecommerce website', 'e-commerce website', 'shopping website', 'sell my products online', 'online selling', 'product website', 'need online shop'], categoryId: 'ecommerce-development' },
+  // Software Development
+  { patterns: ['school management', 'college management', 'shop management', 'inventory management', 'management software', 'management system', 'business management system'], categoryId: 'software-development' },
+  { patterns: ['desktop app', 'desktop application', 'desktop software', 'windows application', 'custom software', 'business software', 'office software'], categoryId: 'software-development' },
+  // Web Maintenance
+  { patterns: ['fix my website', 'website not working', 'website broken', 'update my website', 'website support', 'monthly website support'], categoryId: 'web-maintenance' },
+  // Tech Services
+  { patterns: ['hosting setup', 'set up hosting', 'need hosting', 'web hosting setup', 'website hosting needed'], categoryId: 'tech-services' },
+  { patterns: ['domain setup', 'register domain', 'need a domain', 'domain registration', 'buy a domain'], categoryId: 'tech-services' },
+  { patterns: ['deploy website', 'website deployment', 'launch my website', 'go live', 'put website online'], categoryId: 'tech-services' },
+  { patterns: ['fix bugs', 'bug fixing', 'debug code', 'fix code error', 'code debugging', 'code not working'], categoryId: 'tech-services' },
+];
+
 const findBestCatalogMatch = (message) => {
+  // First pass: check natural language intent phrases (highest priority)
+  for (const intent of naturalLanguageIntents) {
+    for (const pattern of intent.patterns) {
+      if (message.includes(pattern)) {
+        const found = serviceCatalog.find((c) => c.id === intent.categoryId);
+        if (found) return found;
+      }
+    }
+  }
+
+  // Second pass: score by category name + keyword + service name matching
   let bestMatch = null;
   let highestScore = 0;
 
@@ -269,7 +330,7 @@ const findBestCatalogMatch = (message) => {
     let score = 0;
 
     if (message.includes(category.name.toLowerCase())) {
-      score += 8;
+      score += 10;
     }
 
     for (const keyword of category.keywords) {
