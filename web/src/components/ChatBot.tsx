@@ -673,7 +673,7 @@ export default function ChatBot() {
                 placeholder="Type your message..."
                 disabled={isLoading}
                 autoComplete="off"
-                className="flex-1 min-h-11 px-4 py-2.5 border border-border/50 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 bg-background text-foreground text-sm placeholder-muted-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 min-h-11 px-4 py-2.5 border border-border/50 rounded-xl focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 bg-background text-foreground text-base sm:text-sm placeholder-muted-foreground transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <button
                 onClick={() => handleSendMessage()}
