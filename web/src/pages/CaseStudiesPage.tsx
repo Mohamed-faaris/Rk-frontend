@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import GradientBlinds from "@/components/GradientBlinds.tsx";
 import Footer from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
+import LandscapeHoverCard from "@/components/LandscapeHoverCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -175,79 +175,25 @@ const CaseStudiesPage = () => {
 
       {/* Case Studies */}
       <section className="py-16 px-4">
-        <div className="container mx-auto max-w-6xl space-y-16">
-          {filteredCaseStudies.map((study, index) => (
-            <Card
-              key={study.id}
-              className="overflow-hidden border-border hover:border-accent/50 transition-all duration-300 hover:shadow-gold"
-            >
-              <CardContent className="p-0">
-                <div className={`grid lg:grid-cols-2 gap-0 ${index % 2 === 1 ? 'lg:grid-flow-dense' : ''}`}>
-                  {/* Image */}
-                  <div className={`relative overflow-hidden aspect-[4/3] ${index % 2 === 1 ? 'lg:col-start-2' : ''}`}>
-                    <img
-                      src={study.image}
-                      alt={study.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-br ${study.color} to-transparent`} />
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-8 md:p-12 space-y-6">
-                    {/* Header */}
-                    <div>
-                      <Badge className="mb-3 bg-accent shadow-gold">
-                        {study.industry}
-                      </Badge>
-                      <h2 className="text-3xl font-bold mb-2 break-normal">{study.title}</h2>
-                      <p className="text-muted-foreground break-normal">Client: {study.client}</p>
-                    </div>
-
-                    {/* Challenge */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2 text-foreground">Challenge</h3>
-                      <p className="text-muted-foreground break-normal">{study.challenge}</p>
-                    </div>
-
-                    {/* Solution */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2 text-foreground">Solution</h3>
-                      <p className="text-muted-foreground break-normal">{study.solution}</p>
-                    </div>
-
-                    {/* Results */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 text-foreground">Results</h3>
-                      <div className="grid grid-cols-3 gap-4">
-                        {study.results.map((result, idx) => (
-                          <div key={idx} className="text-center p-4 rounded-lg bg-secondary/30 border border-border">
-                            <result.icon className="w-6 h-6 text-accent mx-auto mb-2" />
-                            <div className="text-2xl font-bold text-accent mb-1">{result.value}</div>
-                            <div className="text-xs text-muted-foreground break-normal">{result.metric}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2">
-                      {study.tags.map((tag, idx) => (
-                        <Badge key={idx} variant="outline" className="border-accent/30 text-accent">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    {/* Testimonial */}
-                    <div className="p-4 rounded-lg bg-accent/5 border-l-4 border-accent">
-                      <p className="text-foreground italic break-normal">"{study.testimonial}"</p>
-                    </div>
-                  </div>
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredCaseStudies.map((study, index) => (
+              <div key={study.id} className="space-y-3">
+                <LandscapeHoverCard
+                  image={study.image}
+                  title={study.title}
+                  description={`${study.industry} • ${study.challenge}`}
+                  ctaLabel="View Breakdown"
+                  href="/contact"
+                  className={index % 2 === 0 ? "" : "lg:translate-y-2"}
+                />
+                <div className="px-1">
+                  <p className="text-xs text-muted-foreground">Client: {study.client}</p>
+                  <p className="mt-1 text-sm text-foreground break-normal">{study.solution}</p>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

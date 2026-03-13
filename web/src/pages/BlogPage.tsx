@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import GradientBlinds from "@/components/GradientBlinds.tsx";
 import Footer from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
+import LandscapeHoverCard from "@/components/LandscapeHoverCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,8 +17,8 @@ const BlogPage = () => {
   const blogPosts = [
     {
       id: 1,
-      title: "The Future of Web Design: Trends to Watch in 2024",
-      excerpt: "Explore the latest web design trends that are shaping the digital landscape and learn how to implement them in your projects.",
+      title: "Landing Pages That Convert Faster",
+      excerpt: "A practical breakdown of structure, copy hierarchy, and visual flow that improves conversion in under 5 seconds.",
       category: "Web Design",
       author: "RajKayal Team",
       date: "2024-11-15",
@@ -28,8 +28,8 @@ const BlogPage = () => {
     },
     {
       id: 2,
-      title: "Creating Stunning 3D Animations: A Beginner's Guide",
-      excerpt: "Dive into the world of 3D animation with our comprehensive guide covering essential tools, techniques, and best practices.",
+      title: "Storyboard to Motion in 7 Steps",
+      excerpt: "How our team converts rough ideas into polished motion content for ads, reels, and product demos.",
       category: "3D Animation",
       author: "RajKayal Team",
       date: "2024-11-10",
@@ -39,8 +39,8 @@ const BlogPage = () => {
     },
     {
       id: 3,
-      title: "Building a Strong Brand Identity: Essential Steps",
-      excerpt: "Learn how to create a memorable brand identity that resonates with your target audience and stands out in the market.",
+      title: "Brand Identity That Feels Premium",
+      excerpt: "Positioning, visual tone, and consistency rules that make small brands look enterprise-ready.",
       category: "Branding",
       author: "RajKayal Team",
       date: "2024-11-05",
@@ -50,8 +50,8 @@ const BlogPage = () => {
     },
     {
       id: 4,
-      title: "UI/UX Best Practices for Mobile Applications",
-      excerpt: "Discover the key principles of mobile UI/UX design that will help you create intuitive and engaging user experiences.",
+      title: "Mobile UX Audits That Cut Drop-Off",
+      excerpt: "A concise checklist we use to remove friction from onboarding, checkout, and key task flows.",
       category: "UI/UX",
       author: "RajKayal Team",
       date: "2024-10-28",
@@ -61,8 +61,8 @@ const BlogPage = () => {
     },
     {
       id: 5,
-      title: "The Power of Visual Storytelling in Digital Marketing",
-      excerpt: "Learn how to leverage visual storytelling to create compelling narratives that engage your audience and drive results.",
+      title: "Visual Hooks for Better Ad Recall",
+      excerpt: "Creative direction patterns that make campaign visuals memorable across social and performance channels.",
       category: "Marketing",
       author: "RajKayal Team",
       date: "2024-10-20",
@@ -72,8 +72,8 @@ const BlogPage = () => {
     },
     {
       id: 6,
-      title: "Responsive Design: Making Your Website Work Everywhere",
-      excerpt: "Master the art of responsive web design and ensure your website delivers a seamless experience across all devices.",
+      title: "Responsive Layouts Without Guesswork",
+      excerpt: "A framework for scaling typography, spacing, and media so interfaces stay clean on every viewport.",
       category: "Web Design",
       author: "RajKayal Team",
       date: "2024-10-15",
@@ -168,71 +168,29 @@ const BlogPage = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post) => (
-                <Card
-                  key={post.id}
-                  className="group overflow-hidden border-border hover:border-accent/50 transition-all duration-300 hover:shadow-gold cursor-pointer"
-                >
-                  <CardContent className="p-0">
-                    {/* Image */}
-                    <div className="relative overflow-hidden aspect-[16/9]">
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-accent shadow-gold">
-                          {post.category}
-                        </Badge>
+              {filteredPosts.map((post, index) => (
+                <div key={post.id} className="space-y-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+                    <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    <span>{post.readTime}</span>
+                  </div>
+                  <LandscapeHoverCard
+                    image={post.image}
+                    title={post.title}
+                    description={`${post.category} • ${post.excerpt}`}
+                    ctaLabel="Read Insight"
+                    href="/contact"
+                    className={index % 2 === 0 ? "" : "lg:translate-y-2"}
+                  />
+                  <div className="flex flex-wrap gap-2 px-1">
+                    {post.tags.slice(0, 2).map((tag, tagIndex) => (
+                      <div key={tagIndex} className="flex items-center gap-1 text-xs text-accent">
+                        <Tag className="w-3 h-3" />
+                        <span>{tag}</span>
                       </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-6 space-y-4">
-                      {/* Meta Info */}
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{post.readTime}</span>
-                        </div>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors break-normal line-clamp-2">
-                        {post.title}
-                      </h3>
-
-                      {/* Excerpt */}
-                      <p className="text-muted-foreground line-clamp-3 break-normal">
-                        {post.excerpt}
-                      </p>
-
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-2">
-                        {post.tags.map((tag, index) => (
-                          <div key={index} className="flex items-center gap-1 text-xs text-accent">
-                            <Tag className="w-3 h-3" />
-                            <span>{tag}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Read More */}
-                      <Button
-                        variant="ghost"
-                        className="w-full group/btn text-accent hover:text-accent hover:bg-accent/10"
-                      >
-                        Read More
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}

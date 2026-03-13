@@ -1,6 +1,4 @@
-import { ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
+import LandscapeHoverCard from "@/components/LandscapeHoverCard";
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
@@ -9,31 +7,31 @@ import project4 from "@/assets/project-4.jpg";
 const Portfolio = () => {
   const projects = [
     {
-      title: "E-Commerce Platform",
-      category: "Web Design & Development",
+      title: "Retail Checkout Upgrade",
+      category: "Web Commerce",
       image: project1,
-      description: "Modern e-commerce solution with seamless user experience",
+      description: "Frictionless storefront flow designed to lift order completion.",
       link: "/web-development",
     },
     {
-      title: "Luxury Brand Identity",
-      category: "Branding",
+      title: "Premium Identity Launch",
+      category: "Brand Systems",
       image: project2,
-      description: "Complete brand identity for premium lifestyle brand",
+      description: "A complete visual toolkit for a high-end product line debut.",
       link: "/branding-identity",
     },
     {
-      title: "Abstract 3D Art",
-      category: "3D Animation",
+      title: "Motion Product Story",
+      category: "3D Visuals",
       image: project3,
-      description: "Stunning 3D visuals for digital marketing campaign",
+      description: "Immersive campaign visuals built for paid and social creative.",
       link: "/3d-animation",
     },
     {
-      title: "Mobile Banking App",
+      title: "Fintech UX Sprint",
       category: "UI/UX Design",
       image: project4,
-      description: "Intuitive mobile banking experience design",
+      description: "A mobile-first interface focused on trust, speed, and clarity.",
       link: "/uiux-design",
     },
   ];
@@ -64,84 +62,15 @@ const Portfolio = () => {
           {/* Portfolio Grid */}
           <div className="grid md:grid-cols-2 gap-8">
             {projects.map((project, index) => (
-              project.link ? (
-                <Link key={project.title} to={project.link}>
-                  <Card
-                    className="group overflow-hidden border-border hover:border-accent/50 transition-all duration-500 hover:shadow-gold"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <CardContent className="p-0">
-                      {/* Image Container */}
-                      <div className="relative overflow-hidden aspect-[4/3]">
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-start p-6">
-                          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shadow-gold">
-                              <ExternalLink className="w-5 h-5 text-accent-foreground" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Project Info */}
-                      <div className="p-6 space-y-2">
-                        <div className="text-sm text-accent font-medium break-normal">
-                          {project.category}
-                        </div>
-                        <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
-                          {project.title}
-                        </h3>
-                        <p className="text-muted-foreground break-normal">
-                          {project.description}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ) : (
-                <Card
-                  key={project.title}
-                  className="group overflow-hidden border-border hover:border-accent/50 transition-all duration-500 hover:shadow-gold"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <CardContent className="p-0">
-                    {/* Image Container */}
-                    <div className="relative overflow-hidden aspect-[4/3]">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-start p-6">
-                        <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                          <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shadow-gold">
-                            <ExternalLink className="w-5 h-5 text-accent-foreground" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Project Info */}
-                    <div className="p-6 space-y-2">
-                      <div className="text-sm text-accent font-medium break-normal">
-                        {project.category}
-                      </div>
-                      <h3 className="text-2xl font-bold text-foreground group-hover:text-accent transition-colors break-normal">
-                        {project.title}
-                      </h3>
-                      <p className="text-muted-foreground break-normal">
-                        {project.description}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
+              <LandscapeHoverCard
+                key={project.title}
+                image={project.image}
+                title={project.title}
+                description={`${project.category} • ${project.description}`}
+                ctaLabel="View Project"
+                href={project.link}
+                className={index % 2 === 0 ? "" : "md:translate-y-3"}
+              />
             ))}
           </div>
         </div>

@@ -418,7 +418,7 @@ const Animation3DPage = () => {
                 {filteredAnimations.map((animation) => (
                   <Card
                     key={animation._id}
-                    className="group overflow-hidden border-border hover:border-accent/50 transition-all duration-500 hover:shadow-gold"
+                    className="group relative overflow-hidden rounded-2xl border border-border/70 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-gold"
                   >
                     <CardContent className="p-0">
                       {/* Media */}
@@ -484,7 +484,7 @@ const Animation3DPage = () => {
                               onClick={() => window.open(animation.videoUrl, "_blank")}
                             >
                               <ExternalLink className="w-4 h-4 mr-2" />
-                              Watch Full Video
+                              View Motion Story
                             </Button>
                           )}
                           {user?.role === "admin" && (

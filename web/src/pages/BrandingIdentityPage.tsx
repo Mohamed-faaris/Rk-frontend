@@ -405,7 +405,7 @@ const BrandingIdentityPage = () => {
               {filteredItems.map((item, index) => (
                 <Card
                   key={item._id}
-                  className="group overflow-hidden border-border hover:border-accent/50 transition-all duration-500 hover:shadow-gold cursor-pointer"
+                  className="group relative overflow-hidden rounded-2xl border border-border/70 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-gold cursor-pointer"
                   style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => navigate(`/branding-identity/${item._id}`)}
                 >
