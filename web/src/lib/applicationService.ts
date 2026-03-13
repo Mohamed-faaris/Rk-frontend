@@ -41,6 +41,13 @@ export const applicationService = {
     return response.data;
   },
 
+  async downloadApplicationResume(id: string) {
+    const response = await api.get(`${API_BASE_URL}/${id}/resume`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  },
+
   async getMyApplicationStatus() {
     const response = await api.get(`${API_BASE_URL}/my-status`);
     return response.data;

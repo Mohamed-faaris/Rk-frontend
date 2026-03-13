@@ -25,7 +25,25 @@ const projectSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Web Development', '3D Animation', 'UI/UX Design', 'Branding', 'Marketing', 'Other']
+    enum: [
+      'ID Card Designs',
+      'Logo Design',
+      'Printing Designs',
+      'Advertisement Designs',
+      'Social Media Designs',
+      'Video Editing',
+      'Photoshop Services',
+      'Branding Designs',
+      'Website Design',
+      'Website Development',
+      'E-Commerce Development',
+      'Web Maintenance',
+      'Software Development',
+      'Other Tech Services',
+      'UI/UX Design',
+      '3D Animation',
+      'Other'
+    ]
   },
   status: {
     type: String,

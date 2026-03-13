@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development MODE=api nodemon index.js",
     "start": "NODE_ENV=production MODE=api node index.js",
-    "start:full": "NODE_ENV=production MODE=full node index.js"
+    "start:full": "NODE_ENV=production MODE=full node index.js",
+    "migrate:service-categories": "node scripts/migrate-service-categories.js"
   },
   "dependencies": {
     "apple-signin-auth": "^1.7.9",

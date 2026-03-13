@@ -198,35 +198,51 @@ export default function ManagementDashboard() {
     return Array.from(candidates);
   };
 
-  const handleResumeDownload = async (resumePath: string, applicantName?: string) => {
+  const handleResumeDownload = async (resumePath: string, applicantName?: string, applicationId?: string) => {
     try {
       setError('');
-      const candidates = getFileUrlCandidates(resumePath);
-      let response: Response | null = null;
+      let blob: Blob | null = null;
       let fileUrl = '';
 
-      for (const candidate of candidates) {
+      // Primary source: backend endpoint that fetches resume path from DB by application ID.
+      if (applicationId) {
         try {
-          const res = await fetch(candidate);
-          if (res.ok) {
-            response = res;
-            fileUrl = candidate;
-            break;
-          }
+          blob = await applicationService.downloadApplicationResume(applicationId);
+          fileUrl = resumePath || '';
         } catch {
-          // Try next candidate URL.
+          // Fallback to direct URL candidates below.
         }
       }
 
-      if (!response) {
-        throw new Error('Failed to fetch resume: 404');
+      // Fallback: direct URL candidates for legacy records.
+      if (!blob) {
+        const candidates = getFileUrlCandidates(resumePath);
+        let response: Response | null = null;
+
+        for (const candidate of candidates) {
+          try {
+            const res = await fetch(candidate);
+            if (res.ok) {
+              response = res;
+              fileUrl = candidate;
+              break;
+            }
+          } catch {
+            // Try next candidate URL.
+          }
+        }
+
+        if (!response) {
+          throw new Error('Failed to fetch resume: 404');
+        }
+
+        blob = await response.blob();
       }
 
-      const blob = await response.blob();
       const tempUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       const fallbackName = applicantName ? `${applicantName.replace(/\s+/g, '_')}_Resume` : 'Resume';
-      const extension = fileUrl.split('.').pop()?.split(/\#|\?/)[0] || 'pdf';
+      const extension = (fileUrl || resumePath).split('.').pop()?.split(/\#|\?/)[0] || 'pdf';
 
       link.href = tempUrl;
       link.download = `${fallbackName}.${extension}`;
@@ -1387,7 +1403,7 @@ export default function ManagementDashboard() {
                                                     type="button"
                                                     variant="outline"
                                                     size="sm"
-                                                    onClick={() => handleResumeDownload(editingApplication.resume, editingApplication.name)}
+                                                      onClick={() => handleResumeDownload(editingApplication.resume, editingApplication.name, editingApplication._id)}
                                                     className="border-accent/40"
                                                   >
                                                     <Download className="mr-2 h-4 w-4" />
@@ -1661,11 +1677,22 @@ export default function ManagementDashboard() {
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Web Development" className="text-xs md:text-sm">Web Development</SelectItem>
-                          <SelectItem value="3D Animation" className="text-xs md:text-sm">3D Animation</SelectItem>
+                          <SelectItem value="ID Card Designs" className="text-xs md:text-sm">ID Card Designs</SelectItem>
+                          <SelectItem value="Logo Design" className="text-xs md:text-sm">Logo Design</SelectItem>
+                          <SelectItem value="Printing Designs" className="text-xs md:text-sm">Printing Designs</SelectItem>
+                          <SelectItem value="Advertisement Designs" className="text-xs md:text-sm">Advertisement Designs</SelectItem>
+                          <SelectItem value="Social Media Designs" className="text-xs md:text-sm">Social Media Designs</SelectItem>
+                          <SelectItem value="Video Editing" className="text-xs md:text-sm">Video Editing</SelectItem>
+                          <SelectItem value="Photoshop Services" className="text-xs md:text-sm">Photoshop Services</SelectItem>
+                          <SelectItem value="Branding Designs" className="text-xs md:text-sm">Branding Designs</SelectItem>
+                          <SelectItem value="Website Design" className="text-xs md:text-sm">Website Design</SelectItem>
+                          <SelectItem value="Website Development" className="text-xs md:text-sm">Website Development</SelectItem>
+                          <SelectItem value="E-Commerce Development" className="text-xs md:text-sm">E-Commerce Development</SelectItem>
+                          <SelectItem value="Web Maintenance" className="text-xs md:text-sm">Web Maintenance</SelectItem>
+                          <SelectItem value="Software Development" className="text-xs md:text-sm">Software Development</SelectItem>
+                          <SelectItem value="Other Tech Services" className="text-xs md:text-sm">Other Tech Services</SelectItem>
                           <SelectItem value="UI/UX Design" className="text-xs md:text-sm">UI/UX Design</SelectItem>
-                          <SelectItem value="Branding" className="text-xs md:text-sm">Branding</SelectItem>
-                          <SelectItem value="Marketing" className="text-xs md:text-sm">Marketing</SelectItem>
+                          <SelectItem value="3D Animation" className="text-xs md:text-sm">3D Animation</SelectItem>
                           <SelectItem value="Other" className="text-xs md:text-sm">Other</SelectItem>
                         </SelectContent>
                       </Select>

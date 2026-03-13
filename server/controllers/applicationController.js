@@ -1,6 +1,12 @@
 import EmployeeApplication from '../models/EmployeeApplication.js';
 import User from '../models/User.js';
 import { sendApplicationAcceptedEmail, sendApplicationRejectedEmail } from '../utils/emailService.js';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // @desc    Submit employee application
 // @route   POST /api/applications/apply
@@ -215,6 +221,58 @@ export const getApplicationById = async (req, res, next) => {
   } catch (error) {
     console.error('Get application error:', error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+// @desc    Download application resume from DB-stored file path
+// @route   GET /api/applications/:id/resume
+// @access  Admin
+export const downloadApplicationResume = async (req, res) => {
+  try {
+    const application = await EmployeeApplication.findById(req.params.id).select('name resume');
+
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    if (!application.resume) {
+      return res.status(404).json({ error: 'Resume not available for this application' });
+    }
+
+    // If a direct external URL was stored, redirect to it.
+    if (/^https?:\/\//i.test(application.resume)) {
+      return res.redirect(application.resume);
+    }
+
+    const resumePath = application.resume.startsWith('/') ? application.resume : `/${application.resume}`;
+    const rawFilename = decodeURIComponent(path.basename(resumePath));
+    const ext = path.extname(rawFilename) || '.pdf';
+
+    const normalizeFileName = (name) =>
+      name.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/-+/g, '-');
+
+    const candidateFileNames = [rawFilename];
+    const normalizedFilename = normalizeFileName(rawFilename);
+    if (normalizedFilename !== rawFilename) {
+      candidateFileNames.push(normalizedFilename);
+    }
+
+    const candidatePaths = candidateFileNames.flatMap((filename) => [
+      path.join(__dirname, '../../web/public/uploads', filename),
+      path.join(__dirname, '../../public/uploads', filename),
+    ]);
+
+    const existingPath = candidatePaths.find((candidate) => fs.existsSync(candidate));
+
+    if (!existingPath) {
+      return res.status(404).json({ error: 'Resume file not found on server' });
+    }
+
+    const downloadName = `${(application.name || 'Applicant').replace(/\s+/g, '_')}_Resume${ext}`;
+    return res.download(existingPath, downloadName);
+  } catch (error) {
+    console.error('Download resume error:', error);
+    return res.status(500).json({ error: error.message || 'Failed to download resume' });
   }
 };
 

@@ -6,6 +6,7 @@ import {
   getAllApplications,
   getMyApplicationStatus,
   getApplicationById,
+  downloadApplicationResume,
   acceptApplication,
   rejectApplication,
   deleteApplication
@@ -45,6 +46,7 @@ router.use((error, req, res, next) => {
 router.use(protect); // Add protect middleware for all admin routes
 router.get('/my-status', getMyApplicationStatus);
 router.get('/', admin, getAllApplications);
+router.get('/:id/resume', admin, downloadApplicationResume);
 router.get('/:id', admin, getApplicationById);
 router.put('/:id/accept', admin, acceptApplication);
 router.put('/:id/reject', admin, rejectApplication);

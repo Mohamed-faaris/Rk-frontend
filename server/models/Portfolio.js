@@ -13,7 +13,25 @@ const portfolioSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Please provide a category'],
-    enum: ['Web Design', 'Branding', 'Photography', 'UI/UX', 'Development', 'Other']
+    enum: [
+      'ID Card Designs',
+      'Logo Design',
+      'Printing Designs',
+      'Advertisement Designs',
+      'Social Media Designs',
+      'Video Editing',
+      'Photoshop Services',
+      'Branding Designs',
+      'Website Design',
+      'Website Development',
+      'E-Commerce Development',
+      'Web Maintenance',
+      'Software Development',
+      'Other Tech Services',
+      'UI/UX Design',
+      '3D Animation',
+      'Other'
+    ]
   },
   image: {
     type: String,
