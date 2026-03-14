@@ -699,6 +699,31 @@ export default function ManagementDashboard() {
     }
   };
 
+  const handleDeleteOrder = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this order?')) return;
+
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+
+      await orderService.deleteOrder(id);
+      setSuccess('Order deleted successfully');
+
+      if (editingOrder?._id === id) {
+        setOrderStatusDialog(false);
+        setEditingOrder(null);
+        setOrderStatusForm({ status: '', notes: '' });
+      }
+
+      await loadOrders();
+    } catch (err: any) {
+      setError(err.response?.data?.error || err.message || 'Failed to delete order');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUpdateUser = async () => {
     try {
       setLoading(true);
@@ -1960,18 +1985,29 @@ export default function ManagementDashboard() {
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setEditingOrder(order);
-                                  setOrderStatusForm({ status: order.status, notes: '' });
-                                  setOrderStatusDialog(true);
-                                }}
-                                className="border-accent text-accent hover:bg-accent h-7 md:h-8 px-2 text-xs md:text-sm"
-                              >
-                                <Edit className="w-3 h-3 md:w-4 md:h-4" />
-                              </Button>
+                              <div className="flex justify-end gap-1 md:gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setEditingOrder(order);
+                                    setOrderStatusForm({ status: order.status, notes: '' });
+                                    setOrderStatusDialog(true);
+                                  }}
+                                  className="border-accent text-accent hover:bg-accent h-7 md:h-8 px-2 text-xs md:text-sm"
+                                >
+                                  <Edit className="w-3 h-3 md:w-4 md:h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteOrder(order._id)}
+                                  disabled={loading}
+                                  className="h-7 md:h-8 px-2 text-red-500 hover:text-red-600"
+                                >
+                                  <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                                </Button>
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))
