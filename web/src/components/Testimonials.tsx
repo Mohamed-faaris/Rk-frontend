@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Briefcase, Code2, Github, Info, Linkedin, Palette, X } from "lucide-react";
+import { Briefcase, Code2, Github, Info, Instagram, Linkedin, Palette, X } from "lucide-react";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import "@/styles/team-cards.scss";
 
@@ -20,6 +20,11 @@ const Testimonials = () => {
       location: "Tamil Nadu, India",
       socials: [
         { href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn", icon: Linkedin },
+        {
+          href: "https://www.instagram.com/sivasuriyan_raja?igsh=MTgzZHhncGp6ZXc1dw%3D%3D&utm_source=qr",
+          label: "Instagram",
+          icon: Instagram,
+        },
         { href: "https://github.com/SivasuriyanRaja", label: "GitHub", icon: Github },
       ],
     },
