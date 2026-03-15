@@ -2,14 +2,14 @@
 .team-cards {
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
-  --first-color: hsl(175, 55%, 40%);
-  --first-color-light: hsl(175, 30%, 48%);
-  --first-color-lighten: hsl(175, 40%, 62%);
-  --gradient-color: linear-gradient(180deg, hsl(178, 35%, 45%), hsl(178, 55%, 28%));
-  --title-color: hsl(175, 40%, 16%);
-  --text-color: hsl(175, 8%, 50%);
-  --white-color: #fff;
-  --body-color: hsl(175, 100%, 99%);
+  --first-color: hsl(45, 70%, 52%);
+  --first-color-light: hsl(43, 46%, 24%);
+  --first-color-lighten: hsl(42, 62%, 36%);
+  --gradient-color: linear-gradient(180deg, hsl(0, 0%, 14%), hsl(0, 0%, 5%));
+  --title-color: hsl(45, 70%, 62%);
+  --text-color: hsl(40, 18%, 74%);
+  --white-color: hsl(0, 0%, 97%);
+  --body-color: hsl(0, 0%, 4%);
 
   /*========== Font and typography ==========*/
   /*.5rem = 8px | 1rem = 16px ...*/

@@ -15,13 +15,16 @@
     border-radius: 1rem 1rem 11rem 11rem;
     padding: 2.5rem 1.5rem 3.5rem;
     text-align: center;
-    box-shadow: 0 8px 32px hsla(178, 55%, 20%, 0.15);
+    border: 1px solid hsl(45, 35%, 28%);
+    box-shadow: 0 16px 38px hsla(0, 0%, 0%, 0.5);
   }
 
   .card__img {
-    width: 90px;
-    height: 90px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center 24%;
+    display: block;
   }
 
   .card__border {
@@ -42,7 +45,7 @@
     overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
   }
 
   .card__name,
@@ -68,7 +71,8 @@
     position: absolute;
     inset: -1px 0 auto;
     width: 100%;
-    background-color: var(--white-color);
+    background-color: hsl(0, 0%, 8%);
+    border: 1px solid hsl(45, 35%, 24%);
     padding: 2.5rem 1.5rem 3.3rem;
     border-radius: 1rem 1rem 11rem 11rem;
     clip-path: circle(16px at 250px 40px);
@@ -94,9 +98,11 @@
   }
 
   .info__img {
-    width: 45px;
-    height: 45px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center 24%;
+    display: block;
   }
 
   .info__border {
@@ -119,7 +125,7 @@
     overflow: hidden;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
   }
 
   .info__data {
@@ -140,6 +146,7 @@
   .info__location,
   .info__bio {
     font-size: var(--smaller-font-size);
+    color: var(--text-color);
   }
 
   .info__bio {
@@ -161,8 +168,9 @@
     font-size: 0.7rem;
     padding: 0.2rem 0.55rem;
     border-radius: 999px;
-    background-color: hsl(175, 42%, 94%);
-    color: hsl(175, 30%, 28%);
+    background-color: hsl(45, 38%, 18%);
+    color: hsl(45, 68%, 68%);
+    border: 1px solid hsl(45, 34%, 30%);
   }
 
   .info__social {
@@ -181,6 +189,7 @@
     display: grid;
     place-items: center;
     transition: transform 0.3s;
+    border: 1px solid hsl(45, 30%, 28%);
   }
 
   .info__social-link:hover {
