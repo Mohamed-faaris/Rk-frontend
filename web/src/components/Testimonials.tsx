@@ -1,82 +1,149 @@
-import { Briefcase, Code2, Palette } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Briefcase, Code2, Github, Info, Linkedin, Palette, X } from "lucide-react";
+import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
+import "@/styles/team-cards.scss";
 
 const Testimonials = () => {
+  const [activeCard, setActiveCard] = useState<string | null>(null);
+
   const teamMembers = [
     {
+      id: "sivasuriyan-raja",
       name: "Sivasuriyan Raja",
       role: "Founder & Creative Director",
       bio: "Leads RajKayal Creative Hub with a focus on brand storytelling, premium visual systems, and long-term client direction.",
       skills: ["Brand Strategy", "Creative Direction", "Client Consulting"],
       icon: Briefcase,
+      image: sivasuriyanRajaImage,
+      fullName: "Sivasuriyan Raja",
+      title: "Founder, Creative Director & Strategy Lead",
+      location: "Tamil Nadu, India",
+      socials: [
+        { href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn", icon: Linkedin },
+        { href: "https://github.com/SivasuriyanRaja", label: "GitHub", icon: Github },
+      ],
     },
     {
+      id: "design-team",
       name: "Design Team",
       role: "Visual Design & UI/UX",
       bio: "Crafts polished interfaces, print assets, and marketing visuals that balance clarity, elegance, and conversion-focused thinking.",
       skills: ["UI/UX Design", "Social Media Design", "Print & Branding"],
       icon: Palette,
+      fullName: "RajKayal Design Team",
+      title: "UI/UX, Branding & Visual Communication",
+      location: "Remote / India",
+      socials: [
+        { href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn", icon: Linkedin },
+      ],
     },
     {
+      id: "development-team",
       name: "Development Team",
       role: "Web & Software Engineering",
       bio: "Builds responsive websites, scalable applications, and dependable digital systems that support business growth and operations.",
       skills: ["React Development", "Backend Systems", "Deployment & Support"],
       icon: Code2,
+      fullName: "RajKayal Development Team",
+      title: "Frontend, Backend & Deployment Systems",
+      location: "Remote / India",
+      socials: [
+        { href: "https://github.com/SivasuriyanRaja", label: "GitHub", icon: Github },
+      ],
     },
   ];
 
   return (
-    <section id="testimonials" className="relative py-24 md:py-32 bg-secondary/30 dark:bg-background shadow-sm">
+    <section id="testimonials" className="team-cards relative bg-secondary/30 py-24 shadow-sm dark:bg-background md:py-32">
       {/* Smooth fade from previous section */}
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+
+      <div className="container mx-auto relative z-10 px-4">
+        <div className="mx-auto max-w-6xl">
           {/* Section Header */}
-          <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
+          <div className="animate-fade-in-up mb-16 space-y-4 text-center">
+            <h2 className="fairy-display break-normal text-4xl font-bold md:text-5xl lg:text-6xl">
               Our <span className="gradient-text">Team</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
+            <p className="mx-auto max-w-2xl break-normal text-xl text-muted-foreground">
               Meet the people shaping RajKayal Creative Hub across strategy, design, and development.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="team-card-grid">
             {teamMembers.map((member) => (
-              <Card key={member.name} className="border-border hover:border-accent/50 transition-all duration-300 shadow-elevated bg-card/95 backdrop-blur-sm">
-                <CardContent className="p-8">
-                  <div className="mb-6 flex items-center justify-between">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 text-accent">
-                      <member.icon className="h-7 w-7" />
-                    </div>
-                    <div className="rounded-full border border-accent/20 px-3 py-1 text-xs font-medium text-accent">
-                      Team Profile
+              <div key={member.id} className="card">
+                <div className="card__border">
+                  <div className="card__perfil">
+                    {member.image ? (
+                      <img src={member.image} alt={member.name} className="card__img" />
+                    ) : (
+                      <member.icon className="card__img" aria-hidden="true" />
+                    )}
+                  </div>
+                </div>
+
+                <h3 className="card__name break-normal">{member.name}</h3>
+                <span className="card__profession break-normal">{member.role}</span>
+
+                <div id={`${member.id}-info`} className={`info ${activeCard === member.id ? "is-open" : ""}`}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveCard((current) => (current === member.id ? null : member.id))}
+                    className="info__icon"
+                    aria-expanded={activeCard === member.id}
+                    aria-controls={`${member.id}-info`}
+                    aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
+                  >
+                    {activeCard === member.id ? <X size={18} /> : <Info size={18} />}
+                  </button>
+
+                  <div className="info__border">
+                    <div className="info__perfil">
+                      {member.image ? (
+                        <img src={member.image} alt={`${member.name} profile`} className="info__img" />
+                      ) : (
+                        <member.icon className="info__img" aria-hidden="true" />
+                      )}
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-foreground break-normal">{member.name}</h3>
-                    <p className="text-sm font-medium text-accent break-normal">{member.role}</p>
+                  <div className="info__data">
+                    <h4 className="info__name break-normal">{member.fullName}</h4>
+                    <p className="info__profession break-normal">{member.title}</p>
+                    <p className="info__location break-normal">{member.location}</p>
+                    <p className="info__bio break-normal">{member.bio}</p>
                   </div>
 
-                  <p className="mt-5 text-muted-foreground leading-relaxed break-normal">
-                    {member.bio}
-                  </p>
-
-                  <div className="mt-6 flex flex-wrap gap-2">
+                  <div className="info__skills">
                     {member.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="rounded-full border border-border bg-secondary/40 px-3 py-1 text-xs text-muted-foreground"
-                      >
+                      <span key={skill} className="info__skill break-normal">
                         {skill}
                       </span>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+
+                  <div className="info__social">
+                    {member.socials.map((social) => {
+                      const Icon = social.icon;
+                      return (
+                        <a
+                          key={social.label}
+                          href={social.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="info__social-link"
+                          aria-label={`${member.name} ${social.label}`}
+                        >
+                          <span className="info__social-icon">
+                            <Icon size={14} />
+                          </span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
