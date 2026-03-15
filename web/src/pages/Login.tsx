@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/components/ui/theme-provider';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,8 @@ import { Mail, Lock, Sparkles, ArrowRight, Moon, Sun, Eye, EyeOff } from 'lucide
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, logout } = useAuth();
+  const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -20,9 +21,13 @@ export default function Login() {
     password: '',
   });
 
+  const redirectTo = (location.state as { from?: string } | null)?.from || '/';
+
   useEffect(() => {
-    logout();
-  }, [logout]);
+    if (isAuthenticated) {
+      navigate(redirectTo, { replace: true });
+    }
+  }, [isAuthenticated, navigate, redirectTo]);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +41,7 @@ export default function Login() {
 
     try {
       await login(formData.email, formData.password);
-      navigate('/');
+      navigate(redirectTo, { replace: true });
     } catch (err: any) {
       if (err.response?.data?.requiresOTP) {
         navigate('/verify-otp', {

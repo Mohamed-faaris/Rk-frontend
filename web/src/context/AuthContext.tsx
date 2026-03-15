@@ -47,6 +47,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  React.useEffect(() => {
+    const handleUnauthorized = () => {
+      setUser(null);
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized as EventListener);
+
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized as EventListener);
+    };
+  }, []);
+
   const login = React.useCallback(async (email: string, password: string) => {
     try {
       const response = await authService.login({ email, password });

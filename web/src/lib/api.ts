@@ -18,6 +18,11 @@ const api = axios.create({
   },
 });
 
+const notifyUnauthorized = () => {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+};
+
 // Add token to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -39,7 +44,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !isAuthRequest && !isOnLoginPage) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      notifyUnauthorized();
     }
     
     return Promise.reject(error);
