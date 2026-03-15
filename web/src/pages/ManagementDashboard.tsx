@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -1042,6 +1044,189 @@ export default function ManagementDashboard() {
     return colors[priority] || 'bg-gray-500/20 text-gray-500 border-gray-500/50';
   };
 
+  const handleDownloadManagementPdf = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+
+      const [employeesRes, projectsRes, ordersRes, usersRes, userStatsRes, revenueRes, applicationsRes] = await Promise.all([
+        employeeService.getAll(),
+        projectService.getAll(),
+        orderService.getAllOrdersAdmin(),
+        userService.getAllUsers(),
+        userService.getUserStats(),
+        revenueService.getRevenueStats(),
+        applicationService.getAllApplications()
+      ]);
+
+      const employeesData = [...(employeesRes?.data || [])].sort((a: any, b: any) => (a.name || '').localeCompare(b.name || ''));
+      const projectsData = [...(projectsRes?.data || [])].sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      const ordersData = [...(ordersRes || [])].sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      const usersData = [...(usersRes || [])].sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      const applicationsData = [...(applicationsRes?.applications || [])].sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      const revenueChartData = [...(revenueRes?.chart || [])].sort((a: any, b: any) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime());
+
+      const formatDate = (value: any) => {
+        if (!value) return '-';
+        return new Date(value).toLocaleDateString();
+      };
+
+      const formatCurrency = (value: any) => `Rs ${Number(value || 0).toLocaleString()}`;
+
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      let y = 14;
+
+      const addTitle = (title: string, subtitle?: string) => {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text(title, 14, y);
+        y += 7;
+        if (subtitle) {
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10);
+          doc.text(subtitle, 14, y);
+          y += 6;
+        }
+      };
+
+      const addSection = (title: string) => {
+        if (y > 265) {
+          doc.addPage();
+          y = 14;
+        }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text(title, 14, y);
+        y += 4;
+      };
+
+      const addTable = (head: string[], body: Array<Array<string>>) => {
+        autoTable(doc, {
+          startY: y,
+          head: [head],
+          body,
+          theme: 'grid',
+          styles: { fontSize: 8, cellPadding: 2 },
+          headStyles: { fillColor: [212, 175, 55], textColor: [0, 0, 0] },
+          margin: { left: 10, right: 10 }
+        });
+        y = (doc as any).lastAutoTable.finalY + 6;
+      };
+
+      addTitle('Management Dashboard Report', `Generated on ${new Date().toLocaleString()}`);
+
+      addSection('Summary');
+      addTable(
+        ['Metric', 'Value'],
+        [
+          ['Total Users', String(userStatsRes?.totalUsers || usersData.length || 0)],
+          ['Active Users', String(userStatsRes?.activeUsers || 0)],
+          ['Users With Orders', String(userStatsRes?.usersWithOrders || 0)],
+          ['Total Employees', String(employeesData.length)],
+          ['Total Projects', String(projectsData.length)],
+          ['Total Orders', String(ordersData.length)],
+          ['Revenue Today', formatCurrency(revenueRes?.today?.revenue || 0)],
+          ['Revenue This Week', formatCurrency(revenueRes?.week?.revenue || 0)],
+          ['Revenue This Month', formatCurrency(revenueRes?.month?.revenue || 0)]
+        ]
+      );
+
+      addSection('Users (Sorted by Newest)');
+      addTable(
+        ['Name', 'Email', 'Role', 'Phone', 'Status', 'Orders', 'Joined'],
+        usersData.map((u: any) => [
+          String(u.name || '-'),
+          String(u.email || '-'),
+          String(u.role || '-'),
+          String(u.phone || '-'),
+          u.isActive ? 'Active' : 'Inactive',
+          String(u.ordersCount || 0),
+          formatDate(u.createdAt)
+        ])
+      );
+
+      addSection('Employees (Sorted by Name)');
+      addTable(
+        ['Name', 'Email', 'Phone', 'Position', 'Department', 'Salary', 'Status'],
+        employeesData.map((e: any) => [
+          String(e.name || '-'),
+          String(e.email || '-'),
+          String(e.phone || '-'),
+          String(e.position || '-'),
+          String(e.department || '-'),
+          formatCurrency(e.salary || 0),
+          String(e.status || '-')
+        ])
+      );
+
+      addSection('Projects (Sorted by Newest)');
+      addTable(
+        ['Title', 'Client', 'Category', 'Priority', 'Status', 'Budget', 'Start', 'Deadline'],
+        projectsData.map((p: any) => [
+          String(p.title || '-'),
+          String(p.client?.name || '-'),
+          String(p.category || '-'),
+          String(p.priority || '-'),
+          String(p.status || '-'),
+          formatCurrency(p.budget || 0),
+          formatDate(p.startDate),
+          formatDate(p.deadline)
+        ])
+      );
+
+      addSection('Orders (Sorted by Newest)');
+      addTable(
+        ['Order ID', 'Service', 'Customer', 'Email', 'Budget', 'Timeline', 'Priority', 'Status', 'Created'],
+        ordersData.map((o: any) => [
+          String(o._id ? o._id.slice(-8) : '-'),
+          String(o.service || '-'),
+          String(o.user?.name || '-'),
+          String(o.user?.email || '-'),
+          formatCurrency(o.budget || 0),
+          String(o.timeline || '-'),
+          String(o.priority || '-'),
+          String(o.status || '-'),
+          formatDate(o.createdAt)
+        ])
+      );
+
+      addSection('Applications (Sorted by Newest)');
+      addTable(
+        ['Name', 'Email', 'Phone', 'Position', 'Experience', 'Status', 'Submitted'],
+        applicationsData.map((a: any) => [
+          String(a.name || '-'),
+          String(a.email || '-'),
+          String(a.phone || '-'),
+          String(a.position || '-'),
+          String(a.experience || '-'),
+          String(a.status || '-'),
+          formatDate(a.createdAt)
+        ])
+      );
+
+      addSection('Revenue Trend (Last 30 Days)');
+      addTable(
+        ['Date', 'Orders', 'Revenue', 'Profit'],
+        revenueChartData.map((r: any) => [
+          formatDate(r.date),
+          String(r.orders || 0),
+          formatCurrency(r.revenue || 0),
+          formatCurrency(r.profit || 0)
+        ])
+      );
+
+      const fileName = `management-report-${new Date().toISOString().slice(0, 10)}.pdf`;
+      doc.save(fileName);
+      setSuccess('PDF generated and downloaded successfully');
+    } catch (err: any) {
+      logger.error('PDF generation failed:', err);
+      setError(err?.message || 'Failed to generate PDF report');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (user?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -1090,7 +1275,19 @@ export default function ManagementDashboard() {
                 Manage employees, projects, and orders
               </p>
             </div>
-            <LayoutDashboard className="w-8 h-8 md:w-12 md:h-12 text-accent flex-shrink-0" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <Button
+                onClick={handleDownloadManagementPdf}
+                disabled={loading}
+                variant="outline"
+                className="gap-2 text-xs md:text-sm"
+              >
+                <Download className="w-3 h-3 md:w-4 md:h-4" />
+                <span className="hidden sm:inline">Save PDF</span>
+                <span className="sm:hidden">PDF</span>
+              </Button>
+              <LayoutDashboard className="w-8 h-8 md:w-12 md:h-12 text-accent flex-shrink-0" />
+            </div>
           </div>
         </div>
 
