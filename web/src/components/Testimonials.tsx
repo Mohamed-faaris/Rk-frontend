@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Briefcase, Code2, Github, Info, Instagram, Linkedin, Palette, X } from "lucide-react";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import "@/styles/team-cards.scss";
@@ -80,15 +80,10 @@ const Testimonials = () => {
               <div
                 key={member.id}
                 className="card"
-                style={{
-                  ["--glow-delay" as string]: `${index * 0.65}s`,
-                  ["--glow-delay-secondary" as string]: `${index * 0.65 + 1.1}s`,
-                }}
+                style={{ ["--glow-delay" as string]: `${index * 0.55}s` } as CSSProperties}
               >
-                <div className="card__glow" aria-hidden="true">
-                  <span className="card__glow-orb card__glow-orb--primary" />
-                  <span className="card__glow-orb card__glow-orb--secondary" />
-                </div>
+                <div className="card__glow" aria-hidden="true" />
+                <div className="card__glow-ring" aria-hidden="true" />
 
                 <div className="card__border">
                   <div className="card__perfil">
