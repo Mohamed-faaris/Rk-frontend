@@ -92,8 +92,9 @@ const AllServicesPage = () => {
           <Badge className="brand-display border border-[#D4AF37]/60 bg-[#1A1305] px-4 py-1 text-[#F6D77A]">
             RajKayal Creative Hub
           </Badge>
-          <h1 className="mx-auto mt-4 max-w-5xl text-2xl font-bold leading-tight text-[#F8E6A2] sm:text-3xl md:text-5xl lg:text-6xl">
-            Design &amp; Software Service Price List
+          <h1 className="mx-auto mt-4 flex max-w-5xl flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[clamp(1.5rem,4vw,3.75rem)] font-bold leading-tight text-[#F8E6A2]">
+            <span className="whitespace-nowrap">Design &amp; Software</span>
+            <span className="whitespace-nowrap">Service Price List</span>
           </h1>
           <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-[#D5D5D5] sm:text-base md:text-lg">
             Affordable and professional pricing for small businesses, schools, colleges, startups, and local town clients who need branding, design, websites, and custom software support from a single creative partner.
