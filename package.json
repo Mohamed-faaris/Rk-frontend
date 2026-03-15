@@ -8,7 +8,9 @@
     "build": "pnpm run validate-env && pnpm -r build",
     "dev:web": "pnpm --filter web dev",
     "dev:api": "pnpm --filter api dev",
-    "start": "pnpm --filter api start"
+    "start": "pnpm --filter api start",
+    "server:api": "pnpm --filter server start",
+    "server:full": "pnpm --filter server start:full"
   },
   "dependencies": {
     "express": "^4.18.2",
