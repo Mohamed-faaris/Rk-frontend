@@ -1,7 +1,90 @@
 import Order from '../models/Order.js';
 import CanceledOrder from '../models/CanceledOrder.js';
 import User from '../models/User.js';
+import Project from '../models/Project.js';
 import { sendOrderStatusUpdateEmail } from '../utils/emailService.js';
+
+const timelineToDays = (timeline) => {
+  const map = {
+    '1-2 weeks': 14,
+    '2-4 weeks': 28,
+    '1-2 months': 60,
+    '2-3 months': 90,
+    '3-6 months': 180,
+    '6+ months': 210
+  };
+  return map[timeline] || 30;
+};
+
+const mapOrderStatusToProjectStatus = (status) => {
+  const map = {
+    pending: 'Planning',
+    'in-progress': 'In Progress',
+    review: 'Review',
+    completed: 'Completed',
+    cancelled: 'Cancelled'
+  };
+  return map[status] || 'Planning';
+};
+
+const mapOrderPriorityToProjectPriority = (priority) => {
+  const map = {
+    low: 'Low',
+    medium: 'Medium',
+    high: 'High',
+    urgent: 'Urgent'
+  };
+  return map[priority] || 'Medium';
+};
+
+const mapOrderServiceToCategory = (service = '') => {
+  const value = service.toLowerCase();
+
+  if (value.includes('logo')) return 'Logo Design';
+  if (value.includes('id card')) return 'ID Card Designs';
+  if (value.includes('print')) return 'Printing Designs';
+  if (value.includes('advert')) return 'Advertisement Designs';
+  if (value.includes('social')) return 'Social Media Designs';
+  if (value.includes('video')) return 'Video Editing';
+  if (value.includes('photoshop')) return 'Photoshop Services';
+  if (value.includes('brand')) return 'Branding Designs';
+  if (value.includes('ui') || value.includes('ux')) return 'UI/UX Design';
+  if (value.includes('3d')) return '3D Animation';
+  if (value.includes('e-commerce') || value.includes('ecommerce')) return 'E-Commerce Development';
+  if (value.includes('maintenance')) return 'Web Maintenance';
+  if (value.includes('software')) return 'Software Development';
+  if (value.includes('develop')) return 'Website Development';
+  if (value.includes('design')) return 'Website Design';
+
+  return 'Other';
+};
+
+const buildProjectPayloadFromOrder = (order) => {
+  const start = new Date(order.createdAt || Date.now());
+  const deadline = new Date(start);
+  deadline.setDate(deadline.getDate() + timelineToDays(order.timeline));
+
+  return {
+    title: order.title,
+    description: order.description,
+    client: {
+      name: order.user?.name || order.clientInfo?.companyName || 'Unknown Client',
+      email: order.user?.email || 'no-email@rkch.local',
+      phone: order.clientInfo?.phone || '',
+      company: order.clientInfo?.companyName || ''
+    },
+    category: mapOrderServiceToCategory(order.service),
+    status: mapOrderStatusToProjectStatus(order.status),
+    priority: mapOrderPriorityToProjectPriority(order.priority),
+    budget: order.budget || 0,
+    paid: order.status === 'completed' ? (order.budget || 0) : 0,
+    startDate: start,
+    deadline,
+    completedDate: order.status === 'completed' ? (order.actualCompletion || order.completedDate || new Date()) : undefined,
+    tags: order.service ? [order.service] : [],
+    sourceOrder: order._id
+  };
+};
 
 // @desc    Get all orders for a user
 // @route   GET /api/orders
@@ -94,6 +177,12 @@ export const createOrder = async (req, res, next) => {
     });
 
     const populatedOrder = await Order.findById(order._id).populate('user', 'name email');
+
+    try {
+      await Project.create(buildProjectPayloadFromOrder(populatedOrder));
+    } catch (projectError) {
+      console.error('Project creation from order failed:', projectError.message);
+    }
 
     res.status(201).json({
       success: true,
@@ -207,6 +296,19 @@ export const updateOrderStatus = async (req, res, next) => {
     // Populate user info for response
     await order.populate('user', 'name email');
     await order.populate('notes.author', 'name email');
+
+    try {
+      await Project.findOneAndUpdate(
+        { sourceOrder: order._id },
+        {
+          status: mapOrderStatusToProjectStatus(order.status),
+          paid: order.status === 'completed' ? (order.budget || 0) : 0,
+          completedDate: order.status === 'completed' ? (order.actualCompletion || order.completedDate || new Date()) : undefined
+        }
+      );
+    } catch (projectSyncError) {
+      console.error('Project status sync failed:', projectSyncError.message);
+    }
 
     // Notify only the affected order owner (individual user)
     if (order.user?.email && previousStatus !== status) {

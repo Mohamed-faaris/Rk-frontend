@@ -385,6 +385,12 @@ export default function ManagementDashboard() {
 
   const loadProjects = async () => {
     try {
+      try {
+        await projectService.syncFromOrders();
+      } catch (syncErr: any) {
+        logger.debug('Project sync skipped:', syncErr?.response?.data || syncErr?.message);
+      }
+
       const response = await projectService.getAll();
       setProjects(response.data || []);
     } catch (err: any) {
@@ -1821,17 +1827,43 @@ export default function ManagementDashboard() {
           <TabsContent value="projects" className="space-y-4 md:space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
               <h2 className="text-xl md:text-2xl font-bold">Project Management</h2>
-              <Dialog open={projectDialog} onOpenChange={(open) => {
-                setProjectDialog(open);
-                if (!open) resetProjectForm();
-              }}>
-                <DialogTrigger asChild>
-                  <Button className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
-                    <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                    <span className="hidden sm:inline">Add Project</span>
-                    <span className="sm:hidden">Add</span>
-                  </Button>
-                </DialogTrigger>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10"
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      setError('');
+                      setSuccess('');
+                      const result = await projectService.syncFromOrders();
+                      await loadProjects();
+                      await loadProjectStats();
+                      setSuccess(result?.message || 'Projects synced from orders');
+                    } catch (err: any) {
+                      setError(err?.response?.data?.error || 'Failed to sync projects from orders');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  <TrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">Sync From Orders</span>
+                  <span className="sm:hidden">Sync</span>
+                </Button>
+
+                <Dialog open={projectDialog} onOpenChange={(open) => {
+                  setProjectDialog(open);
+                  if (!open) resetProjectForm();
+                }}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
+                      <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                      <span className="hidden sm:inline">Add Project</span>
+                      <span className="sm:hidden">Add</span>
+                    </Button>
+                  </DialogTrigger>
                 <DialogContent className="max-w-3xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto bg-card border-border">
                   <DialogHeader>
                     <DialogTitle>{editingProject ? 'Edit Project' : 'Add New Project'}</DialogTitle>
@@ -2003,7 +2035,8 @@ export default function ManagementDashboard() {
                     </Button>
                   </DialogFooter>
                 </DialogContent>
-              </Dialog>
+                </Dialog>
+              </div>
             </div>
 
             <Card className="border-border bg-card">

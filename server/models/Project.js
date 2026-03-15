@@ -106,10 +106,16 @@ const projectSchema = new mongoose.Schema({
   }],
   tags: [{
     type: String
-  }]
+  }],
+  sourceOrder: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order'
+  }
 }, {
   timestamps: true
 });
+
+projectSchema.index({ sourceOrder: 1 }, { unique: true, sparse: true });
 
 const Project = mongoose.model('Project', projectSchema);
 

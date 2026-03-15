@@ -38,6 +38,12 @@ export const projectService = {
     return response.data;
   },
 
+  // Sync projects from existing orders
+  syncFromOrders: async () => {
+    const response = await api.post('/projects/sync-orders');
+    return response.data;
+  },
+
   // Add milestone
   addMilestone: async (id: string, milestoneData: any) => {
     const response = await api.post(`/projects/${id}/milestones`, milestoneData);

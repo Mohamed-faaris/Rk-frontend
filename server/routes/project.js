@@ -6,6 +6,7 @@ import {
   updateProject,
   deleteProject,
   getProjectStats,
+  syncProjectsFromOrders,
   addMilestone,
   addNote
 } from '../controllers/projectController.js';
@@ -19,6 +20,7 @@ router.use(admin);
 
 // Stats route must come before :id route
 router.get('/stats', getProjectStats);
+router.post('/sync-orders', syncProjectsFromOrders);
 
 router.route('/')
   .get(getProjects)
