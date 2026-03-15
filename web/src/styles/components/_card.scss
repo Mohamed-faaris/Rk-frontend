@@ -8,7 +8,6 @@
 
   .card {
     position: relative;
-    isolation: isolate;
     width: 100%;
     max-width: 290px;
     margin-inline: auto;
@@ -18,56 +17,6 @@
     text-align: center;
     border: 1px solid hsl(45, 35%, 28%);
     box-shadow: 0 16px 38px hsla(0, 0%, 0%, 0.5);
-    overflow: visible;
-  }
-
-  .card > *:not(.card__glow):not(.card__glow-ring) {
-    position: relative;
-    z-index: 1;
-  }
-
-  .card__glow,
-  .card__glow-ring {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .card__glow {
-    inset: -0.6rem;
-    z-index: 0;
-    background:
-      radial-gradient(circle at 50% 0%, hsla(45, 96%, 68%, 0.34), transparent 48%),
-      radial-gradient(circle at 50% 100%, hsla(45, 82%, 56%, 0.18), transparent 58%),
-      linear-gradient(180deg, hsla(45, 95%, 62%, 0.2), hsla(45, 45%, 18%, 0.06));
-    filter: blur(18px);
-    opacity: 0.7;
-    transform: scale(0.985);
-    animation: team-card-glow 4.8s ease-in-out infinite;
-    animation-delay: var(--glow-delay, 0s);
-  }
-
-  .card__glow-ring {
-    inset: -1px;
-    z-index: 0;
-    background: linear-gradient(180deg, hsla(45, 95%, 68%, 0.92), hsla(41, 75%, 42%, 0.4), hsla(45, 95%, 68%, 0.72));
-    box-shadow:
-      0 0 0 1px hsla(45, 88%, 64%, 0.16),
-      0 0 26px hsla(45, 88%, 54%, 0.32),
-      0 0 52px hsla(45, 88%, 54%, 0.18);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    padding: 1px;
-    opacity: 0.88;
-    animation: team-card-ring 4.8s ease-in-out infinite;
-    animation-delay: var(--glow-delay, 0s);
   }
 
   .card__img {
@@ -260,20 +209,6 @@
     clip-path: circle(75%);
   }
 
-  .card:hover .card__glow,
-  .card:focus-within .card__glow {
-    opacity: 1;
-    filter: blur(22px);
-  }
-
-  .card:hover .card__glow-ring,
-  .card:focus-within .card__glow-ring {
-    box-shadow:
-      0 0 0 1px hsla(45, 88%, 64%, 0.22),
-      0 0 32px hsla(45, 92%, 58%, 0.46),
-      0 0 64px hsla(45, 92%, 58%, 0.24);
-  }
-
   .card:hover .info__icon {
     opacity: 0;
     pointer-events: none;
@@ -290,38 +225,9 @@
     transform: translateX(0);
   }
 
-  @keyframes team-card-glow {
-    0%,
-    100% {
-      opacity: 0.64;
-      transform: scale(0.98);
-    }
-
-    50% {
-      opacity: 0.96;
-      transform: scale(1.02);
-    }
-  }
-
-  @keyframes team-card-ring {
-    0%,
-    100% {
-      opacity: 0.76;
-    }
-
-    50% {
-      opacity: 1;
-    }
-  }
-
   @media (max-width: 768px) {
     .card {
       max-width: 320px;
-    }
-
-    .card__glow {
-      inset: -0.5rem;
-      filter: blur(16px);
     }
 
     .info {
