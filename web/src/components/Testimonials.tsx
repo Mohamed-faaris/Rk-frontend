@@ -16,7 +16,7 @@ const Testimonials = () => {
       icon: Briefcase,
       image: sivasuriyanRajaImage,
       fullName: "Sivasuriyan Raja",
-      title: "Founder, Creative Director & Strategy Lead",
+      title: "Founder, Creative Director",
       location: "Tamil Nadu, India",
       socials: [
         { href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn", icon: Linkedin },
