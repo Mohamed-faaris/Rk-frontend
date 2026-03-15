@@ -44,6 +44,7 @@ export interface Order {
 }
 
 export interface CreateOrderData {
+  userId?: string;
   service: string;
   clientInfo?: ClientInfo;
   title: string;

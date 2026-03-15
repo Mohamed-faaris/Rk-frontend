@@ -1,5 +1,6 @@
 import Order from '../models/Order.js';
 import CanceledOrder from '../models/CanceledOrder.js';
+import User from '../models/User.js';
 import { sendOrderStatusUpdateEmail } from '../utils/emailService.js';
 
 // @desc    Get all orders for a user
@@ -63,10 +64,25 @@ export const getOrder = async (req, res, next) => {
 // @access  Private
 export const createOrder = async (req, res, next) => {
   try {
-    const { service, clientInfo, title, description, budget, timeline, priority, requirements } = req.body;
+    const { service, clientInfo, title, description, budget, timeline, priority, requirements, userId } = req.body;
+
+    let targetUserId = req.user.id;
+
+    if (req.user.role === 'admin' && userId) {
+      const targetUser = await User.findById(userId).select('_id');
+
+      if (!targetUser) {
+        return res.status(404).json({
+          success: false,
+          error: 'Selected user not found'
+        });
+      }
+
+      targetUserId = targetUser._id;
+    }
 
     const order = await Order.create({
-      user: req.user.id,
+      user: targetUserId,
       service,
       clientInfo,
       title,

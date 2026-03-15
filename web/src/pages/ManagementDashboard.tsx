@@ -93,6 +93,7 @@ export default function ManagementDashboard() {
   const [employeeDialog, setEmployeeDialog] = useState(false);
   const [projectDialog, setProjectDialog] = useState(false);
   const [userDialog, setUserDialog] = useState(false);
+  const [orderDialog, setOrderDialog] = useState(false);
   const [orderStatusDialog, setOrderStatusDialog] = useState(false);
   const [applicationDialog, setApplicationDialog] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<any>(null);
@@ -297,6 +298,22 @@ export default function ManagementDashboard() {
   const [orderStatusForm, setOrderStatusForm] = useState({
     status: '',
     notes: ''
+  });
+
+  const [orderForm, setOrderForm] = useState({
+    userId: '',
+    service: '',
+    title: '',
+    description: '',
+    budget: '',
+    timeline: '',
+    priority: 'medium',
+    requirements: '',
+    companyName: '',
+    industry: '',
+    website: '',
+    phone: '',
+    preferredContactMethod: 'email'
   });
 
   const [applicationStatusForm, setApplicationStatusForm] = useState({
@@ -719,6 +736,100 @@ export default function ManagementDashboard() {
       await loadOrders();
     } catch (err: any) {
       setError(err.response?.data?.error || err.message || 'Failed to delete order');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetOrderForm = () => {
+    setOrderForm({
+      userId: '',
+      service: '',
+      title: '',
+      description: '',
+      budget: '',
+      timeline: '',
+      priority: 'medium',
+      requirements: '',
+      companyName: '',
+      industry: '',
+      website: '',
+      phone: '',
+      preferredContactMethod: 'email'
+    });
+  };
+
+  const handleCreateOrder = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
+
+      if (!orderForm.userId) {
+        setError('Please select a customer');
+        return;
+      }
+
+      if (!orderForm.service.trim()) {
+        setError('Service is required');
+        return;
+      }
+
+      if (!orderForm.title.trim()) {
+        setError('Project title is required');
+        return;
+      }
+
+      if (!orderForm.description.trim()) {
+        setError('Project description is required');
+        return;
+      }
+
+      const parsedBudget = Number(orderForm.budget);
+      if (!Number.isFinite(parsedBudget) || parsedBudget <= 0) {
+        setError('Please enter a valid budget amount');
+        return;
+      }
+
+      if (!orderForm.timeline) {
+        setError('Please select a timeline');
+        return;
+      }
+
+      const orderPayload: any = {
+        userId: orderForm.userId,
+        service: orderForm.service,
+        title: orderForm.title,
+        description: orderForm.description,
+        budget: parsedBudget,
+        timeline: orderForm.timeline,
+        priority: orderForm.priority,
+        requirements: orderForm.requirements
+      };
+
+      if (
+        orderForm.companyName.trim() ||
+        orderForm.industry.trim() ||
+        orderForm.website.trim() ||
+        orderForm.phone.trim()
+      ) {
+        orderPayload.clientInfo = {
+          companyName: orderForm.companyName,
+          industry: orderForm.industry,
+          website: orderForm.website,
+          phone: orderForm.phone,
+          preferredContactMethod: orderForm.preferredContactMethod
+        };
+      }
+
+      await orderService.createOrder(orderPayload);
+      setSuccess('Order created successfully');
+      setOrderDialog(false);
+      resetOrderForm();
+      await loadOrders();
+      await loadUserStats();
+    } catch (err: any) {
+      setError(err.response?.data?.error || err.message || 'Failed to create order');
     } finally {
       setLoading(false);
     }
@@ -1945,7 +2056,245 @@ export default function ManagementDashboard() {
 
           {/* Orders Tab */}
           <TabsContent value="orders" className="space-y-4 md:space-y-6">
-            <h2 className="text-xl md:text-2xl font-bold">Order Management</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
+              <h2 className="text-xl md:text-2xl font-bold">Order Management</h2>
+              <Dialog
+                open={orderDialog}
+                onOpenChange={(open) => {
+                  setOrderDialog(open);
+                  if (open && users.length === 0) {
+                    loadUsers();
+                  }
+                  if (!open) {
+                    resetOrderForm();
+                  }
+                }}
+              >
+                <DialogTrigger asChild>
+                  <Button className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
+                    <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Add Order</span>
+                    <span className="sm:hidden">Add</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-3xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto bg-card border-border">
+                  <DialogHeader>
+                    <DialogTitle>Add New Order</DialogTitle>
+                    <DialogDescription>
+                      Create an order for a customer and add it directly to the order list.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="space-y-4 py-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="orderUser">Customer *</Label>
+                      <Select
+                        value={orderForm.userId}
+                        onValueChange={(value) => setOrderForm({ ...orderForm, userId: value })}
+                      >
+                        <SelectTrigger id="orderUser" className="border-border">
+                          <SelectValue placeholder="Select customer" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {users
+                            .filter((u: any) => u.role !== 'admin')
+                            .map((u: any) => (
+                              <SelectItem key={u._id} value={u._id}>
+                                {u.name} ({u.email})
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="orderService">Service *</Label>
+                        <Input
+                          id="orderService"
+                          value={orderForm.service}
+                          onChange={(e) => setOrderForm({ ...orderForm, service: e.target.value })}
+                          placeholder="Website Development"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderBudget">Budget (INR) *</Label>
+                        <Input
+                          id="orderBudget"
+                          type="number"
+                          min="1"
+                          value={orderForm.budget}
+                          onChange={(e) => setOrderForm({ ...orderForm, budget: e.target.value })}
+                          placeholder="100000"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="orderTitle">Project Title *</Label>
+                        <Input
+                          id="orderTitle"
+                          value={orderForm.title}
+                          onChange={(e) => setOrderForm({ ...orderForm, title: e.target.value })}
+                          placeholder="Project title"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="orderDescription">Description *</Label>
+                        <Textarea
+                          id="orderDescription"
+                          value={orderForm.description}
+                          onChange={(e) => setOrderForm({ ...orderForm, description: e.target.value })}
+                          placeholder="Describe the order details"
+                          rows={4}
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderTimeline">Timeline *</Label>
+                        <Select
+                          value={orderForm.timeline}
+                          onValueChange={(value) => setOrderForm({ ...orderForm, timeline: value })}
+                        >
+                          <SelectTrigger id="orderTimeline" className="border-border">
+                            <SelectValue placeholder="Select timeline" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1-2 weeks">1-2 weeks</SelectItem>
+                            <SelectItem value="2-4 weeks">2-4 weeks</SelectItem>
+                            <SelectItem value="1-2 months">1-2 months</SelectItem>
+                            <SelectItem value="2-3 months">2-3 months</SelectItem>
+                            <SelectItem value="3-6 months">3-6 months</SelectItem>
+                            <SelectItem value="6+ months">6+ months</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderPriority">Priority</Label>
+                        <Select
+                          value={orderForm.priority}
+                          onValueChange={(value) => setOrderForm({ ...orderForm, priority: value })}
+                        >
+                          <SelectTrigger id="orderPriority" className="border-border">
+                            <SelectValue placeholder="Select priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="low">Low</SelectItem>
+                            <SelectItem value="medium">Medium</SelectItem>
+                            <SelectItem value="high">High</SelectItem>
+                            <SelectItem value="urgent">Urgent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="orderRequirements">Additional Requirements</Label>
+                        <Textarea
+                          id="orderRequirements"
+                          value={orderForm.requirements}
+                          onChange={(e) => setOrderForm({ ...orderForm, requirements: e.target.value })}
+                          placeholder="Optional requirements or notes"
+                          rows={3}
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2 pt-2 border-t border-border">
+                        <h4 className="text-sm font-semibold">Client Information (Optional)</h4>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderCompany">Company Name</Label>
+                        <Input
+                          id="orderCompany"
+                          value={orderForm.companyName}
+                          onChange={(e) => setOrderForm({ ...orderForm, companyName: e.target.value })}
+                          placeholder="Acme Inc"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderIndustry">Industry</Label>
+                        <Input
+                          id="orderIndustry"
+                          value={orderForm.industry}
+                          onChange={(e) => setOrderForm({ ...orderForm, industry: e.target.value })}
+                          placeholder="Technology"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderWebsite">Website</Label>
+                        <Input
+                          id="orderWebsite"
+                          value={orderForm.website}
+                          onChange={(e) => setOrderForm({ ...orderForm, website: e.target.value })}
+                          placeholder="https://example.com"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="orderPhone">Phone</Label>
+                        <Input
+                          id="orderPhone"
+                          value={orderForm.phone}
+                          onChange={(e) => setOrderForm({ ...orderForm, phone: e.target.value })}
+                          placeholder="+91 9876543210"
+                          className="border-border"
+                        />
+                      </div>
+
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="orderContactMethod">Preferred Contact Method</Label>
+                        <Select
+                          value={orderForm.preferredContactMethod}
+                          onValueChange={(value) => setOrderForm({ ...orderForm, preferredContactMethod: value })}
+                        >
+                          <SelectTrigger id="orderContactMethod" className="border-border">
+                            <SelectValue placeholder="Select contact method" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="email">Email</SelectItem>
+                            <SelectItem value="phone">Phone</SelectItem>
+                            <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                            <SelectItem value="teams">Microsoft Teams</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setOrderDialog(false);
+                        resetOrderForm();
+                      }}
+                      className="border-border"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleCreateOrder}
+                      disabled={loading}
+                      className="bg-accent hover:bg-accent/90"
+                    >
+                      {loading ? 'Creating...' : 'Create Order'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
 
             <Card className="border-border bg-card">
               <CardContent className="p-0">
