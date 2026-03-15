@@ -291,6 +291,7 @@ export default function ManagementDashboard() {
     name: '',
     email: '',
     phone: '',
+    password: '',
     role: 'user',
     isActive: true
   });
@@ -835,11 +836,17 @@ export default function ManagementDashboard() {
     }
   };
 
-  const handleUpdateUser = async () => {
+  const handleSaveUser = async () => {
     try {
       setLoading(true);
       setError('');
-      
+      setSuccess('');
+
+      if (!userForm.name.trim() || !userForm.email.trim()) {
+        setError('Name and email are required');
+        return;
+      }
+
       if (editingUser) {
         const updateData = {
           name: userForm.name,
@@ -850,15 +857,30 @@ export default function ManagementDashboard() {
         };
         await userService.updateUser(editingUser._id, updateData);
         setSuccess('User updated successfully');
+      } else {
+        if (!userForm.password || userForm.password.length < 6) {
+          setError('Password must be at least 6 characters');
+          return;
+        }
+
+        await userService.createUser({
+          name: userForm.name,
+          email: userForm.email,
+          phone: userForm.phone,
+          password: userForm.password,
+          role: userForm.role as 'user' | 'admin',
+          isActive: userForm.isActive
+        });
+        setSuccess('User created successfully');
       }
-      
+
       setUserDialog(false);
       setEditingUser(null);
-      setUserForm({ name: '', email: '', phone: '', role: 'user', isActive: true });
+      setUserForm({ name: '', email: '', phone: '', password: '', role: 'user', isActive: true });
       loadUsers();
       loadUserStats();
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update user');
+      setError(err.response?.data?.message || 'Failed to save user');
     } finally {
       setLoading(false);
     }
@@ -2372,6 +2394,18 @@ export default function ManagementDashboard() {
           <TabsContent value="users" className="space-y-4 md:space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-xl md:text-2xl font-bold">User Management</h2>
+              <Button
+                className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10"
+                onClick={() => {
+                  setEditingUser(null);
+                  setUserForm({ name: '', email: '', phone: '', password: '', role: 'user', isActive: true });
+                  setUserDialog(true);
+                }}
+              >
+                <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Add User</span>
+                <span className="sm:hidden">Add</span>
+              </Button>
             </div>
 
             <Card className="border-border bg-card">
@@ -2427,6 +2461,7 @@ export default function ManagementDashboard() {
                                     name: user.name,
                                     email: user.email,
                                     phone: user.phone || '',
+                                    password: '',
                                     role: user.role,
                                     isActive: user.isActive
                                   });
@@ -2687,13 +2722,22 @@ export default function ManagementDashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* User Edit Dialog */}
-        <Dialog open={userDialog} onOpenChange={setUserDialog}>
+        {/* User Save Dialog */}
+        <Dialog
+          open={userDialog}
+          onOpenChange={(open) => {
+            setUserDialog(open);
+            if (!open) {
+              setEditingUser(null);
+              setUserForm({ name: '', email: '', phone: '', password: '', role: 'user', isActive: true });
+            }
+          }}
+        >
           <DialogContent className="bg-card border-border">
             <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
+              <DialogTitle>{editingUser ? 'Edit User' : 'Add User'}</DialogTitle>
               <DialogDescription>
-                Update user information and permissions
+                {editingUser ? 'Update user information and permissions' : 'Create a new user account'}
               </DialogDescription>
             </DialogHeader>
             
@@ -2732,6 +2776,20 @@ export default function ManagementDashboard() {
                 />
               </div>
 
+              {!editingUser && (
+                <div className="space-y-2">
+                  <Label htmlFor="userPassword">Password</Label>
+                  <Input
+                    id="userPassword"
+                    type="password"
+                    value={userForm.password}
+                    onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                    placeholder="Minimum 6 characters"
+                    className="border-border"
+                  />
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="role">Role</Label>
                 <Select
@@ -2766,18 +2824,18 @@ export default function ManagementDashboard() {
                 onClick={() => {
                   setUserDialog(false);
                   setEditingUser(null);
-                  setUserForm({ name: '', email: '', phone: '', role: 'user', isActive: true });
+                  setUserForm({ name: '', email: '', phone: '', password: '', role: 'user', isActive: true });
                 }}
                 className="border-border"
               >
                 Cancel
               </Button>
               <Button
-                onClick={handleUpdateUser}
-                disabled={loading || !userForm.name || !userForm.email}
+                onClick={handleSaveUser}
+                disabled={loading || !userForm.name || !userForm.email || (!editingUser && !userForm.password)}
                 className="bg-accent hover:bg-accent/90"
               >
-                Update User
+                {editingUser ? 'Update User' : 'Create User'}
               </Button>
             </DialogFooter>
           </DialogContent>

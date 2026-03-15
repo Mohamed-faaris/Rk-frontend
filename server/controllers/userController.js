@@ -1,6 +1,48 @@
 import User from '../models/User.js';
 import Order from '../models/Order.js';
 
+// Create user (admin only)
+export const createUser = async (req, res) => {
+  try {
+    const { name, email, phone, password, role, isActive } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email and password are required' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    const newUser = await User.create({
+      name,
+      email,
+      phone,
+      password,
+      role: role || 'user',
+      isActive: typeof isActive === 'boolean' ? isActive : true
+    });
+
+    const userObj = newUser.toObject();
+    delete userObj.password;
+    delete userObj.otp;
+    delete userObj.otpExpiry;
+
+    res.status(201).json({
+      message: 'User created successfully',
+      user: userObj
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 // Get all users with statistics
 export const getAllUsers = async (req, res) => {
   try {

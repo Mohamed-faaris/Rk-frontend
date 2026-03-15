@@ -21,7 +21,21 @@ export interface UserStats {
   newUsers: number;
 }
 
+export interface CreateUserData {
+  name: string;
+  email: string;
+  phone?: string;
+  password: string;
+  role?: 'user' | 'admin';
+  isActive?: boolean;
+}
+
 const userService = {
+  async createUser(data: CreateUserData): Promise<{ message: string; user: User }> {
+    const response = await api.post('/users', data);
+    return response.data;
+  },
+
   async getAllUsers(): Promise<User[]> {
     const response = await api.get('/users');
     return response.data;

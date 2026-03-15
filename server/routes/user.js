@@ -11,6 +11,9 @@ router.use(adminOnly);
 // Get all users
 router.get('/', userController.getAllUsers);
 
+// Create user
+router.post('/', userController.createUser);
+
 // Get user statistics
 router.get('/stats', userController.getUserStats);
 
