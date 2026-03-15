@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:wght@600;700;800&display=swap');
 
 /* stylelint-disable at-rule-no-unknown */
 @tailwind base;
@@ -169,6 +169,12 @@ All colors MUST be HSL.
     font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
     font-weight: 700;
     letter-spacing: 0.01em;
+  }
+
+  .fairy-display {
+    font-family: 'Cinzel Decorative', 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    letter-spacing: 0.03em;
   }
   
   .animate-fade-in-up {
