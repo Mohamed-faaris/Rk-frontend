@@ -205,7 +205,7 @@ const Contact = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
+            <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Get in <span className="gradient-text">Touch</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
