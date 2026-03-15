@@ -181,7 +181,9 @@ export const createOrder = async (req, res, next) => {
     try {
       await Project.create(buildProjectPayloadFromOrder(populatedOrder));
     } catch (projectError) {
-      console.error('Project creation from order failed:', projectError.message);
+      if (projectError?.code !== 11000) {
+        console.error('Project creation from order failed:', projectError.message);
+      }
     }
 
     res.status(201).json({

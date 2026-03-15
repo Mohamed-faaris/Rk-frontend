@@ -116,24 +116,19 @@ export const getProjects = async (req, res) => {
 // @access  Private/Admin
 export const syncProjectsFromOrders = async (req, res) => {
   try {
-    const existing = await Project.find({ sourceOrder: { $exists: true, $ne: null } }).select('sourceOrder');
-    const existingOrderIds = existing.map((project) => project.sourceOrder);
-
-    const orders = await Order.find({ _id: { $nin: existingOrderIds } }).populate('user', 'name email');
+    const orders = await Order.find().populate('user', 'name email');
 
     if (!orders.length) {
       return res.status(200).json({
         success: true,
-        message: 'Projects are already synced with orders',
+        message: 'No orders found for project sync',
         created: 0
       });
     }
 
-    const payload = orders
-      .filter((order) => order?.title && order?.description && order?.budget)
-      .map((order) => mapOrderToProjectPayload(order));
+    const eligibleOrders = orders.filter((order) => order?.title && order?.description && order?.budget);
 
-    if (!payload.length) {
+    if (!eligibleOrders.length) {
       return res.status(200).json({
         success: true,
         message: 'No eligible orders found for project sync',
@@ -141,15 +136,43 @@ export const syncProjectsFromOrders = async (req, res) => {
       });
     }
 
-    await Project.insertMany(payload, { ordered: false });
+    let created = 0;
 
-    res.status(201).json({
+    for (const order of eligibleOrders) {
+      const payload = mapOrderToProjectPayload(order);
+
+      try {
+        const result = await Project.updateOne(
+          { sourceOrder: order._id },
+          { $setOnInsert: payload },
+          { upsert: true }
+        );
+
+        if (result.upsertedCount > 0) {
+          created += 1;
+        }
+      } catch (err) {
+        // Concurrent requests can race on unique index; treat duplicate as already synced.
+        if (err?.code !== 11000) {
+          throw err;
+        }
+      }
+    }
+
+    res.status(200).json({
       success: true,
-      message: 'Projects synced from orders successfully',
-      created: payload.length
+      message: created > 0 ? 'Projects synced from orders successfully' : 'Projects are already synced with orders',
+      created
     });
   } catch (error) {
     console.error('Sync projects from orders error:', error);
+    if (error?.code === 11000) {
+      return res.status(200).json({
+        success: true,
+        message: 'Projects are already synced with orders',
+        created: 0
+      });
+    }
     res.status(500).json({ error: error.message });
   }
 };
