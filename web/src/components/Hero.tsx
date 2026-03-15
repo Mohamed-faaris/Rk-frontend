@@ -149,8 +149,8 @@ const Hero = () => {
               className="bg-accent hover:bg-accent/90 shadow-gold group min-w-[200px]"
               asChild
             >
-              <a href="#portfolio" className="flex items-center justify-center">
-                Explore Our Work
+              <a href="#services" className="flex items-center justify-center">
+                Explore Our Services
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </a>
             </Button>
