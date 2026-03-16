@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .png";
 import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.png";
 import namasivayenImage from "@/assets/NAMASIVAYEN N S.png";
@@ -16,6 +17,19 @@ const Testimonials = () => {
   const navigate = useNavigate();
 
   const teamMembers = [
+    {
+      id: "sivasuriyan-raja",
+      name: "SIVASURIYAN RAJA",
+      role: "Founder & Creative Director",
+      bio: "Leads RajKayal Creative Hub with a focus on brand storytelling, premium visual systems, and long-term client direction.",
+      skills: ["Brand Strategy", "Creative Direction", "Client Consulting"],
+      icon: Briefcase,
+      image: sivasuriyanRajaImage,
+      fullName: "Sivasuriyan Raja",
+      title: "Founder, Creative Director",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
     {
       id: "mohamed-abu-bakkar",
       name: "MOHAMED ABU BAKKAR M",
