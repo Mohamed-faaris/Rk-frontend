@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Briefcase, Code2, FileText, Github, Info, Instagram, Linkedin, Palette, X } from "lucide-react";
+import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import "@/styles/team-cards.scss";
 
 const Testimonials = () => {
@@ -11,53 +10,88 @@ const Testimonials = () => {
 
   const teamMembers = [
     {
-      id: "sivasuriyan-raja",
-      name: "Sivasuriyan Raja",
-      role: "Founder & Creative Director",
-      bio: "Leads RajKayal Creative Hub with a focus on brand storytelling, premium visual systems, and long-term client direction.",
-      skills: ["Brand Strategy", "Creative Direction", "Client Consulting"],
+      id: "mohamed-abu-bakkar",
+      name: "MOHAMED ABU BAKKAR M",
+      role: "CEO",
+      bio: "Leads company vision, strategic growth, and high-level decision making across all teams.",
+      skills: ["Leadership", "Business Strategy", "Client Relations"],
       icon: Briefcase,
-      image: sivasuriyanRajaImage,
-      fullName: "Sivasuriyan Raja",
-      title: "Founder, Creative Director",
+      fullName: "MOHAMED ABU BAKKAR M",
+      title: "Chief Executive Officer",
       location: "Tamil Nadu, India",
-      socials: [
-        { href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn", icon: Linkedin },
-        {
-          href: "https://www.instagram.com/sivasuriyan_raja?igsh=MTgzZHhncGp6ZXc1dw%3D%3D&utm_source=qr",
-          label: "Instagram",
-          icon: Instagram,
-        },
-        { href: "https://github.com/SivasuriyanRaja", label: "GitHub", icon: Github },
-      ],
+      socials: [],
     },
     {
-      id: "design-team",
-      name: "Design Team",
-      role: "Visual Design & UI/UX",
-      bio: "Crafts polished interfaces, print assets, and marketing visuals that balance clarity, elegance, and conversion-focused thinking.",
-      skills: ["UI/UX Design", "Social Media Design", "Print & Branding"],
-      icon: Palette,
-      fullName: "RajKayal Design Team",
-      title: "UI/UX, Branding & Visual Communication",
-      location: "Remote / India",
-      socials: [
-        { href: "https://www.linkedin.com/in/sivasuriyan-raja-86b044312", label: "LinkedIn", icon: Linkedin },
-      ],
-    },
-    {
-      id: "development-team",
-      name: "Development Team",
-      role: "Web & Software Engineering",
-      bio: "Builds responsive websites, scalable applications, and dependable digital systems that support business growth and operations.",
-      skills: ["React Development", "Backend Systems", "Deployment & Support"],
+      id: "mohamed-faaris",
+      name: "MOHAMED FAARIS K M",
+      role: "Tech Engineering Manager",
+      bio: "Owns engineering execution, architecture quality, and reliable delivery across frontend and backend systems.",
+      skills: ["Engineering Management", "Architecture", "Team Delivery"],
       icon: Code2,
-      fullName: "RajKayal Development Team",
-      title: "Frontend, Backend & Deployment Systems",
-      location: "Remote / India",
-      socials: [
-        { href: "https://github.com/SivasuriyanRaja", label: "GitHub", icon: Github },
-      ],
+      fullName: "MOHAMED FAARIS K M",
+      title: "Tech Engineering Manager",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
+    {
+      id: "namasivayen",
+      name: "NAMASIVAYEN N S",
+      role: "HR & Admin Executive",
+      bio: "Manages hiring coordination, people operations, and day-to-day administrative support.",
+      skills: ["People Operations", "Recruitment Support", "Administration"],
+      icon: Briefcase,
+      fullName: "NAMASIVAYEN N S",
+      title: "HR & Admin Executive",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
+    {
+      id: "nithish-kumar",
+      name: "NITHISH KUMAR V",
+      role: "Sales Manager",
+      bio: "Leads sales pipeline, proposal discussions, and customer conversion initiatives.",
+      skills: ["Sales Strategy", "Negotiation", "Client Conversion"],
+      icon: Briefcase,
+      fullName: "NITHISH KUMAR V",
+      title: "Sales Manager",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
+    {
+      id: "pallavi",
+      name: "PALLAVI P",
+      role: "Project Manager",
+      bio: "Coordinates planning, timelines, and cross-functional delivery to keep projects on track.",
+      skills: ["Project Planning", "Execution Tracking", "Stakeholder Coordination"],
+      icon: Palette,
+      fullName: "PALLAVI P",
+      title: "Project Manager",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
+    {
+      id: "viswa-guru-prasath",
+      name: "VISWA GURU PRASATH J",
+      role: "Finance & Business Analyst",
+      bio: "Handles financial analysis, reporting, and data-backed business decisions.",
+      skills: ["Financial Analysis", "Business Reporting", "Forecasting"],
+      icon: Briefcase,
+      fullName: "VISWA GURU PRASATH J",
+      title: "Finance & Business Analyst",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
+    {
+      id: "yogesh",
+      name: "YOGESH M",
+      role: "Marketing Manager",
+      bio: "Drives brand growth through campaigns, positioning, and audience engagement.",
+      skills: ["Campaign Strategy", "Brand Marketing", "Growth"],
+      icon: Palette,
+      fullName: "YOGESH M",
+      title: "Marketing Manager",
+      location: "Tamil Nadu, India",
+      socials: [],
     },
   ];
 
@@ -74,7 +108,7 @@ const Testimonials = () => {
               Our <span className="gradient-text">Team</span>
             </h2>
             <p className="mx-auto max-w-2xl break-normal text-xl text-muted-foreground">
-              Meet the people shaping RajKayal Creative Hub across strategy, design, and development.
+              Meet the people leading RajKayal Creative Hub across leadership, engineering, operations, and growth.
             </p>
           </div>
 
@@ -83,11 +117,7 @@ const Testimonials = () => {
               <div key={member.id} className="card">
                 <div className="card__border">
                   <div className="card__perfil">
-                    {member.image ? (
-                      <img src={member.image} alt={member.name} className="card__img" loading="lazy" decoding="async" />
-                    ) : (
-                      <member.icon className="card__img" aria-hidden="true" />
-                    )}
+                    <member.icon className="card__img" aria-hidden="true" />
                   </div>
                 </div>
 
@@ -108,17 +138,7 @@ const Testimonials = () => {
                 <div id={`${member.id}-info`} className={`info ${activeCard === member.id ? "is-open" : ""}`}>
                   <div className="info__border">
                     <div className="info__perfil">
-                      {member.image ? (
-                        <img
-                          src={member.image}
-                          alt={`${member.name} profile`}
-                          className="info__img"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      ) : (
-                        <member.icon className="info__img" aria-hidden="true" />
-                      )}
+                      <member.icon className="info__img" aria-hidden="true" />
                     </div>
                   </div>
 
