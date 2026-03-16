@@ -145,7 +145,7 @@ const AccountPage = () => {
           <div className="max-w-4xl mx-auto">
             {/* Back Button */}
             <Button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/#home')}
               variant="outline"
               className="mb-8 gap-2"
             >

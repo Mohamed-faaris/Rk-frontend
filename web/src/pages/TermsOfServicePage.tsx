@@ -159,7 +159,7 @@ const TermsOfServicePage = () => {
       <section className="pt-32 pb-16 px-4 bg-gradient-to-b from-secondary/30 to-background">
         <div className="container mx-auto max-w-4xl">
           <Button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/#home')}
             variant="outline"
             className="mb-8 gap-2"
           >

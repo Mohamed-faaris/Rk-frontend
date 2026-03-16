@@ -128,7 +128,7 @@ const OrdersPage = () => {
               <p className="text-xs md:text-sm text-muted-foreground break-normal">Track and manage your project orders</p>
             </div>
             <Button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/#home')}
               variant="outline"
               className="gap-2 text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10 w-full sm:w-auto"
             >

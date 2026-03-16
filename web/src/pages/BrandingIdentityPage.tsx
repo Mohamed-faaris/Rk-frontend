@@ -198,7 +198,7 @@ const BrandingIdentityPage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 via-transparent to-transparent" />
         <div className="container mx-auto max-w-7xl relative z-10">
           <Button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/#home')}
             variant="outline"
             className="mb-8 gap-2"
           >

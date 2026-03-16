@@ -1257,7 +1257,7 @@ export default function ManagementDashboard() {
         {/* Header */}
         <div className="mb-6 md:mb-8">
           <Button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/#home')}
             variant="outline"
             className="mb-4 md:mb-8 gap-2 text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10"
           >
