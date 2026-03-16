@@ -271,9 +271,13 @@
       justify-items: stretch;
       gap: 0.95rem;
       overflow-x: auto;
+      overscroll-behavior-x: contain;
       padding-bottom: 0.5rem;
+      padding-inline: 0.2rem;
+      scroll-padding-inline: 0.2rem;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
       scrollbar-width: none;
     }
 
@@ -288,6 +292,7 @@
       padding: 2rem 1.05rem 2.2rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
       scroll-snap-align: start;
+      scroll-snap-stop: always;
     }
 
     .card__border {
@@ -312,6 +317,9 @@
     .card__info-toggle {
       top: 1.1rem;
       right: 1.1rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: hsla(0, 0%, 8%, 0.45);
     }
 
     .info {
@@ -331,6 +339,7 @@
     .info.is-open {
       clip-path: circle(190% at calc(100% - 38px) 34px);
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .info__border {
@@ -365,9 +374,67 @@
     }
 
     .info__social-link {
-      width: 30px;
-      height: 30px;
+      width: 34px;
+      height: 34px;
     }
 
+  }
+
+  @media (max-width: 480px) {
+    .team-card-grid {
+      grid-auto-columns: minmax(236px, 88vw);
+      gap: 0.8rem;
+    }
+
+    .card {
+      min-height: 372px;
+      padding: 1.8rem 0.95rem 2rem;
+      border-radius: 1rem 1rem 5rem 5rem;
+    }
+
+    .card__border {
+      width: 104px;
+      height: 104px;
+    }
+
+    .card__perfil {
+      width: 88px;
+      height: 88px;
+    }
+
+    .card__name {
+      font-size: 1rem;
+    }
+
+    .card__profession {
+      font-size: 0.64rem;
+    }
+
+    .info {
+      padding: 1.8rem 0.95rem 2rem;
+      border-radius: 1rem 1rem 5rem 5rem;
+    }
+
+    .info__bio {
+      font-size: 0.68rem;
+      line-height: 1.4;
+    }
+
+    .info__skill {
+      font-size: 0.62rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info,
+    .info__border,
+    .info__data,
+    .info__skills,
+    .info__social,
+    .card__info-toggle,
+    .info__social-link {
+      transition-duration: 0.01ms;
+      animation: none;
+    }
   }
 }

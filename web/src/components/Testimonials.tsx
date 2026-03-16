@@ -81,7 +81,7 @@ const Testimonials = () => {
                 <div className="card__border">
                   <div className="card__perfil">
                     {member.image ? (
-                      <img src={member.image} alt={member.name} className="card__img" />
+                      <img src={member.image} alt={member.name} className="card__img" loading="lazy" decoding="async" />
                     ) : (
                       <member.icon className="card__img" aria-hidden="true" />
                     )}
@@ -106,7 +106,13 @@ const Testimonials = () => {
                   <div className="info__border">
                     <div className="info__perfil">
                       {member.image ? (
-                        <img src={member.image} alt={`${member.name} profile`} className="info__img" />
+                        <img
+                          src={member.image}
+                          alt={`${member.name} profile`}
+                          className="info__img"
+                          loading="lazy"
+                          decoding="async"
+                        />
                       ) : (
                         <member.icon className="info__img" aria-hidden="true" />
                       )}
