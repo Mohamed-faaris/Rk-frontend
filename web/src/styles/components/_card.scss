@@ -250,18 +250,9 @@
   }
 
   @media (hover: hover) {
-    .card__info-toggle.is-desktop {
-      display: none;
-    }
-
     .card:hover .info {
       clip-path: circle(170% at calc(100% - 42px) 40px);
       overflow-y: auto;
-    }
-
-    .card:hover .card__info-toggle {
-      opacity: 0;
-      pointer-events: none;
     }
 
     .card:hover .info__border,
