@@ -224,6 +224,10 @@
   }
 
   @media (hover: hover) {
+    .card__info-toggle.is-desktop {
+      display: none;
+    }
+
     .card:hover .info {
       clip-path: circle(75%);
     }

@@ -1,10 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Briefcase, Code2, Github, Info, Instagram, Linkedin, Palette, X } from "lucide-react";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import "@/styles/team-cards.scss";
 
 const Testimonials = () => {
   const [activeCard, setActiveCard] = useState<string | null>(null);
+  const [supportsHover, setSupportsHover] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const updateSupportsHover = (event?: MediaQueryListEvent) => {
+      const nextSupportsHover = event ? event.matches : mediaQuery.matches;
+      setSupportsHover(nextSupportsHover);
+      if (nextSupportsHover) {
+        setActiveCard(null);
+      }
+    };
+
+    updateSupportsHover();
+    mediaQuery.addEventListener("change", updateSupportsHover);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateSupportsHover);
+    };
+  }, []);
 
   const teamMembers = [
     {
@@ -93,16 +116,21 @@ const Testimonials = () => {
 
                 <button
                   type="button"
-                  onClick={() => setActiveCard((current) => (current === member.id ? null : member.id))}
-                  className="card__info-toggle"
-                  aria-expanded={activeCard === member.id}
+                  onClick={() => {
+                    if (supportsHover) {
+                      return;
+                    }
+                    setActiveCard((current) => (current === member.id ? null : member.id));
+                  }}
+                  className={`card__info-toggle ${supportsHover ? "is-desktop" : ""}`}
+                  aria-expanded={!supportsHover && activeCard === member.id}
                   aria-controls={`${member.id}-info`}
                   aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
                 >
-                  {activeCard === member.id ? <X size={18} /> : <Info size={18} />}
+                  {!supportsHover && activeCard === member.id ? <X size={18} /> : <Info size={18} />}
                 </button>
 
-                <div id={`${member.id}-info`} className={`info ${activeCard === member.id ? "is-open" : ""}`}>
+                <div id={`${member.id}-info`} className={`info ${!supportsHover && activeCard === member.id ? "is-open" : ""}`}>
                   <div className="info__border">
                     <div className="info__perfil">
                       {member.image ? (
