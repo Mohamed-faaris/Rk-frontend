@@ -2,7 +2,7 @@
 .team-cards {
   .team-card-grid {
     display: grid;
-    gap: 1.5rem;
+    gap: 1.75rem;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     justify-items: center;
   }
@@ -10,16 +10,16 @@
   .card {
     position: relative;
     width: 100%;
-    max-width: 310px;
-    min-height: 430px;
+    max-width: 282px;
+    min-height: 392px;
     margin-inline: auto;
     background: var(--gradient-color);
-    border-radius: 1rem 1rem 11rem 11rem;
-    padding: 2.5rem 1.5rem 3.5rem;
+    border-radius: 1rem 1rem 8.7rem 8.7rem;
+    padding: 2rem 1.2rem 2.6rem;
     text-align: center;
     border: 1px solid hsl(45, 35%, 28%);
     box-shadow: 0 16px 38px hsla(0, 0%, 0%, 0.5);
-    overflow: hidden;
+    overflow: visible;
   }
 
   .card::before {
@@ -74,8 +74,8 @@
   }
 
   .card__border {
-    width: 124px;
-    height: 124px;
+    width: 112px;
+    height: 112px;
     background-color: var(--first-color-light);
     border-radius: 50%;
     margin: 0 auto 1rem;
@@ -84,8 +84,8 @@
   }
 
   .card__perfil {
-    width: 104px;
-    height: 104px;
+    width: 94px;
+    height: 94px;
     background-color: var(--first-color-lighten);
     border-radius: 50%;
     overflow: hidden;
@@ -128,8 +128,8 @@
     width: 100%;
     background-color: hsl(0, 0%, 8%);
     border: 1px solid hsl(45, 35%, 24%);
-    padding: 2.5rem 1.5rem 3.3rem;
-    border-radius: 1rem 1rem 11rem 11rem;
+    padding: 2.2rem 1.25rem 2.8rem;
+    border-radius: 1rem 1rem 9.2rem 9.2rem;
     clip-path: circle(16px at calc(100% - 42px) 40px);
     transition: clip-path 0.4s ease-in-out;
     will-change: clip-path;
@@ -256,6 +256,10 @@
   }
 
   .info.is-open {
+    inset: -12px -10px auto;
+    width: calc(100% + 20px);
+    padding: 2.75rem 1.6rem 3.45rem;
+    border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
     clip-path: circle(170% at calc(100% - 42px) 40px);
     overflow-y: auto;
   }
@@ -278,6 +282,10 @@
 
   @media (hover: hover) {
     .card:hover .info {
+      inset: -12px -10px auto;
+      width: calc(100% + 20px);
+      padding: 2.75rem 1.6rem 3.45rem;
+      border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
       clip-path: circle(170% at calc(100% - 42px) 40px);
       overflow-y: auto;
     }
@@ -296,7 +304,7 @@
       grid-auto-flow: column;
       grid-auto-columns: minmax(250px, 82vw);
       justify-items: stretch;
-      gap: 0.95rem;
+      gap: 1.05rem;
       overflow-x: auto;
       overscroll-behavior-x: contain;
       padding-bottom: 0.5rem;
@@ -315,22 +323,22 @@
     .card {
       width: 100%;
       max-width: none;
-      min-height: 390px;
-      padding: 2rem 1.05rem 2.2rem;
+      min-height: 350px;
+      padding: 1.7rem 0.95rem 1.95rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
       scroll-snap-align: start;
       scroll-snap-stop: always;
     }
 
     .card__border {
-      width: 112px;
-      height: 112px;
+      width: 100px;
+      height: 100px;
       margin-bottom: 0.85rem;
     }
 
     .card__perfil {
-      width: 94px;
-      height: 94px;
+      width: 84px;
+      height: 84px;
     }
 
     .card__name {
@@ -353,7 +361,7 @@
       inset: -1px 0 auto;
       width: 100%;
       margin-top: 0;
-      padding: 2rem 1.05rem 2.2rem;
+      padding: 1.75rem 0.95rem 2rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
       clip-path: circle(18px at calc(100% - 38px) 34px);
       max-height: none;
@@ -363,6 +371,10 @@
     }
 
     .info.is-open {
+      inset: -8px -6px auto;
+      width: calc(100% + 12px);
+      padding: 2.05rem 1.1rem 2.25rem;
+      border-radius: 1rem 1rem 6.1rem 6.1rem;
       clip-path: circle(190% at calc(100% - 38px) 34px);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -413,19 +425,19 @@
     }
 
     .card {
-      min-height: 372px;
-      padding: 1.8rem 0.95rem 2rem;
+      min-height: 335px;
+      padding: 1.55rem 0.85rem 1.8rem;
       border-radius: 1rem 1rem 5rem 5rem;
     }
 
     .card__border {
-      width: 104px;
-      height: 104px;
+      width: 92px;
+      height: 92px;
     }
 
     .card__perfil {
-      width: 88px;
-      height: 88px;
+      width: 76px;
+      height: 76px;
     }
 
     .card__name {
@@ -437,8 +449,15 @@
     }
 
     .info {
-      padding: 1.8rem 0.95rem 2rem;
+      padding: 1.6rem 0.85rem 1.9rem;
       border-radius: 1rem 1rem 5rem 5rem;
+    }
+
+    .info.is-open {
+      inset: -6px -5px auto;
+      width: calc(100% + 10px);
+      padding: 1.85rem 0.95rem 2.05rem;
+      border-radius: 1rem 1rem 5.45rem 5.45rem;
     }
 
     .info__bio {
