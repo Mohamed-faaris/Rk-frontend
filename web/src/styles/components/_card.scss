@@ -10,7 +10,7 @@
   .card {
     position: relative;
     width: 100%;
-    max-width: 290px;
+    max-width: 310px;
     min-height: 430px;
     margin-inline: auto;
     background: var(--gradient-color);
@@ -101,13 +101,16 @@
 
   .card__name {
     width: 100%;
-    font-size: clamp(0.84rem, 1.4vw, var(--h2-font-size));
+    font-size: clamp(0.66rem, 1.1vw, 1.02rem);
     font-weight: 600;
     margin-bottom: 0.25rem;
+    min-height: 1.25em;
     line-height: 1.2;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    text-overflow: clip;
+    letter-spacing: 0.01em;
+    padding-inline: 0.1rem;
     text-align: center;
   }
 
@@ -176,13 +179,15 @@
 
   .info__name {
     width: 100%;
-    font-size: var(--normal-font-size);
+    font-size: clamp(0.72rem, 1vw, var(--normal-font-size));
     color: var(--title-color);
     font-weight: 600;
+    min-height: 1.25em;
     line-height: 1.2;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    text-overflow: clip;
+    letter-spacing: 0.01em;
     text-align: center;
   }
 
@@ -329,7 +334,7 @@
     }
 
     .card__name {
-      font-size: clamp(0.78rem, 2.9vw, 1.02rem);
+      font-size: clamp(0.62rem, 2.45vw, 0.9rem);
     }
 
     .card__profession {
@@ -424,7 +429,7 @@
     }
 
     .card__name {
-      font-size: clamp(0.72rem, 3.4vw, 0.92rem);
+      font-size: clamp(0.58rem, 2.95vw, 0.82rem);
     }
 
     .card__profession {
