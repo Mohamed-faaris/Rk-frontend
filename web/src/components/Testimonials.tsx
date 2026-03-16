@@ -2,6 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .png";
+import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.png";
+import namasivayenImage from "@/assets/NAMASIVAYEN N S.png";
+import nithishKumarImage from "@/assets/NITHISH KUMAR V.png";
+import pallaviImage from "@/assets/PALLAVI P.png";
+import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .png";
+import yogeshImage from "@/assets/YOGESH M.png";
 import "@/styles/team-cards.scss";
 
 const Testimonials = () => {
@@ -16,6 +23,7 @@ const Testimonials = () => {
       bio: "Leads company vision, strategic growth, and high-level decision making across all teams.",
       skills: ["Leadership", "Business Strategy", "Client Relations"],
       icon: Briefcase,
+      image: mohamedAbuBakkarImage,
       fullName: "MOHAMED ABU BAKKAR M",
       title: "Chief Executive Officer",
       location: "Tamil Nadu, India",
@@ -28,6 +36,7 @@ const Testimonials = () => {
       bio: "Owns engineering execution, architecture quality, and reliable delivery across frontend and backend systems.",
       skills: ["Engineering Management", "Architecture", "Team Delivery"],
       icon: Code2,
+      image: mohamedFaarisImage,
       fullName: "MOHAMED FAARIS K M",
       title: "Tech Engineering Manager",
       location: "Tamil Nadu, India",
@@ -40,6 +49,7 @@ const Testimonials = () => {
       bio: "Manages hiring coordination, people operations, and day-to-day administrative support.",
       skills: ["People Operations", "Recruitment Support", "Administration"],
       icon: Briefcase,
+      image: namasivayenImage,
       fullName: "NAMASIVAYEN N S",
       title: "HR & Admin Executive",
       location: "Tamil Nadu, India",
@@ -52,6 +62,7 @@ const Testimonials = () => {
       bio: "Leads sales pipeline, proposal discussions, and customer conversion initiatives.",
       skills: ["Sales Strategy", "Negotiation", "Client Conversion"],
       icon: Briefcase,
+      image: nithishKumarImage,
       fullName: "NITHISH KUMAR V",
       title: "Sales Manager",
       location: "Tamil Nadu, India",
@@ -64,6 +75,7 @@ const Testimonials = () => {
       bio: "Coordinates planning, timelines, and cross-functional delivery to keep projects on track.",
       skills: ["Project Planning", "Execution Tracking", "Stakeholder Coordination"],
       icon: Palette,
+      image: pallaviImage,
       fullName: "PALLAVI P",
       title: "Project Manager",
       location: "Tamil Nadu, India",
@@ -76,6 +88,7 @@ const Testimonials = () => {
       bio: "Handles financial analysis, reporting, and data-backed business decisions.",
       skills: ["Financial Analysis", "Business Reporting", "Forecasting"],
       icon: Briefcase,
+      image: viswaGuruPrasathImage,
       fullName: "VISWA GURU PRASATH J",
       title: "Finance & Business Analyst",
       location: "Tamil Nadu, India",
@@ -88,6 +101,7 @@ const Testimonials = () => {
       bio: "Drives brand growth through campaigns, positioning, and audience engagement.",
       skills: ["Campaign Strategy", "Brand Marketing", "Growth"],
       icon: Palette,
+      image: yogeshImage,
       fullName: "YOGESH M",
       title: "Marketing Manager",
       location: "Tamil Nadu, India",
@@ -117,7 +131,11 @@ const Testimonials = () => {
               <div key={member.id} className="card">
                 <div className="card__border">
                   <div className="card__perfil">
-                    <member.icon className="card__img" aria-hidden="true" />
+                    {member.image ? (
+                      <img src={member.image} alt={member.name} className="card__img" loading="lazy" decoding="async" />
+                    ) : (
+                      <member.icon className="card__img" aria-hidden="true" />
+                    )}
                   </div>
                 </div>
 
@@ -138,7 +156,17 @@ const Testimonials = () => {
                 <div id={`${member.id}-info`} className={`info ${activeCard === member.id ? "is-open" : ""}`}>
                   <div className="info__border">
                     <div className="info__perfil">
-                      <member.icon className="info__img" aria-hidden="true" />
+                      {member.image ? (
+                        <img
+                          src={member.image}
+                          alt={`${member.name} profile`}
+                          className="info__img"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <member.icon className="info__img" aria-hidden="true" />
+                      )}
                     </div>
                   </div>
 
