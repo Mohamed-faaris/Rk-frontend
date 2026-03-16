@@ -173,7 +173,7 @@ const Testimonials = () => {
                   </div>
                 </div>
 
-                <h3 className="card__name break-normal">{member.name}</h3>
+                <h3 className="card__name" title={member.name}>{member.name}</h3>
                 <span className="card__profession break-normal">{member.role}</span>
 
                 <button
@@ -209,7 +209,7 @@ const Testimonials = () => {
                   </div>
 
                   <div className="info__data">
-                    <h4 className="info__name break-normal">{member.fullName}</h4>
+                    <h4 className="info__name" title={member.fullName}>{member.fullName}</h4>
                     <p className="info__profession break-normal">{member.title}</p>
                     <p className="info__location break-normal">{member.location}</p>
                     <p className="info__bio break-normal">{member.bio}</p>

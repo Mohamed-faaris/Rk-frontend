@@ -90,9 +90,15 @@
   }
 
   .card__name {
-    font-size: var(--h2-font-size);
+    width: 100%;
+    font-size: clamp(0.84rem, 1.4vw, var(--h2-font-size));
     font-weight: 600;
     margin-bottom: 0.25rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
   }
 
   .card__profession {
@@ -159,9 +165,15 @@
   }
 
   .info__name {
+    width: 100%;
     font-size: var(--normal-font-size);
     color: var(--title-color);
     font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
   }
 
   .info__profession,
@@ -307,7 +319,7 @@
     }
 
     .card__name {
-      font-size: 1.1rem;
+      font-size: clamp(0.78rem, 2.9vw, 1.02rem);
     }
 
     .card__profession {
@@ -403,7 +415,7 @@
     }
 
     .card__name {
-      font-size: 1rem;
+      font-size: clamp(0.72rem, 3.4vw, 0.92rem);
     }
 
     .card__profession {
