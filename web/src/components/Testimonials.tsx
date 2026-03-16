@@ -25,6 +25,7 @@ const Testimonials = () => {
       skills: ["Brand Strategy", "Creative Direction", "Client Consulting"],
       icon: Briefcase,
       image: sivasuriyanRajaImage,
+      imagePosition: "center 18%",
       fullName: "Sivasuriyan Raja",
       title: "Founder, Creative Director",
       location: "Tamil Nadu, India",
@@ -38,6 +39,7 @@ const Testimonials = () => {
       skills: ["Leadership", "Business Strategy", "Client Relations"],
       icon: Briefcase,
       image: mohamedAbuBakkarImage,
+      imagePosition: "center 18%",
       fullName: "MOHAMED ABU BAKKAR M",
       title: "Chief Executive Officer",
       location: "Tamil Nadu, India",
@@ -51,6 +53,7 @@ const Testimonials = () => {
       skills: ["Engineering Management", "Architecture", "Team Delivery"],
       icon: Code2,
       image: mohamedFaarisImage,
+      imagePosition: "center 18%",
       fullName: "MOHAMED FAARIS K M",
       title: "Tech Engineering Manager",
       location: "Tamil Nadu, India",
@@ -64,6 +67,7 @@ const Testimonials = () => {
       skills: ["People Operations", "Recruitment Support", "Administration"],
       icon: Briefcase,
       image: namasivayenImage,
+      imagePosition: "center 18%",
       fullName: "NAMASIVAYEN N S",
       title: "HR & Admin Executive",
       location: "Tamil Nadu, India",
@@ -77,6 +81,7 @@ const Testimonials = () => {
       skills: ["Sales Strategy", "Negotiation", "Client Conversion"],
       icon: Briefcase,
       image: nithishKumarImage,
+      imagePosition: "center 18%",
       fullName: "NITHISH KUMAR V",
       title: "Sales Manager",
       location: "Tamil Nadu, India",
@@ -90,6 +95,7 @@ const Testimonials = () => {
       skills: ["Project Planning", "Execution Tracking", "Stakeholder Coordination"],
       icon: Palette,
       image: pallaviImage,
+      imagePosition: "center 18%",
       fullName: "PALLAVI P",
       title: "Project Manager",
       location: "Tamil Nadu, India",
@@ -103,6 +109,8 @@ const Testimonials = () => {
       skills: ["Financial Analysis", "Business Reporting", "Forecasting"],
       icon: Briefcase,
       image: viswaGuruPrasathImage,
+      imagePosition: "center 12%",
+      imageScale: 1.12,
       fullName: "VISWA GURU PRASATH J",
       title: "Finance & Business Analyst",
       location: "Tamil Nadu, India",
@@ -116,6 +124,8 @@ const Testimonials = () => {
       skills: ["Campaign Strategy", "Brand Marketing", "Growth"],
       icon: Palette,
       image: yogeshImage,
+      imagePosition: "center 12%",
+      imageScale: 1.12,
       fullName: "YOGESH M",
       title: "Marketing Manager",
       location: "Tamil Nadu, India",
@@ -146,7 +156,17 @@ const Testimonials = () => {
                 <div className="card__border">
                   <div className="card__perfil">
                     {member.image ? (
-                      <img src={member.image} alt={member.name} className="card__img" loading="lazy" decoding="async" />
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="card__img"
+                        loading="lazy"
+                        decoding="async"
+                        style={{
+                          objectPosition: member.imagePosition,
+                          transform: member.imageScale ? `scale(${member.imageScale})` : undefined,
+                        }}
+                      />
                     ) : (
                       <member.icon className="card__img" aria-hidden="true" />
                     )}
@@ -177,6 +197,10 @@ const Testimonials = () => {
                           className="info__img"
                           loading="lazy"
                           decoding="async"
+                          style={{
+                            objectPosition: member.imagePosition,
+                            transform: member.imageScale ? `scale(${member.imageScale})` : undefined,
+                          }}
                         />
                       ) : (
                         <member.icon className="info__img" aria-hidden="true" />
