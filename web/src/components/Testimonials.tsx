@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Briefcase, Code2, Github, Info, Instagram, Linkedin, Palette, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Briefcase, Code2, FileText, Github, Info, Instagram, Linkedin, Palette, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import "@/styles/team-cards.scss";
 
 const Testimonials = () => {
   const [activeCard, setActiveCard] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const teamMembers = [
     {
@@ -156,6 +159,17 @@ const Testimonials = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Join Team CTA */}
+          <div className="mt-14 text-center">
+            <Button
+              onClick={() => navigate('/apply-employee')}
+              className="bg-accent hover:bg-accent/90 shadow-gold px-8 py-3 text-base font-semibold"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Apply to Join RKCH Team
+            </Button>
           </div>
         </div>
       </div>
