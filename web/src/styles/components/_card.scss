@@ -124,12 +124,13 @@
   /*=============== CARD INFO ===============*/
   .info {
     position: absolute;
-    inset: -1px 0 auto;
+    inset: -1px 0 -1px;
     width: 100%;
     background-color: hsl(0, 0%, 8%);
     border: 1px solid hsl(45, 35%, 24%);
     padding: 2.2rem 1.25rem 2.8rem;
     border-radius: 1rem 1rem 9.2rem 9.2rem;
+    min-height: calc(100% + 2px);
     clip-path: circle(16px at calc(100% - 42px) 40px);
     transition: clip-path 0.4s ease-in-out;
     will-change: clip-path;
@@ -256,10 +257,11 @@
   }
 
   .info.is-open {
-    inset: -12px -10px auto;
+    inset: -12px -10px -12px;
     width: calc(100% + 20px);
     padding: 2.75rem 1.6rem 3.45rem;
     border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
+    min-height: calc(100% + 24px);
     clip-path: circle(170% at calc(100% - 42px) 40px);
     overflow-y: auto;
   }
@@ -282,10 +284,11 @@
 
   @media (hover: hover) {
     .card:hover .info {
-      inset: -12px -10px auto;
+      inset: -12px -10px -12px;
       width: calc(100% + 20px);
       padding: 2.75rem 1.6rem 3.45rem;
       border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
+      min-height: calc(100% + 24px);
       clip-path: circle(170% at calc(100% - 42px) 40px);
       overflow-y: auto;
     }
@@ -358,12 +361,13 @@
 
     .info {
       position: absolute;
-      inset: -1px 0 auto;
+      inset: -1px 0 -1px;
       width: 100%;
       margin-top: 0;
       padding: 1.75rem 0.95rem 2rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
       clip-path: circle(18px at calc(100% - 38px) 34px);
+      min-height: calc(100% + 2px);
       max-height: none;
       opacity: 1;
       overflow: hidden;
@@ -371,10 +375,11 @@
     }
 
     .info.is-open {
-      inset: -8px -6px auto;
+      inset: -8px -6px -8px;
       width: calc(100% + 12px);
       padding: 2.05rem 1.1rem 2.25rem;
       border-radius: 1rem 1rem 6.1rem 6.1rem;
+      min-height: calc(100% + 16px);
       clip-path: circle(190% at calc(100% - 38px) 34px);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
