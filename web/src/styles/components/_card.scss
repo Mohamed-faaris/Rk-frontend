@@ -263,16 +263,7 @@
     border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
     min-height: calc(100% + 24px);
     clip-path: circle(170% at calc(100% - 42px) 40px);
-    overflow-y: auto;
-  }
-
-  .info.is-open::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .info.is-open::-webkit-scrollbar-thumb {
-    background: hsl(45, 32%, 34%);
-    border-radius: 999px;
+    overflow: hidden;
   }
 
   .info.is-open .info__border,
@@ -290,7 +281,7 @@
       border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
       min-height: calc(100% + 24px);
       clip-path: circle(170% at calc(100% - 42px) 40px);
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     .card:hover .info__border,
@@ -304,33 +295,17 @@
   @media (max-width: 768px) {
     .team-card-grid {
       display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(250px, 82vw);
-      justify-items: stretch;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      justify-items: center;
       gap: 1.05rem;
-      overflow-x: auto;
-      overscroll-behavior-x: contain;
-      padding-bottom: 0.5rem;
-      padding-inline: 0.2rem;
-      scroll-padding-inline: 0.2rem;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x;
-      scrollbar-width: none;
-    }
-
-    .team-card-grid::-webkit-scrollbar {
-      display: none;
     }
 
     .card {
       width: 100%;
-      max-width: none;
-      min-height: 350px;
+      max-width: 320px;
+      min-height: 405px;
       padding: 1.7rem 0.95rem 1.95rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
     }
 
     .card__border {
@@ -381,8 +356,7 @@
       border-radius: 1rem 1rem 6.1rem 6.1rem;
       min-height: calc(100% + 16px);
       clip-path: circle(190% at calc(100% - 38px) 34px);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
     .info__border {
@@ -425,12 +399,14 @@
 
   @media (max-width: 480px) {
     .team-card-grid {
-      grid-auto-columns: minmax(236px, 88vw);
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
       gap: 0.8rem;
     }
 
     .card {
-      min-height: 335px;
+      max-width: 330px;
+      min-height: 390px;
       padding: 1.55rem 0.85rem 1.8rem;
       border-radius: 1rem 1rem 5rem 5rem;
     }
