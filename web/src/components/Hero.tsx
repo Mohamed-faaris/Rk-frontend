@@ -1,8 +1,10 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, Suspense, Component, ReactNode, ErrorInfo } from "react";
-import LiquidEther from "./LiquidEther";
+import { useMemo, Suspense, Component, ReactNode, ErrorInfo, lazy } from "react";
 import { logger } from "@/lib/logger";
+import { useAdaptiveEffects } from "@/hooks/useAdaptiveEffects";
+
+const LiquidEther = lazy(() => import("./LiquidEther"));
 
 // Error fallback component
 const LiquidEtherFallback = () => (
@@ -53,33 +55,19 @@ const ErrorBoundaryWrapper = ({
 );
 
 const Hero = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const { isMobile, canUseHeavyEffects, effectsReady } = useAdaptiveEffects();
+  const shouldRenderLiquidEther = canUseHeavyEffects && effectsReady;
+  const particleItems = useMemo(() => {
+    const count = isMobile ? 4 : 10;
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 4}s`,
+      animationDuration: `${3 + Math.random() * 2}s`,
+    }));
+  }, [isMobile]);
 
-  useEffect(() => {
-    // Detect mobile
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, []);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
-
-    updatePreference();
-    mediaQuery.addEventListener('change', updatePreference);
-
-    return () => {
-      mediaQuery.removeEventListener('change', updatePreference);
-    };
-  }, []);
-
-  const shouldRenderLiquidEther = !isMobile && !prefersReducedMotion;
   return (
     <section
       id="home"
@@ -111,15 +99,15 @@ const Hero = () => {
 
       {/* Floating Particles Effect - Static twinkling background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-[3]">
-        {[...Array(isMobile ? 4 : 10)].map((_, i) => (
+        {particleItems.map((item) => (
           <div
-            key={i}
+            key={item.id}
             className="absolute w-0.5 h-0.5 bg-accent rounded-full opacity-20 animate-pulse"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${3 + Math.random() * 2}s`,
+              left: item.left,
+              top: item.top,
+              animationDelay: item.animationDelay,
+              animationDuration: item.animationDuration,
             }}
           />
         ))}
