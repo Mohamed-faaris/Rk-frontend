@@ -18,7 +18,7 @@ const Portfolio = () => {
           {/* Section Header */}
           <div className="text-center mb-8 sm:mb-10 md:mb-12 space-y-3 sm:space-y-4 animate-fade-in-up">
             <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal leading-tight">
-              Featured <span className="gradient-text">Project</span>
+              Featured <span className="gradient-text">Projects</span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-2xl mx-auto break-normal px-2 sm:px-0">
               Watch our featured project showcase.
