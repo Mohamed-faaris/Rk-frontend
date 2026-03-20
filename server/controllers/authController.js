@@ -101,7 +101,10 @@ export const login = async (req, res, next) => {
 
     if (!user) {
       console.log('User not found:', email);
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(404).json({
+        error: 'Account does not exist',
+        code: 'USER_NOT_FOUND'
+      });
     }
 
     console.log('User found:', { email: user.email, hasPassword: !!user.password });
@@ -111,7 +114,10 @@ export const login = async (req, res, next) => {
     console.log('Password match result:', isMatch);
     
     if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({
+        error: 'Invalid password',
+        code: 'INVALID_PASSWORD'
+      });
     }
 
     // Check if user is admin - if yes, check if OTP should be skipped

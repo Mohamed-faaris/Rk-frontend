@@ -6,6 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Mail, Lock, Sparkles, ArrowRight, Moon, Sun, Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
@@ -16,6 +25,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorDialogMessage, setErrorDialogMessage] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -50,9 +61,14 @@ export default function Login() {
         });
       } else {
         let errorMessage = 'Login failed';
+        const errorCode = err.response?.data?.code;
 
         if (err.message === 'Network Error') {
           errorMessage = 'Cannot connect to server. Please check your internet connection.';
+        } else if (errorCode === 'USER_NOT_FOUND') {
+          errorMessage = 'You do not have an account. Please create it first, then log in.';
+        } else if (errorCode === 'INVALID_PASSWORD') {
+          errorMessage = 'Username or password is wrong. Try again.';
         } else if (err.response?.data?.error) {
           errorMessage = err.response.data.error;
         } else if (err.response?.status === 401) {
@@ -62,6 +78,8 @@ export default function Login() {
         }
 
         setError(errorMessage);
+        setErrorDialogMessage(errorMessage);
+        setErrorDialogOpen(true);
       }
     } finally {
       setIsLoading(false);
@@ -235,6 +253,18 @@ export default function Login() {
           </p>
         </div>
       </div>
+
+      <AlertDialog open={errorDialogOpen} onOpenChange={setErrorDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Login Failed</AlertDialogTitle>
+            <AlertDialogDescription>{errorDialogMessage}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setErrorDialogOpen(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
