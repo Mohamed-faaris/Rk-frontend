@@ -158,31 +158,17 @@ const QUICK_QUESTIONS = [
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => 
-    sessionStorage.getItem('chatbot_welcomed') === 'true'
-  );
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = localStorage.getItem('chatbot_messages');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        }));
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  });
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [sessionId] = useState(() => `session-${Date.now()}-${Math.random()}`);
+  const [sessionId, setSessionId] = useState('');
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const chatStorageKey = user?.id ? `chatbot_messages_${user.id}` : 'chatbot_messages_guest';
+  const welcomeStorageKey = user?.id ? `chatbot_welcomed_${user.id}` : 'chatbot_welcomed_guest';
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -198,25 +184,54 @@ export default function ChatBot() {
     }
   }, [isOpen]);
 
-  // Persist messages to localStorage
+  // Persist messages per user, so chat history is isolated across accounts.
   useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem('chatbot_messages', JSON.stringify(messages));
+    localStorage.setItem(chatStorageKey, JSON.stringify(messages));
+  }, [messages, chatStorageKey]);
+
+  // Load chat history for current account (or guest) from isolated storage key.
+  useEffect(() => {
+    const saved = localStorage.getItem(chatStorageKey);
+    if (!saved) {
+      setMessages([]);
+      return;
     }
-  }, [messages]);
+
+    try {
+      const parsed = JSON.parse(saved);
+      setMessages(
+        parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        })),
+      );
+    } catch {
+      setMessages([]);
+    }
+  }, [chatStorageKey]);
+
+  // Keep a user-bound session id to avoid cross-account session overlap.
+  useEffect(() => {
+    const owner = user?.id || 'guest';
+    setSessionId(`session-${owner}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`);
+  }, [user?.id]);
 
   useEffect(() => {
     const currentToken = localStorage.getItem('token');
     if (currentToken) {
       chatbotService.setToken(currentToken);
     }
-  }, []);
+  }, [token]);
+
+  useEffect(() => {
+    setHasSeenWelcome(sessionStorage.getItem(welcomeStorageKey) === 'true');
+  }, [welcomeStorageKey]);
 
   useEffect(() => {
     // Show notification on first login
     if (user && !hasSeenWelcome) {
       setShowNotification(true);
-      sessionStorage.setItem('chatbot_welcomed', 'true');
+      sessionStorage.setItem(welcomeStorageKey, 'true');
       setHasSeenWelcome(true);
       
       // Auto-hide notification after 8 seconds
@@ -226,7 +241,7 @@ export default function ChatBot() {
       
       return () => clearTimeout(timer);
     }
-  }, [user, hasSeenWelcome]);
+  }, [user, hasSeenWelcome, welcomeStorageKey]);
 
   // Smart NL-based intent detection using full service catalog
   const detectServiceAndResponse = useCallback((userMessage: string) => {

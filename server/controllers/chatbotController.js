@@ -1,4 +1,5 @@
 import ChatMessage from '../models/ChatMessage.js';
+import User from '../models/User.js';
 
 const serviceCatalog = [
   {
@@ -487,16 +488,30 @@ Try asking about a specific service like logo design, website development, poste
 const sendMessage = async (req, res) => {
   try {
     const { userId, userName, userEmail, message, sessionId, category } = req.body;
+    const authenticatedUserId = req.user?.id;
 
-    if (!userId || !userName || !userEmail || !message || !sessionId) {
+    if (!authenticatedUserId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    if (userId && String(userId) !== String(authenticatedUserId)) {
+      return res.status(403).json({ error: 'Not authorized to send messages for this user' });
+    }
+
+    if (!message || !sessionId) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const authenticatedUser = await User.findById(authenticatedUserId).select('name email');
+    if (!authenticatedUser) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
     // Save user message
     const userMsg = new ChatMessage({
-      userId,
-      userName,
-      userEmail,
+      userId: authenticatedUserId,
+      userName: authenticatedUser.name || userName || 'User',
+      userEmail: authenticatedUser.email || userEmail || '',
       message,
       sender: 'user',
       sessionId,
@@ -510,9 +525,9 @@ const sendMessage = async (req, res) => {
 
     // Save bot message
     const botMsg = new ChatMessage({
-      userId,
-      userName,
-      userEmail,
+      userId: authenticatedUserId,
+      userName: authenticatedUser.name || userName || 'User',
+      userEmail: authenticatedUser.email || userEmail || '',
       message: botResponseText,
       sender: 'bot',
       sessionId,
@@ -538,8 +553,17 @@ const sendMessage = async (req, res) => {
 const getChatHistory = async (req, res) => {
   try {
     const { userId } = req.params;
+    const authenticatedUserId = req.user?.id;
 
-    const history = await ChatMessage.find({ userId })
+    if (!authenticatedUserId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    if (String(userId) !== String(authenticatedUserId)) {
+      return res.status(403).json({ error: 'Not authorized to access this chat history' });
+    }
+
+    const history = await ChatMessage.find({ userId: authenticatedUserId })
       .sort({ timestamp: -1 })
       .limit(50);
 
@@ -554,8 +578,13 @@ const getChatHistory = async (req, res) => {
 const getSessionMessages = async (req, res) => {
   try {
     const { sessionId } = req.params;
+    const authenticatedUserId = req.user?.id;
 
-    const messages = await ChatMessage.find({ sessionId })
+    if (!authenticatedUserId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const messages = await ChatMessage.find({ sessionId, userId: authenticatedUserId })
       .sort({ timestamp: 1 });
 
     res.json(messages);
