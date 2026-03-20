@@ -54,6 +54,7 @@ const ErrorBoundaryWrapper = ({
 
 const Hero = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
     // Detect mobile
@@ -65,23 +66,39 @@ const Hero = () => {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    updatePreference();
+    mediaQuery.addEventListener('change', updatePreference);
+
+    return () => {
+      mediaQuery.removeEventListener('change', updatePreference);
+    };
+  }, []);
+
+  const shouldRenderLiquidEther = !isMobile && !prefersReducedMotion;
   return (
     <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
       {/* LiquidEther Background with Error Boundary */}
-      <ErrorBoundaryWrapper>
-        <Suspense fallback={<LiquidEtherFallback />}>
-          <div className="absolute inset-0 z-0">
-            <LiquidEther 
-              colors={['#FFD700', '#FFC700', '#FFE135']}
-              autoIntensity={1.8}
-              autoSpeed={0.4}
-            />
-          </div>
-        </Suspense>
-      </ErrorBoundaryWrapper>
+      {shouldRenderLiquidEther && (
+        <ErrorBoundaryWrapper>
+          <Suspense fallback={<LiquidEtherFallback />}>
+            <div className="absolute inset-0 z-0">
+              <LiquidEther
+                colors={['#FFD700', '#FFC700', '#FFE135']}
+                autoIntensity={1.8}
+                autoSpeed={0.4}
+              />
+            </div>
+          </Suspense>
+        </ErrorBoundaryWrapper>
+      )}
 
       {/* Fallback gradient if LiquidEther fails */}
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-black via-amber-900/10 to-black opacity-0 hover:opacity-100 transition-opacity" />
