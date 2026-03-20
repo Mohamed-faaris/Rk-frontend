@@ -31,9 +31,48 @@
     z-index: 0;
   }
 
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 8% 8% 10%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.34;
+    background:
+      radial-gradient(circle at 18% 20%, hsla(48, 90%, 72%, 0.85) 0 1.6px, transparent 2.3px),
+      radial-gradient(circle at 78% 25%, hsla(43, 92%, 68%, 0.76) 0 1.8px, transparent 2.6px),
+      radial-gradient(circle at 34% 70%, hsla(50, 95%, 75%, 0.72) 0 1.3px, transparent 2px),
+      radial-gradient(circle at 68% 76%, hsla(46, 84%, 70%, 0.78) 0 1.7px, transparent 2.5px),
+      radial-gradient(circle at 52% 44%, hsla(45, 96%, 80%, 0.62) 0 1.2px, transparent 1.9px),
+      radial-gradient(circle at 84% 60%, hsla(49, 92%, 75%, 0.62) 0 1.5px, transparent 2.2px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    animation: card-particles-float 8s ease-in-out infinite;
+  }
+
+  .card:hover::after,
+  .card:focus-within::after {
+    opacity: 0.56;
+    transform: translateY(-4px) scale(1.015);
+  }
+
   .card > * {
     position: relative;
     z-index: 1;
+  }
+
+  @keyframes card-particles-float {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translate3d(0, -3px, 0) scale(1.01);
+      opacity: 0.48;
+    }
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.34;
+    }
   }
 
   .card__info-toggle {
@@ -452,6 +491,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .card::after,
     .info,
     .info__border,
     .info__data,
