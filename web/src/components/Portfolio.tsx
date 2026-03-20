@@ -21,7 +21,7 @@ const Portfolio = () => {
               Featured <span className="gradient-text">Projects</span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-2xl mx-auto break-normal px-2 sm:px-0">
-              Watch our featured project showcase.
+              Watch our featured projects showcase.
             </p>
           </div>
 
