@@ -11,7 +11,6 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ChatBot from "./components/ChatBot";
 import { logger } from "./lib/logger";
 import { useState, useEffect, Suspense, lazy } from "react";
 
@@ -37,6 +36,15 @@ const ApplyForEmployee = lazy(() => import("./pages/ApplyForEmployee"));
 const ApplyForPosition = lazy(() => import("./pages/ApplyForPosition"));
 const EmployeeDetailsPage = lazy(() => import("./pages/EmployeeDetailsPage"));
 const ChatbotDashboard = lazy(() => import("./pages/ChatbotDashboard"));
+const ChatBot = lazy(() => import("./components/ChatBot"));
+
+type IdleWindow = Window & {
+  requestIdleCallback?: (
+    callback: (deadline: { didTimeout: boolean; timeRemaining: () => number }) => void,
+    options?: { timeout?: number }
+  ) => number;
+  cancelIdleCallback?: (id: number) => void;
+};
 
 const queryClient = new QueryClient();
 
@@ -52,6 +60,7 @@ const PageLoader = () => (
 
 const AppContent = () => {
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
+  const [chatbotReady, setChatbotReady] = useState(false);
 
   useEffect(() => {
     // Listen for auth popup events
@@ -65,6 +74,33 @@ const AppContent = () => {
     
     return () => {
       window.removeEventListener('showAuthPopup', handleShowAuthPopup as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    const winWithIdle = window as IdleWindow;
+
+    if (typeof winWithIdle.requestIdleCallback === "function") {
+      const idleId = winWithIdle.requestIdleCallback(
+        () => {
+          setChatbotReady(true);
+        },
+        { timeout: 1500 }
+      );
+
+      return () => {
+        if (typeof winWithIdle.cancelIdleCallback === "function") {
+          winWithIdle.cancelIdleCallback(idleId);
+        }
+      };
+    }
+
+    const timer = window.setTimeout(() => {
+      setChatbotReady(true);
+    }, 600);
+
+    return () => {
+      window.clearTimeout(timer);
     };
   }, []);
 
@@ -161,7 +197,11 @@ const AppContent = () => {
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<main><NotFound /></main>} />
       </Routes>
-      <ChatBot />
+      {chatbotReady && (
+        <Suspense fallback={null}>
+          <ChatBot />
+        </Suspense>
+      )}
     </>
   );
 };

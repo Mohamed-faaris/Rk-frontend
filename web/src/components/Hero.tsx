@@ -57,6 +57,7 @@ const ErrorBoundaryWrapper = ({
 const Hero = () => {
   const { isMobile, canUseHeavyEffects, effectsReady } = useAdaptiveEffects();
   const shouldRenderLiquidEther = canUseHeavyEffects && effectsReady;
+  const liquidEtherColors = useMemo(() => ['#FFD700', '#FFC700', '#FFE135'], []);
   const particleItems = useMemo(() => {
     const count = isMobile ? 4 : 10;
     return Array.from({ length: count }, (_, i) => ({
@@ -79,7 +80,7 @@ const Hero = () => {
           <Suspense fallback={<LiquidEtherFallback />}>
             <div className="absolute inset-0 z-0">
               <LiquidEther
-                colors={['#FFD700', '#FFC700', '#FFE135']}
+                colors={liquidEtherColors}
                 autoIntensity={1.8}
                 autoSpeed={0.4}
               />

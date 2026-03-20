@@ -8,6 +8,7 @@ type IdleDeadlineLike = {
 declare global {
   interface NetworkInformation {
     saveData?: boolean;
+    effectiveType?: string;
   }
 
   interface Navigator {
@@ -48,7 +49,9 @@ export function useAdaptiveEffects() {
     const cores = navigator.hardwareConcurrency ?? 8;
     const memory = navigator.deviceMemory ?? 8;
     const saveData = navigator.connection?.saveData ?? false;
-    const lowEnd = cores <= 4 || memory <= 4 || saveData;
+    const effectiveType = navigator.connection?.effectiveType ?? "";
+    const hasConstrainedNetwork = /^(slow-2g|2g|3g)$/i.test(effectiveType);
+    const lowEnd = cores <= 6 || memory <= 4 || saveData || hasConstrainedNetwork;
     setIsLowEndDevice(lowEnd);
   }, []);
 
