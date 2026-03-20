@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useAuth } from "@/context/AuthContext";
 import { applicationService } from "@/lib/applicationService";
+import orderService, { type Order } from "@/lib/orderService";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
@@ -14,14 +15,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+type OrderStatusNotification = {
+  orderId: string;
+  title: string;
+  status: Order["status"];
+  updatedAt: string;
+};
+
+const ORDER_STATUS_SNAPSHOT_KEY = "orderStatusSnapshot";
+const LATEST_ORDER_STATUS_NOTIFICATION_KEY = "latestOrderStatusNotification";
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [applicationStatus, setApplicationStatus] = useState<"accepted" | "rejected" | null>(null);
+  const [orderStatusNotification, setOrderStatusNotification] = useState<OrderStatusNotification | null>(null);
   const { theme, setTheme } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const hasNotification = Boolean(applicationStatus || orderStatusNotification);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,6 +138,102 @@ const Navbar = () => {
     };
   }, [location.search, isAuthenticated]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const readStoredNotification = () => {
+      try {
+        const rawNotification = localStorage.getItem(LATEST_ORDER_STATUS_NOTIFICATION_KEY);
+        if (!rawNotification) {
+          if (isMounted) {
+            setOrderStatusNotification(null);
+          }
+          return;
+        }
+
+        const parsedNotification = JSON.parse(rawNotification) as OrderStatusNotification;
+        if (isMounted) {
+          setOrderStatusNotification(parsedNotification);
+        }
+      } catch {
+        localStorage.removeItem(LATEST_ORDER_STATUS_NOTIFICATION_KEY);
+        if (isMounted) {
+          setOrderStatusNotification(null);
+        }
+      }
+    };
+
+    const syncOrderStatusNotification = async () => {
+      if (!isAuthenticated) {
+        localStorage.removeItem(ORDER_STATUS_SNAPSHOT_KEY);
+        localStorage.removeItem(LATEST_ORDER_STATUS_NOTIFICATION_KEY);
+        if (isMounted) {
+          setOrderStatusNotification(null);
+        }
+        return;
+      }
+
+      readStoredNotification();
+
+      try {
+        const orders = await orderService.getOrders();
+        const sortedOrders = [...orders].sort(
+          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        );
+
+        const snapshotRaw = localStorage.getItem(ORDER_STATUS_SNAPSHOT_KEY);
+        const snapshot = snapshotRaw
+          ? (JSON.parse(snapshotRaw) as Record<string, Order["status"]>)
+          : {};
+
+        let latestUpdate: OrderStatusNotification | null = null;
+        for (const order of sortedOrders) {
+          const previousStatus = snapshot[order._id];
+          if (previousStatus && previousStatus !== order.status) {
+            latestUpdate = {
+              orderId: order._id,
+              title: order.title,
+              status: order.status,
+              updatedAt: order.updatedAt,
+            };
+            break;
+          }
+        }
+
+        const nextSnapshot = sortedOrders.reduce<Record<string, Order["status"]>>((acc, order) => {
+          acc[order._id] = order.status;
+          return acc;
+        }, {});
+
+        localStorage.setItem(ORDER_STATUS_SNAPSHOT_KEY, JSON.stringify(nextSnapshot));
+
+        if (latestUpdate) {
+          localStorage.setItem(LATEST_ORDER_STATUS_NOTIFICATION_KEY, JSON.stringify(latestUpdate));
+          if (isMounted) {
+            setOrderStatusNotification(latestUpdate);
+          }
+        }
+      } catch {
+        // Keep cached notification when API call fails.
+      }
+    };
+
+    syncOrderStatusNotification();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, location.pathname]);
+
+  const getOrderStatusLabel = (status: Order["status"]) => {
+    switch (status) {
+      case "in-progress":
+        return "In Progress";
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  };
+
   const navLinks = [
     { name: "Home", href: "#home" },
     { name: "About", href: "#about" },
@@ -164,7 +274,17 @@ const Navbar = () => {
 
   const handleClearNotification = () => {
     localStorage.removeItem("latestApplicationStatus");
+    localStorage.removeItem(LATEST_ORDER_STATUS_NOTIFICATION_KEY);
     setApplicationStatus(null);
+    setOrderStatusNotification(null);
+  };
+
+  const handleOrderNotificationClick = () => {
+    if (!orderStatusNotification) {
+      return;
+    }
+
+    navigate(`/orders/${orderStatusNotification.orderId}`);
   };
 
   return (
@@ -208,10 +328,10 @@ const Navbar = () => {
                   variant="ghost"
                   size="icon"
                   className="relative rounded-full"
-                  aria-label="Application notifications"
+                  aria-label="Notifications"
                 >
                   <Bell className="h-5 w-5" />
-                  {applicationStatus && (
+                  {hasNotification && (
                     <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
                   )}
                 </Button>
@@ -219,9 +339,19 @@ const Navbar = () => {
               <DropdownMenuContent align="end" className="w-80">
                 <DropdownMenuLabel className="flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-accent" />
-                  Application Updates
+                  Notifications
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {orderStatusNotification && (
+                  <DropdownMenuItem onClick={handleOrderNotificationClick} className="cursor-pointer">
+                    <div className="text-sm text-foreground">
+                      <p className="font-semibold text-accent">Order Status Updated</p>
+                      <p className="mt-1 text-muted-foreground line-clamp-2">
+                        {orderStatusNotification.title} is now {getOrderStatusLabel(orderStatusNotification.status)}. Click to view order status.
+                      </p>
+                    </div>
+                  </DropdownMenuItem>
+                )}
                 {applicationStatus === "accepted" && (
                   <div className="px-3 py-2 text-sm text-foreground">
                     <p className="font-semibold text-emerald-500">Accepted</p>
@@ -238,13 +368,13 @@ const Navbar = () => {
                     </p>
                   </div>
                 )}
-                {!applicationStatus && (
+                {!applicationStatus && !orderStatusNotification && (
                   <div className="px-3 py-2 text-sm text-muted-foreground">
-                    No new application updates right now.
+                    No new notifications right now.
                   </div>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleClearNotification} disabled={!applicationStatus}>
+                <DropdownMenuItem onClick={handleClearNotification} disabled={!hasNotification}>
                   Clear notification
                 </DropdownMenuItem>
               </DropdownMenuContent>
