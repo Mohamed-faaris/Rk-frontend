@@ -42,7 +42,6 @@ const ApplyForEmployee = () => {
     linkedin: '',
     resume: '',
     coverLetter: '',
-    expectedSalary: '',
     workPreference: 'Full-time'
   });
   const statusQuery = new URLSearchParams(location.search).get('status');
@@ -276,18 +275,6 @@ const ApplyForEmployee = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Expected Salary (₹) *</label>
-                    <Input
-                      type="number"
-                      name="expectedSalary"
-                      value={formData.expectedSalary}
-                      onChange={handleChange}
-                      placeholder="100000"
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
                 </div>
 
                 {/* Professional Links */}

@@ -54,7 +54,6 @@ const ApplyForPosition = () => {
     linkedin: '',
     resume: '',
     coverLetter: '',
-    expectedSalary: '',
   });
   const experiences = ['0-1 years', '1-3 years', '3-5 years', '5-10 years', '10+ years'];
 
@@ -385,19 +384,6 @@ const ApplyForPosition = () => {
                       disabled={isLoading}
                     />
                   </div>
-                </div>
-
-                {/* Expected Salary */}
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Expected Salary (₹)</label>
-                  <Input
-                    type="number"
-                    name="expectedSalary"
-                    value={formData.expectedSalary}
-                    onChange={handleChange}
-                    placeholder="100000"
-                    disabled={isLoading}
-                  />
                 </div>
 
                 {/* Cover Letter */}

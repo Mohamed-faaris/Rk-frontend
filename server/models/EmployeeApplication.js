@@ -84,8 +84,7 @@ const employeeApplicationSchema = new mongoose.Schema({
     trim: true
   },
   expectedSalary: {
-    type: Number,
-    required: [true, 'Please provide expected salary']
+    type: Number
   },
   workPreference: {
     type: String,

@@ -13,14 +13,14 @@ const __dirname = path.dirname(__filename);
 // @access  Public
 export const submitApplication = async (req, res, next) => {
   try {
-    const { name, email, address1, address2, phone, position, department, experience, education, skills, portfolio, linkedin, resume, coverLetter, expectedSalary, workPreference } = req.body;
+    const { name, email, address1, address2, phone, position, department, experience, education, skills, portfolio, linkedin, resume, coverLetter, workPreference } = req.body;
 
     // Resume is now collected as a URL link.
     const resumeUrl = (resume || '').trim();
     const linkedInUrl = (linkedin || '').trim();
 
     // Validation
-    if (!name || !email || !address1 || !phone || !position || !department || !experience || !education || !skills || !coverLetter || !expectedSalary) {
+    if (!name || !email || !address1 || !phone || !position || !department || !experience || !education || !skills || !coverLetter) {
       return res.status(400).json({ error: 'Please provide all required fields' });
     }
 
@@ -48,12 +48,6 @@ export const submitApplication = async (req, res, next) => {
       }
     }
 
-    // Validate expectedSalary is a valid number
-    const salaryNum = Number(expectedSalary);
-    if (isNaN(salaryNum) || salaryNum <= 0) {
-      return res.status(400).json({ error: 'Please provide a valid expected salary' });
-    }
-
     // Check if application already exists
     const existingApp = await EmployeeApplication.findOne({ email });
     if (existingApp && existingApp.status === 'pending') {
@@ -76,7 +70,6 @@ export const submitApplication = async (req, res, next) => {
       linkedin: linkedInUrl,
       resume: resumeUrl,
       coverLetter,
-      expectedSalary: Number(expectedSalary),
       workPreference
     });
 
@@ -97,7 +90,7 @@ export const submitApplication = async (req, res, next) => {
 export const submitPositionApplication = async (req, res, next) => {
   console.log('Position application submission started');
   try {
-    const { name, email, phone, education, experience, skills, portfolio, linkedin, resume, coverLetter, expectedSalary, positionId, positionTitle, department } = req.body;
+    const { name, email, phone, education, experience, skills, portfolio, linkedin, resume, coverLetter, positionId, positionTitle, department } = req.body;
 
     console.log('Received position application data:', { name, email, positionId, positionTitle });
 
@@ -106,7 +99,7 @@ export const submitPositionApplication = async (req, res, next) => {
     const linkedInUrl = (linkedin || '').trim();
 
     // Validation
-    if (!name || !email || !phone || !education || !experience || !skills || !coverLetter || !expectedSalary || !positionId || !positionTitle || !department) {
+    if (!name || !email || !phone || !education || !experience || !skills || !coverLetter || !positionId || !positionTitle || !department) {
       console.log('Validation failed - missing required fields');
       return res.status(400).json({ error: 'Please provide all required fields' });
     }
@@ -135,13 +128,6 @@ export const submitPositionApplication = async (req, res, next) => {
       }
     }
 
-    // Validate expectedSalary is a valid number
-    const salaryNum = Number(expectedSalary);
-    if (isNaN(salaryNum) || salaryNum <= 0) {
-      console.log('Validation failed - invalid salary:', expectedSalary);
-      return res.status(400).json({ error: 'Please provide a valid expected salary' });
-    }
-
     // Check if application already exists for this position
     const existingApp = await EmployeeApplication.findOne({ email, positionId });
     if (existingApp && existingApp.status === 'pending') {
@@ -165,7 +151,6 @@ export const submitPositionApplication = async (req, res, next) => {
       linkedin: linkedInUrl,
       resume: resumeUrl,
       coverLetter,
-      expectedSalary: Number(expectedSalary),
       workPreference: 'Full-time', // Default for position applications
       address1: 'Not provided', // Default for position applications
       address2: '' // Default for position applications
