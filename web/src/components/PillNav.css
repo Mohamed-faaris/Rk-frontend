@@ -487,6 +487,14 @@
     font-size: 0.75rem;
   }
 
+  .services-pill-nav .desktop-only {
+    display: flex !important;
+  }
+
+  .services-pill-nav .mobile-only {
+    display: none !important;
+  }
+
   .services-pill-nav .pill-nav-items {
     justify-content: flex-start;
     overflow-x: auto;
