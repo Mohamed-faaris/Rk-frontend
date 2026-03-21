@@ -1,10 +1,21 @@
 import { useMemo } from 'react';
-import { Bell, User } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Bell, LogOut, User } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PillNav, { type PillNavItem } from '@/components/PillNav';
+import { useAuth } from '@/context/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
   if (location.pathname !== '/') {
     return null;
@@ -12,7 +23,7 @@ const Navbar = () => {
 
   const items = useMemo<PillNavItem[]>(
     () => [
-      { label: 'Home', href: '/' },
+      { label: 'Home', href: '/#home' },
       { label: 'About', href: '/#about' },
       { label: 'Services', href: '/services' },
       { label: 'Projects', href: '/#portfolio' },
@@ -29,7 +40,7 @@ const Navbar = () => {
     }
 
     if (location.pathname === '/') {
-      return '/';
+      return '/#home';
     }
 
     return undefined;
@@ -40,9 +51,41 @@ const Navbar = () => {
       <Link to="/orders" className="pill-action-icon" aria-label="Notifications">
         <Bell size={18} />
       </Link>
-      <Link to="/account" className="pill-action-icon" aria-label="Account">
-        <User size={18} />
-      </Link>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button type="button" className="pill-action-icon" aria-label="Account menu">
+            <User size={18} />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-52">
+          <DropdownMenuLabel>{isAuthenticated ? user?.name || 'My Account' : 'Guest'}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+
+          {isAuthenticated ? (
+            <>
+              <DropdownMenuItem onSelect={() => navigate('/account')}>Account</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => navigate('/orders')}>Orders</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={() => {
+                  logout();
+                  navigate('/');
+                }}
+                className="text-red-500 focus:text-red-500"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuItem onSelect={() => navigate('/login')}>Login</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => navigate('/register')}>Register</DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 
