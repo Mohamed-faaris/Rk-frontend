@@ -138,40 +138,13 @@ const AllServicesPage = () => {
         </section>
 
         <section className="border-b border-[#D4AF37]/15 bg-[#090909] py-8 md:py-12">
-          <div className="container mx-auto grid gap-6 px-4 md:grid-cols-[1.5fr_1fr]">
+          <div className="container mx-auto px-4">
             <article className="rounded-2xl border border-[#D4AF37]/15 bg-[#111111] p-6 shadow-[0_0_0_1px_rgba(212,175,55,0.03)]">
               <h2 className="text-2xl font-semibold text-[#F6D77A]">How to use this service catalog</h2>
               <p className="mt-4 text-sm leading-7 text-[#D8D8D8] sm:text-base">
-                The amounts shown here are realistic starting ranges for common design and software requests. Simple tasks such as basic logo work, social media creatives, background removal, or single poster layouts stay near the lower end. Projects with deeper strategy, more pages, custom illustrations, animation work, integrations, or multiple revision rounds usually move toward the upper end.
-              </p>
-              <p className="mt-4 text-sm leading-7 text-[#D8D8D8] sm:text-base">
-                We also work with bundled requirements. Schools and colleges often combine ID cards, notices, letterheads, and web updates. Local businesses usually request branding, storefront graphics, social media post packs, and a business website together. Startups often need UI design, a launch landing page, product explainers, and ongoing maintenance in one coordinated plan.
-              </p>
-              <p className="mt-4 text-sm leading-7 text-[#D8D8D8] sm:text-base">
-                If your requirement does not fit neatly into one card, use the consultation or enquiry links below. We can prepare a custom package based on your timeline, asset readiness, content support needs, domain or hosting setup, and how much ongoing technical support you want after launch.
+                Use this catalog as a quick starting guide: pick the service that matches your need, use the listed amount as a base estimate, and send an enquiry for an exact quote because final pricing depends on scope, complexity, turnaround time, and revision requirements.
               </p>
             </article>
-
-            <aside className="rounded-2xl border border-[#D4AF37]/15 bg-[#111111] p-6">
-              <h2 className="text-xl font-semibold text-[#F6D77A]">Explore related pages</h2>
-              <nav aria-label="Related service pages" className="mt-4 space-y-3">
-                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/services-overview">
-                  View the full services overview
-                </Link>
-                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/branding-identity">
-                  Browse branding and identity projects
-                </Link>
-                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/web-development">
-                  Explore web development capabilities
-                </Link>
-                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/uiux-design">
-                  Review UI/UX design services
-                </Link>
-                <Link className="block rounded-lg border border-[#D4AF37]/20 px-4 py-3 text-sm text-[#F5F5F5] transition-colors hover:bg-[#D4AF37]/10" to="/contact">
-                  Contact the RajKayal team
-                </Link>
-              </nav>
-            </aside>
           </div>
         </section>
 
