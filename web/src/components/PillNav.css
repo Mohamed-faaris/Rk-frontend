@@ -478,7 +478,13 @@
   }
 
   .pill-brand {
-    display: none;
+    display: block;
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    margin: 0 0.25rem;
+    text-align: center;
+    font-size: 0.75rem;
   }
 
   .services-pill-nav .pill-nav-items {
@@ -525,7 +531,13 @@
   }
 
   .pill-brand {
-    display: none;
+    display: block;
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    margin: 0 0.35rem;
+    text-align: center;
+    font-size: 0.82rem;
   }
 
   .services-pill-nav .desktop-only {

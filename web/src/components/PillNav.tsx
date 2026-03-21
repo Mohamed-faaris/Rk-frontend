@@ -317,7 +317,7 @@ const PillNav: React.FC<PillNavProps> = ({
           </a>
         ) : null}
 
-        {brandName ? <span className="pill-brand desktop-only">{brandName}</span> : null}
+        {brandName ? <span className="pill-brand">{brandName}</span> : null}
 
         <div className="pill-nav-items desktop-only" ref={navItemsRef}>
           <ul className="pill-list" role="menubar">
