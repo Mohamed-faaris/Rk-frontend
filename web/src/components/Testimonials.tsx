@@ -48,14 +48,14 @@ const Testimonials = () => {
     {
       id: "mohamed-faaris",
       name: "MOHAMED FAARIS K M",
-      role: "Tech Engineering Manager",
+      role: "CTO",
       bio: "Owns engineering execution, architecture quality, and reliable delivery across frontend and backend systems.",
       skills: ["Engineering Management", "Architecture", "Team Delivery"],
       icon: Code2,
       image: mohamedFaarisImage,
       imagePosition: "center 18%",
       fullName: "MOHAMED FAARIS K M",
-      title: "Tech Engineering Manager",
+      title: "Chief Technology Officer",
       location: "Tamil Nadu, India",
       socials: [],
     },
@@ -92,7 +92,11 @@ const Testimonials = () => {
       name: "PALLAVI P",
       role: "Project Manager",
       bio: "Coordinates planning, timelines, and cross-functional delivery to keep projects on track.",
-      skills: ["Project Planning", "Execution Tracking", "Stakeholder Coordination"],
+      skills: [
+        "Project Planning",
+        "Execution Tracking",
+        "Stakeholder Coordination",
+      ],
       icon: Palette,
       image: pallaviImage,
       imagePosition: "center 18%",
@@ -134,7 +138,10 @@ const Testimonials = () => {
   ];
 
   return (
-    <section id="testimonials" className="team-cards relative bg-secondary/30 py-24 shadow-sm dark:bg-background md:py-32">
+    <section
+      id="testimonials"
+      className="team-cards relative bg-secondary/30 py-24 shadow-sm dark:bg-background md:py-32"
+    >
       {/* Smooth fade from previous section */}
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
@@ -146,7 +153,8 @@ const Testimonials = () => {
               Our <span className="gradient-text">Team</span>
             </h2>
             <p className="mx-auto max-w-2xl break-normal text-xl text-muted-foreground">
-              Meet the people leading RajKayal Creative Hub across leadership, engineering, operations, and growth.
+              Meet the people leading RajKayal Creative Hub across leadership,
+              engineering, operations, and growth.
             </p>
           </div>
 
@@ -164,7 +172,9 @@ const Testimonials = () => {
                         decoding="async"
                         style={{
                           objectPosition: member.imagePosition,
-                          transform: member.imageScale ? `scale(${member.imageScale})` : undefined,
+                          transform: member.imageScale
+                            ? `scale(${member.imageScale})`
+                            : undefined,
                         }}
                       />
                     ) : (
@@ -173,21 +183,36 @@ const Testimonials = () => {
                   </div>
                 </div>
 
-                <h3 className="card__name" title={member.name}>{member.name}</h3>
-                <span className="card__profession break-normal">{member.role}</span>
+                <h3 className="card__name" title={member.name}>
+                  {member.name}
+                </h3>
+                <span className="card__profession break-normal">
+                  {member.role}
+                </span>
 
                 <button
                   type="button"
-                  onClick={() => setActiveCard((current) => (current === member.id ? null : member.id))}
+                  onClick={() =>
+                    setActiveCard((current) =>
+                      current === member.id ? null : member.id,
+                    )
+                  }
                   className="card__info-toggle"
                   aria-expanded={activeCard === member.id}
                   aria-controls={`${member.id}-info`}
                   aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
                 >
-                  {activeCard === member.id ? <X size={18} /> : <Info size={18} />}
+                  {activeCard === member.id ? (
+                    <X size={18} />
+                  ) : (
+                    <Info size={18} />
+                  )}
                 </button>
 
-                <div id={`${member.id}-info`} className={`info ${activeCard === member.id ? "is-open" : ""}`}>
+                <div
+                  id={`${member.id}-info`}
+                  className={`info ${activeCard === member.id ? "is-open" : ""}`}
+                >
                   <div className="info__border">
                     <div className="info__perfil">
                       {member.image ? (
@@ -199,7 +224,9 @@ const Testimonials = () => {
                           decoding="async"
                           style={{
                             objectPosition: member.imagePosition,
-                            transform: member.imageScale ? `scale(${member.imageScale})` : undefined,
+                            transform: member.imageScale
+                              ? `scale(${member.imageScale})`
+                              : undefined,
                           }}
                         />
                       ) : (
@@ -209,9 +236,15 @@ const Testimonials = () => {
                   </div>
 
                   <div className="info__data">
-                    <h4 className="info__name" title={member.fullName}>{member.fullName}</h4>
-                    <p className="info__profession break-normal">{member.title}</p>
-                    <p className="info__location break-normal">{member.location}</p>
+                    <h4 className="info__name" title={member.fullName}>
+                      {member.fullName}
+                    </h4>
+                    <p className="info__profession break-normal">
+                      {member.title}
+                    </p>
+                    <p className="info__location break-normal">
+                      {member.location}
+                    </p>
                     <p className="info__bio break-normal">{member.bio}</p>
                   </div>
 
@@ -250,7 +283,7 @@ const Testimonials = () => {
           {/* Join Team CTA */}
           <div className="mt-14 text-center">
             <Button
-              onClick={() => navigate('/apply-employee')}
+              onClick={() => navigate("/apply-employee")}
               className="bg-accent hover:bg-accent/90 shadow-gold px-8 py-3 text-base font-semibold"
             >
               <FileText className="w-4 h-4 mr-2" />
