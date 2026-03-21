@@ -163,7 +163,7 @@ const Testimonials = () => {
               <div key={member.id} className="card">
                 <div className="card__border">
                   <div className="card__perfil">
-                    {membec age ? (
+                    {member.image ? (
                       <img
                         src={member.image}
                         alt={member.name}
