@@ -6,6 +6,10 @@ import PillNav, { type PillNavItem } from '@/components/PillNav';
 const Navbar = () => {
   const location = useLocation();
 
+  if (location.pathname !== '/') {
+    return null;
+  }
+
   const items = useMemo<PillNavItem[]>(
     () => [
       { label: 'Home', href: '/' },
