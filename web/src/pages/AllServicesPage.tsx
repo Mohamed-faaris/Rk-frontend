@@ -17,7 +17,7 @@ const servicePageJsonLd = {
       '@type': 'Organization',
       name: 'RajKayal Creative Hub',
       url: 'https://rkch.tech',
-      logo: 'https://rkch.tech/rklogofinal.png',
+      logo: 'https://rkch.tech/rklogofinal.webp',
     },
     {
       '@type': 'CollectionPage',
@@ -64,7 +64,7 @@ const AllServicesPage = () => {
         title="Design & Software Services Pricing | RajKayal"
         description="Browse RajKayal Creative Hub pricing for logos, branding, website design, web development, UI/UX, social media creatives, video editing, and custom software services."
         canonicalPath="/services"
-        imagePath="/rajkayal-large.png"
+        imagePath="/rklogofinal.webp"
         imageWidth="256"
         imageHeight="256"
         keywords="RajKayal services, web development pricing, branding packages, UI UX design cost, logo design pricing, video editing services"

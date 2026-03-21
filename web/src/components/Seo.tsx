@@ -3,7 +3,7 @@ import { useEffect } from "react";
 const SITE_URL = "https://rkch.tech";
 const DEFAULT_TITLE = "RajKayal Creative Hub | Design & Development Studio";
 const DEFAULT_DESCRIPTION = "RajKayal Creative Hub delivers branding, web design, UI/UX, animation, and custom software services for businesses that need polished digital experiences.";
-const DEFAULT_IMAGE_PATH = "/rajkayal-large.png";
+const DEFAULT_IMAGE_PATH = "/rklogofinal.webp";
 const DEFAULT_IMAGE_WIDTH = "256";
 const DEFAULT_IMAGE_HEIGHT = "256";
 
