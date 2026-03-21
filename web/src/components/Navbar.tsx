@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <PillNav
-      logo="/rklogofinal.png"
+      logo="/rklogofinal.webp"
       logoAlt="RajKayal Logo"
       brandName="RajKayal Creative Hub"
       items={items}

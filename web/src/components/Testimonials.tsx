@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
-import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .png";
-import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.png";
-import namasivayenImage from "@/assets/NAMASIVAYEN N S.png";
-import nithishKumarImage from "@/assets/NITHISH KUMAR V.png";
-import pallaviImage from "@/assets/PALLAVI P.png";
-import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .png";
-import yogeshImage from "@/assets/YOGESH M.png";
+import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.webp";
+import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
+import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
+import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
+import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
+import pallaviImage from "@/assets/PALLAVI P.webp";
+import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
+import yogeshImage from "@/assets/YOGESH M.webp";
 import "@/styles/team-cards.scss";
 
 const Testimonials = () => {
