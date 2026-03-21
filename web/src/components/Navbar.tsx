@@ -39,10 +39,6 @@ const Navbar = () => {
       return match.href;
     }
 
-    if (location.pathname === '/') {
-      return '/#home';
-    }
-
     return undefined;
   }, [items, location.pathname]);
 
