@@ -129,7 +129,7 @@ export default function Login() {
               <div className="flex justify-center animate-scale-in">
                 <div className="relative">
                   <div className="absolute inset-0 bg-accent/20 blur-3xl rounded-full animate-pulse-slow" />
-                  <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-40 w-40 relative z-10 drop-shadow-[0_0_25px_rgba(253,185,19,0.6)]" />
+                  <img src="/rklogofinal.webp" alt="RajKayal Logo" className="h-40 w-40 relative z-10 drop-shadow-[0_0_25px_rgba(253,185,19,0.6)]" />
                 </div>
               </div>
 
