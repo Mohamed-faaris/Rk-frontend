@@ -122,11 +122,7 @@ const OrdersPage = () => {
       <div className="container mx-auto px-4 max-w-6xl pt-20 md:pt-24 pb-8 md:pb-12">
         {/* Header */}
         <div className="mb-6 md:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-2 break-normal">My Orders</h1>
-              <p className="text-xs md:text-sm text-muted-foreground break-normal">Track and manage your project orders</p>
-            </div>
+          <div className="mb-3 md:mb-4">
             <Button
               onClick={() => navigate('/#home')}
               variant="outline"
@@ -136,6 +132,11 @@ const OrdersPage = () => {
               <span className="hidden sm:inline">Back to Home</span>
               <span className="sm:hidden">Back</span>
             </Button>
+          </div>
+
+          <div>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text mb-2 break-normal">My Orders</h1>
+            <p className="text-xs md:text-sm text-muted-foreground break-normal">Track and manage your project orders</p>
           </div>
         </div>
 
