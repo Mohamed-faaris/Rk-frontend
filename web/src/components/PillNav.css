@@ -271,6 +271,8 @@
 .services-pill-nav .pill-nav-items {
   flex: 1 1 auto;
   width: 100%;
+  min-height: 100%;
+  align-items: center;
   justify-content: center;
 }
 
@@ -278,6 +280,7 @@
   gap: 0.4rem;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .services-pill-nav .pill {
@@ -487,6 +490,13 @@
     font-size: 0.75rem;
   }
 
+  .services-pill-nav {
+    min-height: 46px;
+    padding: 0.32rem 0.38rem;
+    border-radius: 14px;
+    gap: 0.3rem;
+  }
+
   .services-pill-nav .desktop-only {
     display: flex !important;
   }
@@ -498,10 +508,12 @@
   .services-pill-nav .pill-nav-items {
     justify-content: flex-start;
     overflow-x: auto;
+    align-items: center;
     padding-bottom: 2px;
     -ms-overflow-style: none;
     scrollbar-width: none;
     scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
   }
 
   .services-pill-nav .pill-nav-items::-webkit-scrollbar {
@@ -512,16 +524,18 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     width: max-content;
+    align-items: center;
   }
 
   .services-pill-nav .pill {
-    height: 32px;
-    padding: 0 0.7rem;
+    height: 34px;
+    padding: 0 0.75rem;
+    scroll-snap-align: start;
   }
 
   .services-pill-nav .pill-label,
   .services-pill-nav .pill-label-hover {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 }
 
