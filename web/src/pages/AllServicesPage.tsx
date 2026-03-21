@@ -64,6 +64,16 @@ const AllServicesPage = () => {
     navigate(`/services/order/${encodeURIComponent(serviceTitle || 'General Service')}`);
   };
 
+  const scrollToCategoryTarget = (categoryId: string) => {
+    const targetId = categoryId === 'all' ? 'services-content' : `service-category-${categoryId}`;
+    window.setTimeout(() => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 80);
+  };
+
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       <Seo
@@ -136,11 +146,9 @@ const AllServicesPage = () => {
             theme="dark"
             initialLoadAnimation={false}
             onItemClick={(item) => {
-              setSelectedCategory(item.value || 'all');
-              const el = document.getElementById('services-content');
-              if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
+              const nextCategory = item.value || 'all';
+              setSelectedCategory(nextCategory);
+              scrollToCategoryTarget(nextCategory);
             }}
           />
         </div>
@@ -169,6 +177,7 @@ const AllServicesPage = () => {
             {filteredCategories.map((category) => (
               <Card
                 key={category.id}
+                id={`service-category-${category.id}`}
                 className="border-[#D4AF37]/25 bg-gradient-to-b from-[#121212] to-[#0B0B0B] text-white shadow-[0_0_0_1px_rgba(212,175,55,0.05)]"
               >
                 <CardHeader className="border-b border-[#D4AF37]/20 px-4 py-3 md:px-6 md:py-4">
