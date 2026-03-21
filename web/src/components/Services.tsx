@@ -2,12 +2,12 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import LandscapeHoverCard from "@/components/LandscapeHoverCard";
-import identityStarterKitImage from "@/assets/Identity Starter Kit.png";
-import campaignVisualPacksImage from "@/assets/Campaign Visual Packs.png";
-import motionEditStudioImage from "@/assets/Motion Edit Studio.png";
-import designFixPolishImage from "@/assets/Design Fix & Polish.png";
-import websiteGrowthBuildImage from "@/assets/Website Growth Build.png";
-import techSupportCellImage from "@/assets/Tech Support Cell.png";
+import identityStarterKitImage from "@/assets/Identity Starter Kit.webp";
+import campaignVisualPacksImage from "@/assets/Campaign Visual Packs.webp";
+import motionEditStudioImage from "@/assets/Motion Edit Studio.webp";
+import designFixPolishImage from "@/assets/Design Fix & Polish.webp";
+import websiteGrowthBuildImage from "@/assets/Website Growth Build.webp";
+import techSupportCellImage from "@/assets/Tech Support Cell.webp";
 
 const Services = () => {
   const navigate = useNavigate();
