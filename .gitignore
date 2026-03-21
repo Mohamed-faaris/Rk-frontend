@@ -37,3 +37,4 @@ env.prod
 # Vercel
 .vercel
 .env.deployment
+.env*.local
