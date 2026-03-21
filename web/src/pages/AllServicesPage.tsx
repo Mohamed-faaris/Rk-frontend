@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, IndianRupee } from "lucide-react";
+import { ArrowLeft, ArrowRight, IndianRupee } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import PillNav, { type PillNavItem } from '@/components/PillNav';
 import Footer from "@/components/Footer";
@@ -105,6 +105,19 @@ const AllServicesPage = () => {
         </div>
 
         <div className="container relative mx-auto px-4 text-center">
+          <div className="mb-4 flex justify-start md:mb-6">
+            <Button
+              asChild
+              variant="outline"
+              className="h-9 border-[#D4AF37]/60 bg-black/25 px-3 text-xs text-[#F6D77A] hover:bg-[#D4AF37]/10 hover:text-[#F8E6A2] sm:h-10 sm:px-4 sm:text-sm"
+            >
+              <Link to="/" aria-label="Back to home page">
+                <ArrowLeft className="mr-1.5 h-4 w-4" />
+                Back to Home
+              </Link>
+            </Button>
+          </div>
+
           <Badge className="brand-display border border-[#D4AF37]/60 bg-[#1A1305] px-4 py-1 text-[#F6D77A]">
             RajKayal Creative Hub
           </Badge>
