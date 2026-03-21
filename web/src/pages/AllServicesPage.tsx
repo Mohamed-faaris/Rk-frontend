@@ -81,7 +81,7 @@ const AllServicesPage = () => {
         <Navbar />
       </header>
 
-      <main id="main-content" className="pt-2 md:pt-3">
+      <main id="main-content" className="pt-1 md:pt-2">
         <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-10 md:py-24">
         <div className="pointer-events-none absolute inset-0 opacity-20">
           <div className="absolute left-0 top-0 h-56 w-56 rounded-full bg-[#D4AF37]/20 blur-3xl" />
@@ -112,12 +112,12 @@ const AllServicesPage = () => {
         </div>
         </section>
 
-        <section aria-labelledby="pricing-filters" className="sticky top-[84px] z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:top-[88px] md:py-4">
+        <section aria-labelledby="pricing-filters" className="sticky top-[92px] z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:top-[96px] md:py-4">
         <div className="sr-only">
           <h2 id="pricing-filters">Filter service categories</h2>
         </div>
-        <div className="mx-auto w-full max-w-screen-xl overflow-hidden px-3 sm:px-4">
-          <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
+        <div className="container mx-auto w-full overflow-hidden px-3 sm:px-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
             {categoryTabs.map((category) => (
               <Button
                 key={category.id}
