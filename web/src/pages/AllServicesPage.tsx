@@ -81,7 +81,7 @@ const AllServicesPage = () => {
         <Navbar />
       </header>
 
-      <main id="main-content" className="pt-16 md:pt-20">
+      <main id="main-content" className="pt-2 md:pt-3">
         <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-10 md:py-24">
         <div className="pointer-events-none absolute inset-0 opacity-20">
           <div className="absolute left-0 top-0 h-56 w-56 rounded-full bg-[#D4AF37]/20 blur-3xl" />
@@ -112,7 +112,7 @@ const AllServicesPage = () => {
         </div>
         </section>
 
-        <section aria-labelledby="pricing-filters" className="sticky top-16 z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:top-20 md:py-4">
+        <section aria-labelledby="pricing-filters" className="sticky top-[84px] z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:top-[88px] md:py-4">
         <div className="sr-only">
           <h2 id="pricing-filters">Filter service categories</h2>
         </div>
