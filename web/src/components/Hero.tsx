@@ -1,118 +1,15 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useMemo, Suspense, Component, ReactNode, ErrorInfo, lazy } from "react";
-import { logger } from "@/lib/logger";
-import { useAdaptiveEffects } from "@/hooks/useAdaptiveEffects";
-
-const LiquidEther = lazy(() => import("./LiquidEther"));
-
-// Error fallback component
-const LiquidEtherFallback = () => (
-  <div className="absolute inset-0 z-0 bg-gradient-to-br from-black via-amber-900/10 to-black" />
-);
-
-// Simple Error Boundary Component
-class ErrorBoundary extends Component<
-  { children: ReactNode; onError?: (error: Error) => void },
-  { hasError: boolean }
-> {
-  constructor(props: { children: ReactNode; onError?: (error: Error) => void }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    logger.error('LiquidEther error:', error, errorInfo);
-    if (this.props.onError) {
-      this.props.onError(error);
-    }
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <LiquidEtherFallback />;
-    }
-
-    return this.props.children;
-  }
-}
-
-// Error boundary wrapper
-const ErrorBoundaryWrapper = ({ 
-  children, 
-  onError 
-}: { 
-  children: ReactNode; 
-  onError?: (error: Error) => void;
-}) => (
-  <ErrorBoundary onError={onError}>
-    {children}
-  </ErrorBoundary>
-);
 
 const Hero = () => {
-  const { isMobile, canUseHeavyEffects, effectsReady } = useAdaptiveEffects();
-  const shouldRenderLiquidEther = canUseHeavyEffects && effectsReady;
-  const liquidEtherColors = useMemo(() => ['#FFD700', '#FFC700', '#FFE135'], []);
-  const particleItems = useMemo(() => {
-    const count = isMobile ? 4 : 10;
-    return Array.from({ length: count }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 4}s`,
-      animationDuration: `${3 + Math.random() * 2}s`,
-    }));
-  }, [isMobile]);
-
   return (
     <section
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      {/* LiquidEther Background with Error Boundary */}
-      {shouldRenderLiquidEther && (
-        <ErrorBoundaryWrapper>
-          <Suspense fallback={<LiquidEtherFallback />}>
-            <div className="absolute inset-0 z-0">
-              <LiquidEther
-                colors={liquidEtherColors}
-                autoIntensity={1.8}
-                autoSpeed={0.4}
-              />
-            </div>
-          </Suspense>
-        </ErrorBoundaryWrapper>
-      )}
-
-      {/* Fallback gradient if LiquidEther fails */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-black via-amber-900/10 to-black opacity-0 hover:opacity-100 transition-opacity" />
-
-      {/* Background Overlay - Semi-transparent for content readability */}
-      <div className="absolute inset-0 z-1 bg-gradient-to-b from-black/40 via-black/20 to-black/40 pointer-events-none" />
-
-      {/* Smooth fade to background at bottom */}
-      <div className="absolute bottom-0 inset-x-0 h-32 z-2 bg-gradient-to-b from-transparent to-background pointer-events-none" />
-
-      {/* Floating Particles Effect - Static twinkling background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-[3]">
-        {particleItems.map((item) => (
-          <div
-            key={item.id}
-            className="absolute w-0.5 h-0.5 bg-accent rounded-full opacity-20 animate-pulse"
-            style={{
-              left: item.left,
-              top: item.top,
-              animationDelay: item.animationDelay,
-              animationDuration: item.animationDuration,
-            }}
-          />
-        ))}
-      </div>
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.16),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(201,169,97,0.12),transparent_35%),linear-gradient(180deg,#050505_0%,#090909_45%,#0f0f0f_100%)]" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/35 via-black/20 to-black/45 pointer-events-none" />
+      <div className="absolute bottom-0 inset-x-0 h-28 z-[2] bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
       {/* Content */}
       <div className="w-full px-4 sm:px-6 md:px-8 z-20 relative">
@@ -120,7 +17,7 @@ const Hero = () => {
           {/* RK Badge Featured */}
           <div className="flex justify-center items-center animate-fade-in w-full px-4">
             <div className="relative flex items-center justify-center">
-              <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] drop-shadow-[0_0_20px_rgba(255,215,0,0.8)] hover:drop-shadow-[0_0_30px_rgba(255,215,0,1)] transition-all duration-300" style={{ willChange: 'filter' }} />
+              <img src="/rklogofinal.png" alt="RajKayal Logo" className="h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] drop-shadow-[0_0_14px_rgba(255,215,0,0.45)]" />
             </div>
           </div>
 

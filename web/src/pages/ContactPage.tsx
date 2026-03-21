@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, ArrowLeft, Send } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-import GradientBlinds from '@/components/GradientBlinds';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -115,10 +114,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* GradientBlinds Background */}
-      <div className="fixed inset-0 z-0 top-[80px] pointer-events-none">
-        <GradientBlinds gradientColors={['#C6A345', '#8B7520', '#D4AF6A']} />
-      </div>
+      <div className="fixed inset-0 z-0 top-[80px] pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(212,175,55,0.14),transparent_42%),radial-gradient(circle_at_85%_10%,rgba(139,117,32,0.18),transparent_38%),linear-gradient(180deg,#0a0a0a_0%,#0f0f0f_100%)]" />
       
       {/* Overlay for content readability */}
       <div className="fixed inset-0 bg-black/25 dark:bg-black/40 z-[5] top-[80px] pointer-events-none" />

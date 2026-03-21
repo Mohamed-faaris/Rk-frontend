@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, IndianRupee } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import GradientBlinds from "@/components/GradientBlinds.tsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,27 +36,7 @@ const ServicesPage = () => {
       <Navbar />
       {/* Hero Section */}
       <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden">
-        {/* GradientBlinds Background */}
-        <div className="absolute inset-0 z-0">
-          <GradientBlinds
-            gradientColors={['#D4AF37', '#F4C542', '#FFD700']}
-            angle={45}
-            noise={0.15}
-            blindCount={10}
-            blindMinWidth={100}
-            spotlightRadius={0.55}
-            spotlightSoftness={1.0}
-            spotlightOpacity={0.6}
-            mouseDampening={0.25}
-            distortAmount={0}
-            shineDirection="left"
-            mixBlendMode="lighten"
-            dpr={0.75}
-            slideDirection="left"
-            slideDuration={1.2}
-            slideDelay={0}
-          />
-        </div>
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_12%_18%,rgba(212,175,55,0.2),transparent_42%),radial-gradient(circle_at_88%_10%,rgba(244,197,66,0.18),transparent_38%),linear-gradient(180deg,#080808_0%,#101010_100%)]" />
         
         {/* Overlay for content readability */}
         <div className="absolute inset-0 bg-black/40 dark:bg-black/60 z-10" />

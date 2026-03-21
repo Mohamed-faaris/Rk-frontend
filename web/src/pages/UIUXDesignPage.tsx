@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Play, Image as ImageIcon, X, Palette, ExternalLink } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import GradientBlinds from "@/components/GradientBlinds.tsx";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -186,7 +185,7 @@ const UIUXDesignPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <GradientBlinds />
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_14%_18%,rgba(212,175,55,0.14),transparent_40%),radial-gradient(circle_at_84%_12%,rgba(198,163,69,0.14),transparent_36%),linear-gradient(180deg,#070707_0%,#0d0d0d_100%)]" />
       
       <main className="pt-24 pb-16 relative z-10">
         <div className="container mx-auto px-4">
