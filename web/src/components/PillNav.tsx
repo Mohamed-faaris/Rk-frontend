@@ -362,6 +362,16 @@ const PillNav: React.FC<PillNavProps> = ({
                     href={item.href}
                     className={`pill${activeHref === item.href ? ' is-active' : ''}`}
                     aria-label={item.ariaLabel || item.label}
+                    onClick={(event) => {
+                      if (onItemClick) {
+                        event.preventDefault();
+                        onItemClick(item);
+                        return;
+                      }
+                      if (handleHashNavigation(item.href)) {
+                        event.preventDefault();
+                      }
+                    }}
                     onMouseEnter={() => handleEnter(i)}
                     onMouseLeave={() => handleLeave(i)}
                   >
