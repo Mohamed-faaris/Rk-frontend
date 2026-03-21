@@ -284,26 +284,26 @@
 }
 
 .services-pill-nav .pill {
-  height: 34px;
-  padding: 0 0.85rem;
+  height: 36px;
+  padding: 0 0.95rem;
 }
 
 .services-pill-nav .label-stack {
-  max-width: 100%;
+  max-width: none;
 }
 
 .services-pill-nav .pill-label,
 .services-pill-nav .pill-label-hover {
   display: block;
-  max-width: 100%;
+  max-width: none;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .services-pill-nav .pill-label,
 .services-pill-nav .pill-label-hover {
-  font-size: 0.76rem;
+  font-size: 0.8rem;
 }
 
 .pill.is-active {
@@ -504,10 +504,10 @@
   }
 
   .services-pill-nav {
-    min-height: 46px;
-    padding: 0.32rem 0.38rem;
+    min-height: 52px;
+    padding: 0.42rem 0.45rem;
     border-radius: 14px;
-    gap: 0.3rem;
+    gap: 0.35rem;
   }
 
   .services-pill-nav .desktop-only {
@@ -545,15 +545,16 @@
   }
 
   .services-pill-nav .pill {
-    height: 34px;
-    padding: 0 0.75rem;
-    max-width: 76vw;
+    height: 38px;
+    padding: 0 1rem;
+    max-width: none;
+    min-width: max-content;
     scroll-snap-align: start;
   }
 
   .services-pill-nav .pill-label,
   .services-pill-nav .pill-label-hover {
-    font-size: 0.72rem;
+    font-size: 0.8rem;
   }
 }
 
