@@ -12,6 +12,7 @@ export type PillNavItem = {
 export interface PillNavProps {
   logo: string;
   logoAlt?: string;
+  brandName?: string;
   items: PillNavItem[];
   activeHref?: string;
   className?: string;
@@ -21,6 +22,7 @@ export interface PillNavProps {
   hoveredPillTextColor?: string;
   pillTextColor?: string;
   theme?: 'light' | 'dark';
+  rightSlot?: React.ReactNode;
   onMobileMenuClick?: () => void;
   initialLoadAnimation?: boolean;
 }
@@ -28,6 +30,7 @@ export interface PillNavProps {
 const PillNav: React.FC<PillNavProps> = ({
   logo,
   logoAlt = 'Logo',
+  brandName,
   items,
   activeHref,
   className = '',
@@ -37,6 +40,7 @@ const PillNav: React.FC<PillNavProps> = ({
   hoveredPillTextColor = '#060010',
   pillTextColor,
   theme = 'light',
+  rightSlot,
   onMobileMenuClick,
   initialLoadAnimation = true,
 }) => {
@@ -275,6 +279,8 @@ const PillNav: React.FC<PillNavProps> = ({
           </a>
         )}
 
+        {brandName ? <span className="pill-brand desktop-only">{brandName}</span> : null}
+
         <div className="pill-nav-items desktop-only" ref={navItemsRef}>
           <ul className="pill-list" role="menubar">
             {items.map((item, i) => (
@@ -331,6 +337,8 @@ const PillNav: React.FC<PillNavProps> = ({
           </ul>
         </div>
 
+        {rightSlot ? <div className="pill-right-actions desktop-only">{rightSlot}</div> : null}
+
         <button
           className="mobile-menu-button mobile-only"
           onClick={toggleMobileMenu}
@@ -343,6 +351,7 @@ const PillNav: React.FC<PillNavProps> = ({
       </nav>
 
       <div className="mobile-menu-popover mobile-only" ref={mobileMenuRef} style={cssVars}>
+        {rightSlot ? <div className="pill-right-actions mobile-menu-actions">{rightSlot}</div> : null}
         <ul className="mobile-menu-list">
           {items.map((item, i) => (
             <li key={`${item.href}-mobile-${i}`}>

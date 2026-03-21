@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Bell, User } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import PillNav, { type PillNavItem } from '@/components/PillNav';
 
 const Navbar = () => {
@@ -30,19 +31,32 @@ const Navbar = () => {
     return undefined;
   }, [items, location.pathname]);
 
+  const rightSlot = (
+    <>
+      <Link to="/orders" className="pill-action-icon" aria-label="Notifications">
+        <Bell size={18} />
+      </Link>
+      <Link to="/account" className="pill-action-icon" aria-label="Account">
+        <User size={18} />
+      </Link>
+    </>
+  );
+
   return (
     <PillNav
       logo="/rklogofinal.png"
       logoAlt="RajKayal Logo"
+      brandName="RajKayal Creative Hub"
       items={items}
       activeHref={activeHref}
-      className="site-pill-nav"
+      className="site-pill-nav rk-black-gold-nav"
       ease="power2.easeOut"
-      baseColor="#101418"
-      pillColor="#f5f7fb"
-      hoveredPillTextColor="#f5f7fb"
-      pillTextColor="#101418"
-      theme="light"
+      baseColor="#FDB913"
+      pillColor="#0A0A0F"
+      hoveredPillTextColor="#0A0A0F"
+      pillTextColor="#FDB913"
+      theme="dark"
+      rightSlot={rightSlot}
       initialLoadAnimation={false}
     />
   );
