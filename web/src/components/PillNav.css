@@ -288,6 +288,19 @@
   padding: 0 0.85rem;
 }
 
+.services-pill-nav .label-stack {
+  max-width: 100%;
+}
+
+.services-pill-nav .pill-label,
+.services-pill-nav .pill-label-hover {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .services-pill-nav .pill-label,
 .services-pill-nav .pill-label-hover {
   font-size: 0.76rem;
@@ -509,11 +522,13 @@
     justify-content: flex-start;
     overflow-x: auto;
     align-items: center;
+    padding-inline: 0.18rem;
     padding-bottom: 2px;
     -ms-overflow-style: none;
     scrollbar-width: none;
     scroll-behavior: smooth;
     scroll-snap-type: x proximity;
+    scroll-padding-inline: 0.35rem;
   }
 
   .services-pill-nav .pill-nav-items::-webkit-scrollbar {
@@ -525,11 +540,14 @@
     justify-content: flex-start;
     width: max-content;
     align-items: center;
+    gap: 0.35rem;
+    padding-inline: 0.12rem;
   }
 
   .services-pill-nav .pill {
     height: 34px;
     padding: 0 0.75rem;
+    max-width: 76vw;
     scroll-snap-align: start;
   }
 
