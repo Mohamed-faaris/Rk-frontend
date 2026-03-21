@@ -56,6 +56,7 @@
 
 .pill-brand {
   color: var(--base);
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.02em;
