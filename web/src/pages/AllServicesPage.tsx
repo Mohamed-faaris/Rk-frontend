@@ -128,7 +128,7 @@ const AllServicesPage = () => {
         </div>
         </section>
 
-        <section aria-labelledby="pricing-filters" className="sticky top-[92px] z-20 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 backdrop-blur md:top-[96px] md:py-4">
+        <section aria-labelledby="pricing-filters" className="relative z-10 border-y border-[#D4AF37]/20 bg-[#0A0A0A]/95 py-3 md:py-4">
         <div className="sr-only">
           <h2 id="pricing-filters">Filter service categories</h2>
         </div>
