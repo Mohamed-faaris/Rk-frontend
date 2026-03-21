@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, IndianRupee } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import PillNav, { type PillNavItem } from '@/components/PillNav';
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +45,11 @@ const AllServicesPage = () => {
   const categoryTabs = useMemo(
     () => [{ id: 'all', name: 'All Services' }, ...serviceCategories.map((category) => ({ id: category.id, name: category.title }))],
     [serviceCategories],
+  );
+
+  const categoryNavItems = useMemo<PillNavItem[]>(
+    () => categoryTabs.map((tab) => ({ label: tab.name, href: `#service-category-${tab.id}`, value: tab.id })),
+    [categoryTabs],
   );
 
   const filteredCategories = selectedCategory === 'all'
@@ -117,23 +123,26 @@ const AllServicesPage = () => {
           <h2 id="pricing-filters">Filter service categories</h2>
         </div>
         <div className="container mx-auto w-full overflow-hidden px-3 sm:px-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
-            {categoryTabs.map((category) => (
-              <Button
-                key={category.id}
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedCategory(category.id)}
-                className={`h-9 shrink-0 rounded-full border px-3 text-xs sm:px-4 sm:text-sm ${
-                  selectedCategory === category.id
-                    ? 'border-[#D4AF37] bg-[#D4AF37] text-black hover:bg-[#c9a328]'
-                    : 'border-[#D4AF37]/40 bg-transparent text-[#EED27A] hover:bg-[#D4AF37]/10'
-                }`}
-              >
-                {category.name}
-              </Button>
-            ))}
-          </div>
+          <PillNav
+            items={categoryNavItems}
+            activeHref={`#service-category-${selectedCategory}`}
+            className="services-pill-nav"
+            sticky={false}
+            ease="power2.easeOut"
+            baseColor="#FDB913"
+            pillColor="#0A0A0A"
+            hoveredPillTextColor="#0A0A0A"
+            pillTextColor="#FDB913"
+            theme="dark"
+            initialLoadAnimation={false}
+            onItemClick={(item) => {
+              setSelectedCategory(item.value || 'all');
+              const el = document.getElementById('services-content');
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }}
+          />
         </div>
         </section>
 

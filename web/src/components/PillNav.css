@@ -1,9 +1,18 @@
 .pill-nav-container {
-  position: sticky;
-  top: 0;
   z-index: 60;
   width: 100%;
   padding: 0.75rem 1rem;
+}
+
+.pill-nav-container.is-sticky {
+  position: sticky;
+  top: 0;
+}
+
+.pill-nav-container.is-static {
+  position: relative;
+  top: auto;
+  padding: 0;
 }
 
 .pill-nav {
@@ -131,6 +140,26 @@
 
 .theme-dark .pill-action-icon {
   border-color: rgba(253, 185, 19, 0.42);
+}
+
+.services-pill-nav {
+  min-height: 52px;
+  padding: 0.5rem 0.7rem;
+  border-radius: 18px;
+}
+
+.services-pill-nav .pill-list {
+  gap: 0.4rem;
+}
+
+.services-pill-nav .pill {
+  height: 36px;
+  padding: 0 0.95rem;
+}
+
+.services-pill-nav .pill-label,
+.services-pill-nav .pill-label-hover {
+  font-size: 0.78rem;
 }
 
 .pill.is-active {

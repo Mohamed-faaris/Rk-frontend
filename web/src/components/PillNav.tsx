@@ -7,10 +7,11 @@ export type PillNavItem = {
   label: string;
   href: string;
   ariaLabel?: string;
+  value?: string;
 };
 
 export interface PillNavProps {
-  logo: string;
+  logo?: string;
   logoAlt?: string;
   brandName?: string;
   items: PillNavItem[];
@@ -23,6 +24,8 @@ export interface PillNavProps {
   pillTextColor?: string;
   theme?: 'light' | 'dark';
   rightSlot?: React.ReactNode;
+  sticky?: boolean;
+  onItemClick?: (item: PillNavItem) => void;
   onMobileMenuClick?: () => void;
   initialLoadAnimation?: boolean;
 }
@@ -41,6 +44,8 @@ const PillNav: React.FC<PillNavProps> = ({
   pillTextColor,
   theme = 'light',
   rightSlot,
+  sticky = true,
+  onItemClick,
   onMobileMenuClick,
   initialLoadAnimation = true,
 }) => {
@@ -283,9 +288,9 @@ const PillNav: React.FC<PillNavProps> = ({
   } as React.CSSProperties;
 
   return (
-    <div className={`pill-nav-container ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`}>
+    <div className={`pill-nav-container ${sticky ? 'is-sticky' : 'is-static'} ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`}>
       <nav className={`pill-nav ${className}`.trim()} aria-label="Primary" style={cssVars}>
-        {isRouterLink(items?.[0]?.href) ? (
+        {logo && isRouterLink(items?.[0]?.href) ? (
           <Link
             className="pill-logo"
             to={items[0].href}
@@ -298,7 +303,7 @@ const PillNav: React.FC<PillNavProps> = ({
           >
             <img src={logo} alt={logoAlt} ref={logoImgRef} />
           </Link>
-        ) : (
+        ) : logo ? (
           <a
             className="pill-logo"
             href={items?.[0]?.href || '#'}
@@ -310,7 +315,7 @@ const PillNav: React.FC<PillNavProps> = ({
           >
             <img src={logo} alt={logoAlt} ref={logoImgRef} />
           </a>
-        )}
+        ) : null}
 
         {brandName ? <span className="pill-brand desktop-only">{brandName}</span> : null}
 
@@ -325,6 +330,11 @@ const PillNav: React.FC<PillNavProps> = ({
                     className={`pill${activeHref === item.href ? ' is-active' : ''}`}
                     aria-label={item.ariaLabel || item.label}
                     onClick={(event) => {
+                      if (onItemClick) {
+                        event.preventDefault();
+                        onItemClick(item);
+                        return;
+                      }
                       if (handleHashNavigation(item.href)) {
                         event.preventDefault();
                       }
@@ -398,6 +408,12 @@ const PillNav: React.FC<PillNavProps> = ({
                   to={item.href}
                   className={`mobile-menu-link${activeHref === item.href ? ' is-active' : ''}`}
                   onClick={(event) => {
+                    if (onItemClick) {
+                      event.preventDefault();
+                      onItemClick(item);
+                      setIsMobileMenuOpen(false);
+                      return;
+                    }
                     const handled = handleHashNavigation(item.href, () => setIsMobileMenuOpen(false));
                     if (handled) {
                       event.preventDefault();
@@ -412,7 +428,13 @@ const PillNav: React.FC<PillNavProps> = ({
                 <a
                   href={item.href}
                   className={`mobile-menu-link${activeHref === item.href ? ' is-active' : ''}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(event) => {
+                    if (onItemClick) {
+                      event.preventDefault();
+                      onItemClick(item);
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
                   {item.label}
                 </a>
