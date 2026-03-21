@@ -1,14 +1,27 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Beams from "@/components/Beams";
 
 const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-[radial-gradient(120%_80%_at_50%_0%,#2b1f07_0%,#120d04_52%,#050402_100%)]"
     >
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.16),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(201,169,97,0.12),transparent_35%),linear-gradient(180deg,#050505_0%,#090909_45%,#0f0f0f_100%)]" />
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Beams
+          beamWidth={3}
+          beamHeight={30}
+          beamNumber={20}
+          lightColor="#FFD166"
+          speed={2}
+          noiseIntensity={1.75}
+          scale={0.2}
+          rotation={30}
+        />
+      </div>
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/35 via-black/20 to-black/45 pointer-events-none" />
+      <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.18),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(201,169,97,0.14),transparent_34%)] pointer-events-none" />
       <div className="absolute bottom-0 inset-x-0 h-28 z-[2] bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
       {/* Content */}
