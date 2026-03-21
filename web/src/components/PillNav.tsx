@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import './PillNav.css';
 
@@ -44,6 +44,8 @@ const PillNav: React.FC<PillNavProps> = ({
   onMobileMenuClick,
   initialLoadAnimation = true,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const resolvedPillTextColor = pillTextColor ?? baseColor;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const circleRefs = useRef<Array<HTMLSpanElement | null>>([]);
@@ -242,6 +244,37 @@ const PillNav: React.FC<PillNavProps> = ({
 
   const isRouterLink = (href?: string) => !!href && !isExternalLink(href);
 
+  const handleHashNavigation = (href: string, onDone?: () => void) => {
+    if (!href.includes('#')) {
+      return false;
+    }
+
+    const [rawPath, rawHash] = href.split('#');
+    const path = rawPath || '/';
+    const hash = rawHash ? `#${rawHash}` : '';
+
+    if (!hash) {
+      return false;
+    }
+
+    const scrollToHash = () => {
+      const target = document.querySelector(hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+      onDone?.();
+    };
+
+    if (location.pathname === path || (path === '/' && location.pathname === '/')) {
+      scrollToHash();
+      return true;
+    }
+
+    navigate(`${path}${hash}`);
+    window.setTimeout(scrollToHash, 120);
+    return true;
+  };
+
   const cssVars = {
     ['--base' as string]: baseColor,
     ['--pill-bg' as string]: pillColor,
@@ -291,6 +324,11 @@ const PillNav: React.FC<PillNavProps> = ({
                     to={item.href}
                     className={`pill${activeHref === item.href ? ' is-active' : ''}`}
                     aria-label={item.ariaLabel || item.label}
+                    onClick={(event) => {
+                      if (handleHashNavigation(item.href)) {
+                        event.preventDefault();
+                      }
+                    }}
                     onMouseEnter={() => handleEnter(i)}
                     onMouseLeave={() => handleLeave(i)}
                   >
@@ -359,7 +397,14 @@ const PillNav: React.FC<PillNavProps> = ({
                 <Link
                   to={item.href}
                   className={`mobile-menu-link${activeHref === item.href ? ' is-active' : ''}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(event) => {
+                    const handled = handleHashNavigation(item.href, () => setIsMobileMenuOpen(false));
+                    if (handled) {
+                      event.preventDefault();
+                    } else {
+                      setIsMobileMenuOpen(false);
+                    }
+                  }}
                 >
                   {item.label}
                 </Link>
