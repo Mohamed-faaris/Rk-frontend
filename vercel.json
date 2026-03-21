@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "pnpm install && pnpm --filter web build",
+  "installCommand": "npm install && cd web && npm install",
+  "buildCommand": "cd web && npm run build",
   "outputDirectory": "web/dist",
   "framework": "vite",
   "routes": [
