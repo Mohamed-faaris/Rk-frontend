@@ -140,30 +140,32 @@ const AccountPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="pt-24 pb-16">
-        <div className="container mx-auto px-4">
+      <main className="pt-16 sm:pt-20 md:pt-24 pb-12 md:pb-16">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
             {/* Back Button */}
-            <Button
-              onClick={() => navigate('/#home')}
-              variant="outline"
-              className="mb-8 gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </Button>
+            <div className="mb-4 md:mb-6">
+              <Button
+                onClick={() => navigate('/#home')}
+                variant="outline"
+                className="gap-2 text-xs sm:text-sm py-2 md:py-2.5 px-3 md:px-4 h-9 md:h-10 w-full sm:w-auto justify-center sm:justify-start"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
+                Back to Home
+              </Button>
+            </div>
 
             {/* Page Header */}
-            <div className="mb-8 space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-                  <User className="w-8 h-8 text-accent" />
+            <div className="mb-6 sm:mb-8 md:mb-10 space-y-3 sm:space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center flex-shrink-0">
+                  <User className="w-7 h-7 sm:w-8 sm:h-8 text-accent" />
                 </div>
-                <div>
-                  <h1 className="text-4xl md:text-5xl font-bold">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold break-words">
                     My <span className="gradient-text">Account</span>
                   </h1>
-                  <p className="text-muted-foreground mt-2">
+                  <p className="text-xs sm:text-sm md:text-base text-muted-foreground mt-1 sm:mt-2 break-words">
                     Manage your account settings and preferences
                   </p>
                 </div>

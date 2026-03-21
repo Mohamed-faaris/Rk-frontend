@@ -119,19 +119,21 @@ export default function ContactPage() {
       {/* Overlay for content readability */}
       <div className="fixed inset-0 bg-black/25 dark:bg-black/40 z-[5] top-[80px] pointer-events-none" />
 
-      <div className="relative container mx-auto pt-20 sm:pt-24 md:pt-28 pb-0 px-4 sm:px-6 md:px-8 z-20">
+      <div className="relative container mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-0 px-3 sm:px-4 md:px-6 lg:px-8 z-20">
         {/* Page Header with Back Button */}
-        <div className="mb-12 md:mb-16">
-          <Button
-            onClick={() => navigate(-1)}
-            variant="outline"
-            className="mb-4 gap-2 border-2 border-gold/60 text-gold dark:text-gold hover:bg-gold/15 hover:text-gold hover:border-gold transition-all duration-300"
-          >
-            <ArrowLeft size={20} />
-            <span className="font-medium">Back</span>
-          </Button>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 sm:mb-4 md:mb-6">Get in Touch</h1>
-          <p className="text-base sm:text-lg md:text-xl text-foreground/75 dark:text-foreground/85 max-w-2xl">
+        <div className="mb-8 sm:mb-12 md:mb-16">
+          <div className="mb-3 sm:mb-4">
+            <Button
+              onClick={() => navigate(-1)}
+              variant="outline"
+              className="gap-2 text-xs sm:text-sm border-2 border-gold/60 text-gold dark:text-gold hover:bg-gold/15 hover:text-gold hover:border-gold transition-all duration-300 py-2 md:py-2.5 px-3 md:px-4 h-9 md:h-10 w-full sm:w-auto justify-center sm:justify-start"
+            >
+              <ArrowLeft size={18} className="flex-shrink-0" />
+              <span className="font-medium">Back</span>
+            </Button>
+          </div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground mb-2 sm:mb-3 md:mb-4 break-words">Get in Touch</h1>
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/75 dark:text-foreground/85 max-w-2xl break-words line-clamp-3">
             Have a question or project in mind? We'd love to hear from you. Reach out and let's create something amazing together.
           </p>
         </div>

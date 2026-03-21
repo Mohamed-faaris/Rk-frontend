@@ -54,14 +54,13 @@ const Navbar = () => {
             <User size={18} />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-52">
+        <DropdownMenuContent align="end" side="top" sideOffset={12} className="w-52 z-[100]">
           <DropdownMenuLabel>{isAuthenticated ? user?.name || 'My Account' : 'Guest'}</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           {isAuthenticated ? (
             <>
               <DropdownMenuItem onSelect={() => navigate('/account')}>Account</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => navigate('/orders')}>Orders</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={() => {

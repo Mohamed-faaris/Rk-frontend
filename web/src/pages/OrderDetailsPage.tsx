@@ -188,30 +188,37 @@ const OrderDetailsPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 max-w-4xl pt-24 pb-12">
-        {/* Header */}
-        <div className="mb-8">
-          <Button
-            onClick={() => navigate('/orders')}
-            variant="outline"
-            className="mb-8 gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Orders
-          </Button>
-
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 break-normal">{order.title}</h1>
-              <p className="text-muted-foreground break-normal">{order.service}</p>
+      <div className="w-full px-3 sm:px-4 md:px-6 pt-16 sm:pt-20 md:pt-24 pb-12 md:pb-16">
+        <div className="container mx-auto max-w-4xl">
+          {/* Header */}
+          <div className="mb-6 md:mb-8">
+            <div className="mb-3 md:mb-4">
+              <Button
+                onClick={() => navigate('/orders')}
+                variant="outline"
+                className="gap-2 text-xs sm:text-sm py-2 md:py-2.5 px-3 md:px-4 h-9 md:h-10 w-full sm:w-auto justify-center sm:justify-start"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
+                Back to Orders
+              </Button>
             </div>
-            <div className="flex items-center space-x-3">
-              {getStatusIcon(order.status)}
-              {getStatusBadge(order.status)}
-              {getPriorityBadge(order.priority)}
+
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1 sm:mb-2 break-words">{order.title}</h1>
+                <p className="text-xs sm:text-sm md:text-base text-muted-foreground break-words">{order.service}</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex-shrink-0">
+                  {getStatusIcon(order.status)}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {getStatusBadge(order.status)}
+                  {getPriorityBadge(order.priority)}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -365,6 +372,7 @@ const OrderDetailsPage = () => {
             </Card>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Cancel Order Dialog */}

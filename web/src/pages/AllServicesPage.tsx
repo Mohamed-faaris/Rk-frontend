@@ -97,43 +97,44 @@ const AllServicesPage = () => {
         <Navbar />
       </header>
 
-      <main id="main-content" className="pt-1 md:pt-2">
-        <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-10 md:py-24">
+      <main id="main-content" className="pt-0.5 md:pt-1">
+        <section className="relative overflow-hidden border-b border-[#D4AF37]/20 bg-[radial-gradient(circle_at_top,#33260A_0%,#0A0A0A_45%,#080808_100%)] py-6 sm:py-12 md:py-18 lg:py-24">
         <div className="pointer-events-none absolute inset-0 opacity-20">
-          <div className="absolute left-0 top-0 h-56 w-56 rounded-full bg-[#D4AF37]/20 blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#B68A2F]/20 blur-3xl" />
+          <div className="absolute left-0 top-0 h-48 sm:h-56 w-48 sm:w-56 rounded-full bg-[#D4AF37]/20 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-56 sm:h-64 w-56 sm:w-64 rounded-full bg-[#B68A2F]/20 blur-3xl" />
         </div>
 
-        <div className="container relative mx-auto px-4 text-center">
-          <div className="mb-4 flex justify-start md:mb-6">
+        <div className="container relative mx-auto px-3 sm:px-4 md:px-6 text-center">
+          <div className="mb-3 sm:mb-4 md:mb-6 flex justify-start">
             <Button
               asChild
               variant="outline"
-              className="h-9 border-[#D4AF37]/60 bg-black/25 px-3 text-xs text-[#F6D77A] hover:bg-[#D4AF37]/10 hover:text-[#F8E6A2] sm:h-10 sm:px-4 sm:text-sm"
+              className="h-8 sm:h-9 md:h-10 border-[#D4AF37]/60 bg-black/25 px-2.5 sm:px-3 md:px-4 text-xs sm:text-sm md:text-base text-[#F6D77A] hover:bg-[#D4AF37]/10 hover:text-[#F8E6A2]"
             >
               <Link to="/" aria-label="Back to home page">
-                <ArrowLeft className="mr-1.5 h-4 w-4" />
-                Back to Home
+                <ArrowLeft className="mr-1.5 flex-shrink-0 h-3.5 sm:h-4 md:h-4 w-3.5 sm:w-4 md:w-4" />
+                <span className="hidden sm:inline">Back to Home</span>
+                <span className="sm:hidden">Back</span>
               </Link>
             </Button>
           </div>
 
-          <Badge className="brand-display border border-[#D4AF37]/60 bg-[#1A1305] px-4 py-1 text-[#F6D77A]">
+          <Badge className="brand-display border border-[#D4AF37]/60 bg-[#1A1305] px-3 sm:px-4 md:px-5 py-1 text-[#F6D77A] text-xs sm:text-sm">
             RajKayal Creative Hub
           </Badge>
-          <h1 className="fairy-display mx-auto mt-4 flex max-w-5xl flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[clamp(1.5rem,4vw,3.75rem)] font-bold leading-tight text-[#F8E6A2]">
+          <h1 className="fairy-display mx-auto mt-3 sm:mt-4 md:mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-x-1.5 sm:gap-x-2 gap-y-1 text-center text-[clamp(1.25rem,5vw,3.75rem)] font-bold leading-tight text-[#F8E6A2]">
             <span className="whitespace-nowrap">Design &amp; Software</span>
             <span className="whitespace-nowrap">Service Price List</span>
           </h1>
-          <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-[#D5D5D5] sm:text-base md:text-lg">
+          <p className="mx-auto mt-2.5 sm:mt-3 md:mt-4 max-w-3xl text-xs sm:text-sm md:text-base lg:text-lg leading-6 sm:leading-7 text-[#D5D5D5]">
             Affordable and professional pricing for small businesses, schools, colleges, startups, and local town clients who need branding, design, websites, and custom software support from a single creative partner.
           </p>
-          <p className="mx-auto mt-4 max-w-4xl text-sm leading-7 text-[#CFCFCF] sm:text-base">
-            This page gives you a practical view of our starting price ranges, the categories we cover, and the kinds of deliverables you can request right away. If you need a logo, a shop board, a school ID card, a landing page, an online store, or an internal business tool, you can use this list to estimate scope before booking a consultation. Every project can still be tailored based on complexity, turnaround time, quantity, content requirements, and revisions.
+          <p className="mx-auto mt-3 sm:mt-4 md:mt-5 max-w-4xl text-xs sm:text-sm md:text-base leading-6 sm:leading-7 text-[#CFCFCF]">
+            This page gives you a practical view of our starting price ranges, the categories we cover, and the kinds of deliverables you can request right away. If you need a logo, a shop board, a school ID card, a landing page, an online store, or an internal business tool, you can use this list to estimate scope before booking a consultation.
           </p>
-          <div className="mt-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
+          <div className="mt-4 sm:mt-5 md:mt-6 flex gap-1.5 sm:gap-2 overflow-x-auto pb-1.5 sm:pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0">
             {categoryTabs.slice(1, 7).map((tab) => (
-              <Badge key={tab.id} variant="outline" className="shrink-0 border-[#D4AF37]/40 bg-black/30 text-[#F6D77A]">
+              <Badge key={tab.id} variant="outline" className="shrink-0 border-[#D4AF37]/40 bg-black/30 text-[#F6D77A] text-xs sm:text-sm">
                 {tab.name}
               </Badge>
             ))}
