@@ -127,7 +127,7 @@ const AllServicesPage = () => {
             <span className="whitespace-nowrap">Service Price List</span>
           </h1>
           <p className="mx-auto mt-2.5 sm:mt-3 md:mt-4 max-w-3xl text-xs sm:text-sm md:text-base lg:text-lg leading-6 sm:leading-7 text-[#D5D5D5]">
-            Affordable and professional pricing for small businesses, schools, colleges, startups, and local town clients who need branding, design, websites, and custom software support from a single creative partner.
+            Affordable and professional pricing for All businesses, schools, colleges, startups, and local town clients who need branding, design, websites, and custom software support from a single creative partner.
           </p>
           <p className="mx-auto mt-3 sm:mt-4 md:mt-5 max-w-4xl text-xs sm:text-sm md:text-base leading-6 sm:leading-7 text-[#CFCFCF]">
             This page gives you a practical view of our starting price ranges, the categories we cover, and the kinds of deliverables you can request right away. If you need a logo, a shop board, a school ID card, a landing page, an online store, or an internal business tool, you can use this list to estimate scope before booking a consultation.
@@ -179,14 +179,8 @@ const AllServicesPage = () => {
           </div>
         </section>
 
-        <section id="services-content" aria-labelledby="pricing-list-heading" className="py-6 md:py-14">
+        <section id="services-content" aria-label="Service pricing categories" className="py-6 md:py-14">
         <div className="container mx-auto px-3 sm:px-4">
-          <div className="mb-6 md:mb-8">
-            <h2 id="pricing-list-heading" className="text-2xl font-semibold text-[#F6D77A] sm:text-3xl">Service pricing by category</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-[#D2D2D2] sm:text-base">
-              Compare our pricing across design, branding, web, e-commerce, maintenance, and software development services. Use the category filter to narrow the list or send an enquiry directly from any category card.
-            </p>
-          </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
             {filteredCategories.map((category) => (
               <Card
