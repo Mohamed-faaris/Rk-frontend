@@ -39,6 +39,8 @@ const OrderServicePage = () => {
     }
   });
 
+  const [selectedIndustry, setSelectedIndustry] = useState('');
+
   useEffect(() => {
     if (serviceName) {
       setFormData(prev => ({ ...prev, service: serviceName }));
@@ -75,6 +77,12 @@ const OrderServicePage = () => {
 
     if (!formData.timeline) {
       setError('Please select a timeline');
+      setIsLoading(false);
+      return;
+    }
+
+    if (selectedIndustry === 'other' && !formData.clientInfo?.industry?.trim()) {
+      setError('Please specify your industry');
       setIsLoading(false);
       return;
     }
@@ -211,11 +219,14 @@ const OrderServicePage = () => {
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Industry</label>
                         <Select
-                          value={formData.clientInfo?.industry || ''}
-                          onValueChange={(value) => handleChange('clientInfo', { 
-                            ...formData.clientInfo, 
-                            industry: value 
-                          })}
+                          value={selectedIndustry}
+                          onValueChange={(value) => {
+                            setSelectedIndustry(value);
+                            handleChange('clientInfo', {
+                              ...formData.clientInfo,
+                              industry: value === 'other' ? '' : value,
+                            });
+                          }}
                           disabled={isLoading}
                         >
                           <SelectTrigger className="bg-secondary border-border text-foreground">
@@ -234,6 +245,21 @@ const OrderServicePage = () => {
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
+
+                        {selectedIndustry === 'other' && (
+                          <Input
+                            type="text"
+                            value={formData.clientInfo?.industry || ''}
+                            onChange={(e) => handleChange('clientInfo', {
+                              ...formData.clientInfo,
+                              industry: e.target.value,
+                            })}
+                            placeholder="Type your industry"
+                            disabled={isLoading}
+                            required
+                            className="bg-secondary border-border text-foreground"
+                          />
+                        )}
                       </div>
 
                       <div className="space-y-2">

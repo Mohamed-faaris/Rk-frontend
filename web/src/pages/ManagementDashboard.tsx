@@ -318,6 +318,7 @@ export default function ManagementDashboard() {
     phone: '',
     preferredContactMethod: 'email'
   });
+  const [selectedOrderIndustry, setSelectedOrderIndustry] = useState('');
 
   const [applicationStatusForm, setApplicationStatusForm] = useState({
     adminNotes: '',
@@ -766,6 +767,7 @@ export default function ManagementDashboard() {
       phone: '',
       preferredContactMethod: 'email'
     });
+    setSelectedOrderIndustry('');
   };
 
   const handleCreateOrder = async () => {
@@ -802,6 +804,11 @@ export default function ManagementDashboard() {
 
       if (!orderForm.timeline) {
         setError('Please select a timeline');
+        return;
+      }
+
+      if (selectedOrderIndustry === 'other' && !orderForm.industry.trim()) {
+        setError('Please specify the industry');
         return;
       }
 
@@ -2474,13 +2481,38 @@ export default function ManagementDashboard() {
 
                       <div className="space-y-2">
                         <Label htmlFor="orderIndustry">Industry</Label>
-                        <Input
-                          id="orderIndustry"
-                          value={orderForm.industry}
-                          onChange={(e) => setOrderForm({ ...orderForm, industry: e.target.value })}
-                          placeholder="Technology"
-                          className="border-border"
-                        />
+                        <Select
+                          value={selectedOrderIndustry}
+                          onValueChange={(value) => {
+                            setSelectedOrderIndustry(value);
+                            setOrderForm({ ...orderForm, industry: value === 'other' ? '' : value });
+                          }}
+                        >
+                          <SelectTrigger id="orderIndustry" className="border-border">
+                            <SelectValue placeholder="Select industry" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="technology">Technology</SelectItem>
+                            <SelectItem value="healthcare">Healthcare</SelectItem>
+                            <SelectItem value="finance">Finance</SelectItem>
+                            <SelectItem value="ecommerce">E-commerce</SelectItem>
+                            <SelectItem value="education">Education</SelectItem>
+                            <SelectItem value="real-estate">Real Estate</SelectItem>
+                            <SelectItem value="restaurant">Restaurant & Food</SelectItem>
+                            <SelectItem value="fashion">Fashion & Beauty</SelectItem>
+                            <SelectItem value="nonprofit">Non-profit</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        {selectedOrderIndustry === 'other' && (
+                          <Input
+                            value={orderForm.industry}
+                            onChange={(e) => setOrderForm({ ...orderForm, industry: e.target.value })}
+                            placeholder="Type industry"
+                            className="border-border"
+                          />
+                        )}
                       </div>
 
                       <div className="space-y-2">
