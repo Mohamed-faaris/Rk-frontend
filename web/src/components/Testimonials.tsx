@@ -8,6 +8,7 @@ import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
 import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
 import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
 import pallaviImage from "@/assets/PALLAVI P.webp";
+import vivehaImage from "@/assets/Viveha.png";
 import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
 import yogeshImage from "@/assets/YOGESH M.webp";
 import "@/styles/team-cards.scss";
@@ -102,6 +103,20 @@ const Testimonials = () => {
       imagePosition: "center 18%",
       fullName: "PALLAVI P",
       title: "Project Manager",
+      location: "Tamil Nadu, India",
+      socials: [],
+    },
+    {
+      id: "viveha",
+      name: "VIVEHA",
+      role: "designing head",
+      bio: "Leads visual design direction and ensures every brand touchpoint stays consistent and impactful.",
+      skills: ["Design Leadership", "Visual Direction", "Brand Consistency"],
+      icon: Palette,
+      image: vivehaImage,
+      imagePosition: "center 18%",
+      fullName: "Viveha",
+      title: "designing head",
       location: "Tamil Nadu, India",
       socials: [],
     },
