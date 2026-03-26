@@ -1,28 +1,32 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Beams from "@/components/Beams";
+import SoftAurora from "@/components/SoftAurora";
 
 const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-[radial-gradient(120%_80%_at_50%_0%,#2b1f07_0%,#120d04_52%,#050402_100%)]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <Beams
-          beamWidth={3}
-          beamHeight={30}
-          beamNumber={20}
-          lightColor="#FFD166"
-          speed={2}
-          noiseIntensity={1.75}
-          scale={0.2}
-          rotation={30}
+        <SoftAurora
+          speed={0.6}
+          scale={1.5}
+          brightness={1}
+          color1="#f8e6a2"
+          color2="#d4af37"
+          noiseFrequency={2.5}
+          noiseAmplitude={1}
+          bandHeight={0.5}
+          bandSpread={1}
+          octaveDecay={0.1}
+          layerOffset={0.35}
+          colorSpeed={1}
+          enableMouseInteraction
+          mouseInfluence={0.25}
         />
       </div>
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/35 via-black/20 to-black/45 pointer-events-none" />
-      <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.18),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(201,169,97,0.14),transparent_34%)] pointer-events-none" />
-      <div className="absolute bottom-0 inset-x-0 h-28 z-[2] bg-gradient-to-b from-transparent to-background pointer-events-none" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-black/15 to-black/40 pointer-events-none" />
 
       {/* Content */}
       <div className="w-full px-4 sm:px-6 md:px-8 z-20 relative">
