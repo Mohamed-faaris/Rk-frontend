@@ -6,27 +6,30 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative isolate min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      <div className="absolute left-1/2 top-1/2 z-0 h-[56vh] w-[170vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none md:h-[62vh]">
+      <div
+        aria-hidden="true"
+        className="absolute left-1/2 top-1/2 z-0 h-[48vh] w-[140vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none md:h-[54vh]"
+      >
         <SoftAurora
-          speed={0.6}
-          scale={1.35}
-          brightness={1.2}
+          speed={0.52}
+          scale={1.2}
+          brightness={1.05}
           color1="#f6d77a"
           color2="#d4af37"
-          noiseFrequency={2.5}
-          noiseAmplitude={1}
+          noiseFrequency={2.1}
+          noiseAmplitude={0.85}
           bandHeight={0.5}
-          bandSpread={1.25}
-          octaveDecay={0.16}
+          bandSpread={1.15}
+          octaveDecay={0.2}
           layerOffset={0.2}
-          colorSpeed={1}
+          colorSpeed={0.85}
           enableMouseInteraction
-          mouseInfluence={0.25}
+          mouseInfluence={0.14}
         />
       </div>
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/14 via-black/8 to-black/18 pointer-events-none" />
+      <div aria-hidden="true" className="absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-black/6 to-black/14 pointer-events-none" />
 
       {/* Content */}
       <div className="w-full px-4 sm:px-6 md:px-8 z-20 relative">
