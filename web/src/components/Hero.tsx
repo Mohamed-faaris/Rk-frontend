@@ -8,25 +8,25 @@ const Hero = () => {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute left-1/2 top-1/2 z-0 h-[56vh] w-[170vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none md:h-[62vh]">
         <SoftAurora
           speed={0.6}
-          scale={1.5}
-          brightness={1}
-          color1="#f8e6a2"
+          scale={1.35}
+          brightness={1.2}
+          color1="#f6d77a"
           color2="#d4af37"
           noiseFrequency={2.5}
           noiseAmplitude={1}
           bandHeight={0.5}
-          bandSpread={1}
-          octaveDecay={0.1}
-          layerOffset={0.35}
+          bandSpread={1.25}
+          octaveDecay={0.16}
+          layerOffset={0.2}
           colorSpeed={1}
           enableMouseInteraction
           mouseInfluence={0.25}
         />
       </div>
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-black/15 to-black/40 pointer-events-none" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/14 via-black/8 to-black/18 pointer-events-none" />
 
       {/* Content */}
       <div className="w-full px-4 sm:px-6 md:px-8 z-20 relative">
