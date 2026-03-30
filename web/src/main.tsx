@@ -1,5 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+import Clarity from "@microsoft/clarity";
+import { env } from "./lib/env";
 import "./index.css";
 
 // Verify React DOM is available
@@ -12,6 +14,10 @@ const root = document.getElementById("root");
 if (!root) {
   console.error("Root element not found in HTML");
   throw new Error("Root element (#root) not found in HTML");
+}
+
+if (env.VITE_CLARITY_PROJECT_ID) {
+  Clarity.init(env.VITE_CLARITY_PROJECT_ID);
 }
 
 try {

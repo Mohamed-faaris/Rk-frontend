@@ -4,6 +4,7 @@ import { logger } from './logger';
 const envSchema = z.object({
   VITE_API_URL: z.string().url(),
   VITE_GOOGLE_CLIENT_ID: z.string(),
+  VITE_CLARITY_PROJECT_ID: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(import.meta.env);
