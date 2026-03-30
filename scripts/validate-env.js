@@ -17,6 +17,12 @@ const optionalEnvVars = [
   'PORT'
 ];
 
+const frontendEnvVars = [
+  'VITE_API_URL',
+  'VITE_GOOGLE_CLIENT_ID',
+  'VITE_CLARITY_PROJECT_ID'
+];
+
 console.log('🔍 Validating environment variables...\n');
 
 let hasErrors = false;
@@ -45,6 +51,16 @@ for (const envVar of optionalEnvVars) {
 // Report status
 console.log('\n✅ Configured:');
 present.forEach(v => console.log(`   ✓ ${v}`));
+
+console.log('\n🌐 Frontend env:');
+frontendEnvVars.forEach((envVar) => {
+  const value = process.env[envVar];
+  if (value) {
+    console.log(`   ${envVar}=${value}`);
+  } else {
+    console.log(`   ${envVar}=<not set>`);
+  }
+});
 
 if (missing.length > 0) {
   console.log('\n❌ Missing Required:');
