@@ -73,7 +73,7 @@ const About = () => {
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
             <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
-              <span className="gradient-text">About</span> Our Studio
+              <span className="gradient-text">About</span> Our Company
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               A fresh creative studio bringing innovative ideas and modern digital solutions to life.
