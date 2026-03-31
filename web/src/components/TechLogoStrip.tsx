@@ -43,30 +43,26 @@ const techLogos = [
 
 const TechLogoStrip = () => {
   return (
-    <section className="relative py-8 md:py-10 bg-secondary/20" aria-label="Technology strip">
-      <div className="container mx-auto px-4">
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-xl border border-accent/20 bg-background/70 backdrop-blur-sm">
-          <div
-            className="h-[96px] md:h-[108px] relative overflow-hidden"
-            style={{
-              color: "hsl(var(--gold))",
-              textShadow: "0 0 18px hsla(45, 70%, 52%, 0.28)",
-            }}
-          >
-            <LogoLoop
-              logos={techLogos}
-              speed={95}
-              direction="left"
-              logoHeight={44}
-              gap={64}
-              hoverSpeed={0}
-              scaleOnHover
-              fadeOut
-              fadeOutColor="hsl(var(--background))"
-              ariaLabel="Technology partners"
-            />
-          </div>
-        </div>
+    <section className="relative py-8 md:py-10" aria-label="Technology strip">
+      <div
+        className="w-full h-[96px] md:h-[108px] relative overflow-hidden"
+        style={{
+          color: "hsl(var(--gold))",
+          textShadow: "0 0 18px hsla(45, 70%, 52%, 0.28)",
+        }}
+      >
+        <LogoLoop
+          logos={techLogos}
+          speed={95}
+          direction="left"
+          logoHeight={44}
+          gap={64}
+          hoverSpeed={0}
+          scaleOnHover
+          fadeOut
+          fadeOutColor="hsl(var(--background))"
+          ariaLabel="Technology partners"
+        />
       </div>
     </section>
   );
