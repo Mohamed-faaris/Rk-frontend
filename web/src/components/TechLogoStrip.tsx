@@ -1,11 +1,11 @@
 import {
-  SiAdobephotoshop,
   SiCanva,
   SiNextdotjs,
   SiReact,
   SiTailwindcss,
   SiTypescript,
 } from "react-icons/si";
+import { TbBrandAdobePhotoshop } from "react-icons/tb";
 import LogoLoop from "@/components/LogoLoop";
 
 const techLogos = [
@@ -30,7 +30,7 @@ const techLogos = [
     href: "https://tailwindcss.com",
   },
   {
-    node: <SiAdobephotoshop className="h-[1em] w-[1em]" />,
+    node: <TbBrandAdobePhotoshop className="h-[1em] w-[1em]" />,
     title: "Adobe Photoshop",
     href: "https://www.adobe.com/products/photoshop.html",
   },
