@@ -43,9 +43,9 @@ const techLogos = [
 
 const TechLogoStrip = () => {
   return (
-    <section className="relative py-8 md:py-10" aria-label="Technology strip">
+    <section className="relative py-3 md:py-4" aria-label="Technology strip">
       <div
-        className="w-full h-[96px] md:h-[108px] relative overflow-hidden"
+        className="w-full h-[112px] md:h-[124px] relative overflow-hidden"
         style={{
           color: "hsl(var(--gold))",
           textShadow: "0 0 18px hsla(45, 70%, 52%, 0.28)",
@@ -55,7 +55,7 @@ const TechLogoStrip = () => {
           logos={techLogos}
           speed={95}
           direction="left"
-          logoHeight={44}
+          logoHeight={56}
           gap={64}
           hoverSpeed={0}
           scaleOnHover
