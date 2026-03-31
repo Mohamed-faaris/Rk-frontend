@@ -1,36 +1,43 @@
-import { Code2, Figma, Globe, MonitorCog, Palette, Rocket } from "lucide-react";
+import {
+  SiAdobephotoshop,
+  SiCanva,
+  SiNextdotjs,
+  SiReact,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
 import LogoLoop from "@/components/LogoLoop";
 
 const techLogos = [
   {
-    node: <Code2 className="h-[1em] w-[1em]" />,
-    title: "Web Development",
-    href: "#services",
+    node: <SiReact className="h-[1em] w-[1em]" />,
+    title: "React",
+    href: "https://react.dev",
   },
   {
-    node: <MonitorCog className="h-[1em] w-[1em]" />,
-    title: "UI and UX",
-    href: "#services",
+    node: <SiNextdotjs className="h-[1em] w-[1em]" />,
+    title: "Next.js",
+    href: "https://nextjs.org",
   },
   {
-    node: <Palette className="h-[1em] w-[1em]" />,
-    title: "Branding",
-    href: "#services",
+    node: <SiTypescript className="h-[1em] w-[1em]" />,
+    title: "TypeScript",
+    href: "https://www.typescriptlang.org",
   },
   {
-    node: <Figma className="h-[1em] w-[1em]" />,
-    title: "Design Systems",
-    href: "#services",
+    node: <SiTailwindcss className="h-[1em] w-[1em]" />,
+    title: "Tailwind CSS",
+    href: "https://tailwindcss.com",
   },
   {
-    node: <Globe className="h-[1em] w-[1em]" />,
-    title: "SEO and Visibility",
-    href: "#services",
+    node: <SiAdobephotoshop className="h-[1em] w-[1em]" />,
+    title: "Adobe Photoshop",
+    href: "https://www.adobe.com/products/photoshop.html",
   },
   {
-    node: <Rocket className="h-[1em] w-[1em]" />,
-    title: "Growth Launch",
-    href: "#contact",
+    node: <SiCanva className="h-[1em] w-[1em]" />,
+    title: "Canva",
+    href: "https://www.canva.com",
   },
 ];
 
