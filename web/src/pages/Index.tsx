@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import TechLogoStrip from "@/components/TechLogoStrip";
 import About from "@/components/About";
 import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
@@ -13,6 +14,7 @@ const Index = () => {
       <Navbar />
       <main className="relative z-10">
         <Hero />
+        <TechLogoStrip />
         <About />
         <Services />
         <Portfolio />
