@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.webp";
+import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
 import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
 import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
