@@ -8,7 +8,7 @@ import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
 import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
 import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
 import pallaviImage from "@/assets/PALLAVI P.webp";
-import vivehaImage from "@/assets/Viveha.png";
+import vivehaImage from "@/assets/VIVEHA V.png";
 import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
 import yogeshImage from "@/assets/YOGESH M.webp";
 import "@/styles/team-cards.scss";
