@@ -10,7 +10,7 @@ const Hero = () => {
     >
       <div
         aria-hidden="true"
-        className="absolute left-1/2 top-1/2 z-0 h-[62vh] w-[170vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none md:h-[68vh]"
+        className="absolute left-[55%] top-[42%] z-0 h-[74vh] w-[190vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none md:left-1/2 md:top-1/2 md:h-[68vh] md:w-[170vw]"
       >
         <SoftAurora
           speed={0.5}
