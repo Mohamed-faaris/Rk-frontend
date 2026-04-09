@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute, AdminRoute } from "@/components/ProtectedRoute";
 import AuthPopupModal from "./components/AuthPopupModal";
@@ -61,6 +61,10 @@ const PageLoader = () => (
 const AppContent = () => {
   const [authPopupOpen, setAuthPopupOpen] = useState(false);
   const [chatbotReady, setChatbotReady] = useState(false);
+  const location = useLocation();
+
+  const normalizedPath = location.pathname.replace(/\/+$/, "") || "/";
+  const shouldHideChatbot = normalizedPath === "/login" || normalizedPath === "/register";
 
   useEffect(() => {
     // Listen for auth popup events
@@ -197,7 +201,7 @@ const AppContent = () => {
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<main><NotFound /></main>} />
       </Routes>
-      {chatbotReady && (
+      {chatbotReady && !shouldHideChatbot && (
         <Suspense fallback={null}>
           <ChatBot />
         </Suspense>
