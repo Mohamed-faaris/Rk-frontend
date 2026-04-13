@@ -61,6 +61,11 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               <DropdownMenuItem onSelect={() => navigate('/account')}>Account</DropdownMenuItem>
+              {user?.role === 'admin' && (
+                <DropdownMenuItem onSelect={() => navigate('/management')}>
+                  Management Dashboard
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={() => {
