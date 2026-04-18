@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
+import { authService } from "@/lib/authService";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,6 +36,7 @@ const AccountPage = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [is2FADialogOpen, setIs2FADialogOpen] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
@@ -120,16 +122,34 @@ const AccountPage = () => {
     }
   };
 
-  const handleDeleteAccount = () => {
-    // TODO: Implement account deletion API call
-    toast({
-      variant: "destructive",
-      title: "Account Deleted",
-      description: "Your account has been permanently deleted.",
-    });
-    logout();
-    navigate("/");
+  const handleDeleteAccount = async () => {
+    try {
+      setIsDeletingAccount(true);
+      await authService.deleteAccount();
+      toast({
+        variant: "destructive",
+        title: "Account Deleted",
+        description: "Your account is marked as deleted. History is retained for records.",
+      });
+      logout();
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: error?.response?.data?.error || "Unable to delete account right now.",
+      });
+    } finally {
+      setIsDeletingAccount(false);
+    }
   };
+
+  const accountStatusLabel = user?.isDeleted ? "Deleted" : user?.isActive === false ? "Inactive" : "Active";
+  const accountStatusClass = user?.isDeleted
+    ? "border-destructive text-destructive"
+    : user?.isActive === false
+      ? "border-yellow-500 text-yellow-500"
+      : "border-green-500 text-green-500";
 
   if (!user) {
     navigate("/login");
@@ -191,8 +211,8 @@ const AccountPage = () => {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Status</span>
-                      <Badge variant="outline" className="border-green-500 text-green-500">
-                        Active
+                      <Badge variant="outline" className={accountStatusClass}>
+                        {accountStatusLabel}
                       </Badge>
                     </div>
                     <div className="flex items-start gap-2 pt-2">
@@ -548,17 +568,18 @@ const AccountPage = () => {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete your
-                            account and remove all your data from our servers.
+                            This will mark your account as deleted and disable login access.
+                            Your historical records are kept for auditing and order history.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={handleDeleteAccount}
+                            disabled={isDeletingAccount}
                             className="bg-destructive hover:bg-destructive/90"
                           >
-                            Delete Account
+                            {isDeletingAccount ? "Deleting..." : "Delete Account"}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

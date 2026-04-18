@@ -26,6 +26,8 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, JWT_SECRET, { expiresIn: JWT_EXPIRE });
 };
 
+const isAccountDeletedOrInactive = (user) => user?.isDeleted || user?.isActive === false;
+
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
@@ -51,6 +53,12 @@ export const register = async (req, res, next) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      if (isAccountDeletedOrInactive(existingUser)) {
+        return res.status(403).json({
+          error: 'This account is deleted or inactive. Please contact support.',
+          code: 'ACCOUNT_DELETED'
+        });
+      }
       return res.status(400).json({ error: 'User with this email already exists' });
     }
 
@@ -104,6 +112,13 @@ export const login = async (req, res, next) => {
       return res.status(404).json({
         error: 'Account does not exist',
         code: 'USER_NOT_FOUND'
+      });
+    }
+
+    if (isAccountDeletedOrInactive(user)) {
+      return res.status(403).json({
+        error: 'Your account has been deleted or deactivated.',
+        code: 'ACCOUNT_DELETED'
       });
     }
 
@@ -290,6 +305,58 @@ export const changePassword = async (req, res, next) => {
   }
 };
 
+// @desc    Soft delete current user account (retain history)
+// @route   DELETE /api/auth/delete-account
+// @access  Private
+export const deleteAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.isDeleted) {
+      return res.status(200).json({
+        success: true,
+        message: 'Account already marked as deleted',
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isActive: user.isActive,
+          isDeleted: user.isDeleted,
+          deletedAt: user.deletedAt
+        }
+      });
+    }
+
+    user.isDeleted = true;
+    user.isActive = false;
+    user.deletedAt = new Date();
+    user.updatedAt = new Date();
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Account marked as deleted. Your history is retained for records.',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+        isDeleted: user.isDeleted,
+        deletedAt: user.deletedAt
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 // @desc    Verify OTP for admin login
 // @route   POST /api/auth/verify-otp
 // @access  Public
@@ -359,6 +426,13 @@ export const verifyOTP = async (req, res, next) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    if (isAccountDeletedOrInactive(user)) {
+      return res.status(403).json({
+        error: 'Your account has been deleted or deactivated.',
+        code: 'ACCOUNT_DELETED'
+      });
+    }
+
     // Generate token
     const token = generateToken(user._id, user.role);
 
@@ -399,6 +473,13 @@ export const resendOTP = async (req, res, next) => {
 
     if (!user || user.role !== 'admin') {
       return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (isAccountDeletedOrInactive(user)) {
+      return res.status(403).json({
+        error: 'Your account has been deleted or deactivated.',
+        code: 'ACCOUNT_DELETED'
+      });
     }
 
     // Generate new secure OTP
@@ -457,6 +538,12 @@ export const googleLogin = async (req, res) => {
     // Development/Test Mode: Allow mock login for testing UI
     if (idToken === 'mock-google-token' && env.NODE_ENV === 'development') {
       let user = await User.findOne({ email: 'test-google@rkch.dev' });
+      if (user && isAccountDeletedOrInactive(user)) {
+        return res.status(403).json({
+          error: 'Your account has been deleted or deactivated.',
+          code: 'ACCOUNT_DELETED'
+        });
+      }
       if (!user) {
         user = await User.create({
           name: 'Test Google User',
@@ -502,6 +589,13 @@ export const googleLogin = async (req, res) => {
 
     let user = await User.findOne({ email });
 
+    if (user && isAccountDeletedOrInactive(user)) {
+      return res.status(403).json({
+        error: 'Your account has been deleted or deactivated.',
+        code: 'ACCOUNT_DELETED'
+      });
+    }
+
     if (!user) {
       const randomPassword = crypto.randomBytes(16).toString('hex');
       user = await User.create({
@@ -540,6 +634,12 @@ export const appleLogin = async (req, res) => {
     // Development/Test Mode: Allow mock login for testing UI
     if (idToken === 'mock-apple-token' && env.NODE_ENV === 'development') {
       let user = await User.findOne({ email: 'test-apple@rkch.dev' });
+      if (user && isAccountDeletedOrInactive(user)) {
+        return res.status(403).json({
+          error: 'Your account has been deleted or deactivated.',
+          code: 'ACCOUNT_DELETED'
+        });
+      }
       if (!user) {
         user = await User.create({
           name: 'Test Apple User',
@@ -588,6 +688,13 @@ export const appleLogin = async (req, res) => {
 
     let user = await User.findOne({ email: derivedEmail });
 
+    if (user && isAccountDeletedOrInactive(user)) {
+      return res.status(403).json({
+        error: 'Your account has been deleted or deactivated.',
+        code: 'ACCOUNT_DELETED'
+      });
+    }
+
     if (!user) {
       const randomPassword = crypto.randomBytes(16).toString('hex');
       user = await User.create({
@@ -626,6 +733,12 @@ export const facebookLogin = async (req, res) => {
     // Development/Test Mode: Allow mock login for testing UI
     if (accessToken === 'mock-facebook-token' && env.NODE_ENV === 'development') {
       let user = await User.findOne({ email: 'test-facebook@rkch.dev' });
+      if (user && isAccountDeletedOrInactive(user)) {
+        return res.status(403).json({
+          error: 'Your account has been deleted or deactivated.',
+          code: 'ACCOUNT_DELETED'
+        });
+      }
       if (!user) {
         user = await User.create({
           name: 'Test Facebook User',
@@ -680,6 +793,13 @@ export const facebookLogin = async (req, res) => {
     const resolvedName = profileData.name || 'Facebook User';
 
     let user = await User.findOne({ email: resolvedEmail });
+
+    if (user && isAccountDeletedOrInactive(user)) {
+      return res.status(403).json({
+        error: 'Your account has been deleted or deactivated.',
+        code: 'ACCOUNT_DELETED'
+      });
+    }
 
     if (!user) {
       const randomPassword = crypto.randomBytes(16).toString('hex');

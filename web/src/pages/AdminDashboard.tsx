@@ -234,8 +234,8 @@ export default function AdminDashboard() {
                       <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
                         {user.role}
                       </Badge>
-                      <Badge variant={user.isActive ? 'default' : 'destructive'}>
-                        {user.isActive ? 'Active' : 'Inactive'}
+                      <Badge variant={user.isDeleted ? 'destructive' : user.isActive ? 'default' : 'secondary'}>
+                        {user.isDeleted ? 'Deleted' : user.isActive ? 'Active' : 'Inactive'}
                       </Badge>
                     </div>
                   </CardTitle>

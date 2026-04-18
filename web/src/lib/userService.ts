@@ -7,6 +7,8 @@ export interface User {
   phone?: string;
   role: 'user' | 'admin';
   isActive: boolean;
+  isDeleted?: boolean;
+  deletedAt?: string | null;
   createdAt: string;
   ordersCount?: number;
   totalSpent?: number;

@@ -23,6 +23,9 @@ export interface User {
   email: string;
   phone?: string;
   role: 'user' | 'admin';
+  isActive?: boolean;
+  isDeleted?: boolean;
+  deletedAt?: string | null;
 }
 
 export interface AuthResponse {
@@ -187,6 +190,14 @@ export const authService = {
     const response = await api.put('/auth/change-password', data);
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+    }
+    return response.data;
+  },
+
+  deleteAccount: async (): Promise<AuthResponse> => {
+    const response = await api.delete('/auth/delete-account');
+    if (response.data.user) {
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     }
     return response.data;
   },

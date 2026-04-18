@@ -5,6 +5,7 @@ import {
   getMe,
   updateProfile,
   changePassword,
+  deleteAccount,
   verifyOTP,
   resendOTP,
   googleLogin,
@@ -25,5 +26,6 @@ router.post('/facebook', facebookLogin);
 router.get('/me', protect, getMe);
 router.put('/update', protect, updateProfile);
 router.put('/change-password', protect, changePassword);
+router.delete('/delete-account', protect, deleteAccount);
 
 export default router;

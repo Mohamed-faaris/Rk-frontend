@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'rajkayal_creative_hub_secret_key_2025';
 
-export const protect = (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -13,7 +14,17 @@ export const protect = (req, res, next) => {
 
     console.log('Attempting to verify token with JWT_SECRET:', JWT_SECRET ? '(set)' : '(not set)');
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
+
+    const user = await User.findById(decoded.id).select('_id role isActive isDeleted');
+
+    if (!user || user.isDeleted || user.isActive === false) {
+      return res.status(401).json({ error: 'Account is deleted or inactive' });
+    }
+
+    req.user = {
+      id: user._id.toString(),
+      role: user.role
+    };
     console.log('User authenticated:', decoded.id, 'Role:', decoded.role, 'for route:', req.originalUrl);
     next();
   } catch (error) {
