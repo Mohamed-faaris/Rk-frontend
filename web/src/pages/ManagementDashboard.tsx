@@ -90,6 +90,8 @@ export default function ManagementDashboard() {
   const [revenueData, setRevenueData] = useState<any>(null);
   const [revenueChart, setRevenueChart] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [revenueStartDate, setRevenueStartDate] = useState('');
+  const [revenueEndDate, setRevenueEndDate] = useState('');
 
   // Dialogs
   const [employeeDialog, setEmployeeDialog] = useState(false);
@@ -366,7 +368,7 @@ export default function ManagementDashboard() {
     if (activeTab === 'overview' || activeTab === 'applications') {
       loadApplications();
     }
-  }, [activeTab, isInitialized, user]);
+  }, [activeTab, isInitialized, user, revenueStartDate, revenueEndDate]);
 
   const loadEmployees = async () => {
     try {
@@ -465,7 +467,10 @@ export default function ManagementDashboard() {
   const loadRevenue = async () => {
     try {
       logger.debug('Loading revenue...');
-      const response = await revenueService.getRevenueStats();
+      const response = await revenueService.getRevenueStats(
+        revenueStartDate || undefined,
+        revenueEndDate || undefined
+      );
       logger.debug('Revenue loaded:', response);
       setRevenueData(response);
       setRevenueChart(response.chart || []);
@@ -2820,10 +2825,57 @@ export default function ManagementDashboard() {
               </Card>
             </div>
 
+            {/* Revenue Chart Filter */}
+            <Card className="border-border bg-card mb-4">
+              <CardHeader className="py-3 md:py-4">
+                <CardTitle className="text-sm md:text-base">Filter Revenue by Date Range</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 md:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rev-start-date" className="text-xs md:text-sm">Start Date</Label>
+                    <Input
+                      id="rev-start-date"
+                      type="date"
+                      value={revenueStartDate}
+                      onChange={(e) => setRevenueStartDate(e.target.value)}
+                      className="border-border text-xs md:text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="rev-end-date" className="text-xs md:text-sm">End Date</Label>
+                    <Input
+                      id="rev-end-date"
+                      type="date"
+                      value={revenueEndDate}
+                      onChange={(e) => setRevenueEndDate(e.target.value)}
+                      className="border-border text-xs md:text-sm"
+                    />
+                  </div>
+                </div>
+                {(revenueStartDate || revenueEndDate) && (
+                  <Button
+                    onClick={() => {
+                      setRevenueStartDate('');
+                      setRevenueEndDate('');
+                    }}
+                    variant="outline"
+                    className="mt-4 text-xs md:text-sm"
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Revenue Chart */}
             <Card className="border-border bg-card">
               <CardHeader className="py-3 md:py-4">
-                <CardTitle className="text-sm md:text-base">Last 30 Days Revenue</CardTitle>
+                <CardTitle className="text-sm md:text-base">
+                  {revenueStartDate && revenueEndDate 
+                    ? `Revenue (${new Date(revenueStartDate).toLocaleDateString('en-IN')} to ${new Date(revenueEndDate).toLocaleDateString('en-IN')})`
+                    : 'Last 30 Days Revenue'}
+                </CardTitle>
               </CardHeader>
               <CardContent className="p-0 md:p-6">
                 <div className="overflow-x-auto pb-4">

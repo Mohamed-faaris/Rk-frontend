@@ -65,8 +65,12 @@ const revenueService = {
     return response.data;
   },
 
-  async getRevenueStats(): Promise<RevenueStats> {
-    const response = await api.get('/revenue/stats');
+  async getRevenueStats(startDate?: string, endDate?: string): Promise<RevenueStats> {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    
+    const response = await api.get(`/revenue/stats${params.toString() ? '?' + params.toString() : ''}`);
     return response.data;
   },
 };

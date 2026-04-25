@@ -61,8 +61,26 @@ export const updateTodayRevenue = async (req, res) => {
 // Get revenue statistics
 export const getRevenueStats = async (req, res) => {
   try {
+    const { startDate, endDate } = req.query;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    
+    // Determine date range for chart data
+    let rangeStart, rangeEnd;
+    
+    if (startDate && endDate) {
+      // User-specified date range
+      rangeStart = new Date(startDate);
+      rangeStart.setHours(0, 0, 0, 0);
+      rangeEnd = new Date(endDate);
+      rangeEnd.setHours(23, 59, 59, 999);
+    } else {
+      // Default to last 30 days
+      rangeStart = new Date(today);
+      rangeStart.setDate(rangeStart.getDate() - 29);
+      rangeEnd = new Date(today);
+      rangeEnd.setHours(23, 59, 59, 999);
+    }
     
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -105,11 +123,12 @@ export const getRevenueStats = async (req, res) => {
     const monthRevenue = monthCompletedOrders.reduce((sum, order) => sum + (order.budget || order.totalAmount || 0), 0);
     const monthOrdersCount = monthCompletedOrders.length;
     
-    // Generate chart data for last 30 days
+    // Generate chart data for the selected date range
     const chartData = [];
-    for (let i = 29; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
+    const currentDate = new Date(rangeStart);
+    
+    while (currentDate <= rangeEnd) {
+      const date = new Date(currentDate);
       date.setHours(0, 0, 0, 0);
       
       const nextDay = new Date(date);
@@ -132,6 +151,8 @@ export const getRevenueStats = async (req, res) => {
         orders: dayOrdersCount,
         profit: dayProfit
       });
+      
+      currentDate.setDate(currentDate.getDate() + 1);
     }
     
     res.json({

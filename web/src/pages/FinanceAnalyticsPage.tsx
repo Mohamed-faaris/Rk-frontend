@@ -30,6 +30,8 @@ export default function FinanceAnalyticsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     if (!user) return;
@@ -44,7 +46,7 @@ export default function FinanceAnalyticsPage() {
       try {
         setIsLoading(true);
         const [statsData, updateData] = await Promise.all([
-          revenueService.getRevenueStats(),
+          revenueService.getRevenueStats(startDate || undefined, endDate || undefined),
           businessAnalyticsUpdateService.listPublished()
         ]);
         setStats(statsData);
@@ -57,7 +59,7 @@ export default function FinanceAnalyticsPage() {
     };
 
     loadData();
-  }, [navigate, user]);
+  }, [navigate, user, startDate, endDate]);
 
   const chartPoints = useMemo(() => {
     if (!stats?.chart?.length) return '';
@@ -102,7 +104,7 @@ export default function FinanceAnalyticsPage() {
       setSuccess('Business analytics update published successfully.');
 
       const [statsData, updateData] = await Promise.all([
-        revenueService.getRevenueStats(),
+        revenueService.getRevenueStats(startDate || undefined, endDate || undefined),
         businessAnalyticsUpdateService.listPublished()
       ]);
       setStats(statsData);
@@ -154,6 +156,56 @@ export default function FinanceAnalyticsPage() {
             </Alert>
           )}
 
+          {!isLoading && (
+            <Card className="border-border mb-6">
+              <CardHeader>
+                <CardTitle>Filter by Date Range</CardTitle>
+                <CardDescription>Select dates to filter revenue data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="start-date">Start Date</Label>
+                    <Input
+                      id="start-date"
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="border-border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="end-date">End Date</Label>
+                    <Input
+                      id="end-date"
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="border-border"
+                    />
+                  </div>
+                </div>
+                {(startDate || endDate) && (
+                  <Button
+                    onClick={() => {
+                      setStartDate('');
+                      setEndDate('');
+                    }}
+                    variant="outline"
+                    className="mt-4"
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
+          {success && (
+            <Alert className="mb-6 bg-green-900/20 border-green-500/50">
+              <AlertDescription className="text-green-500">{success}</AlertDescription>
+            </Alert>
+          )}
+
           {isLoading ? (
             <Card className="border-border">
               <CardContent className="py-10 text-center text-muted-foreground">Loading analytics...</CardContent>
@@ -185,8 +237,16 @@ export default function FinanceAnalyticsPage() {
 
               <Card className="border-border mb-8">
                 <CardHeader>
-                  <CardTitle>Revenue Graph (Last 30 Days)</CardTitle>
-                  <CardDescription>Revenue from completed orders over the last 30 days.</CardDescription>
+                  <CardTitle>
+                    {startDate && endDate 
+                      ? `Revenue Graph (${new Date(startDate).toLocaleDateString('en-IN')} to ${new Date(endDate).toLocaleDateString('en-IN')})`
+                      : 'Revenue Graph (Last 30 Days)'}
+                  </CardTitle>
+                  <CardDescription>
+                    {startDate && endDate 
+                      ? 'Revenue from completed orders for selected date range.'
+                      : 'Revenue from completed orders over the last 30 days.'}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="w-full overflow-x-auto">
