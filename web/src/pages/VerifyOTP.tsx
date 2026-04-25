@@ -52,7 +52,7 @@ export default function VerifyOTP() {
         setAuthUser(response.user);
         
         // Redirect based on user role
-        if (response.user.role === 'admin') {
+        if (response.user.role === 'admin' || response.user.role === 'ceo') {
           navigate('/management', { replace: true });
         } else {
           navigate('/', { replace: true });

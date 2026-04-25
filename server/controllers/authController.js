@@ -20,6 +20,7 @@ const FACEBOOK_GRAPH_VERSION = env.FACEBOOK_GRAPH_VERSION;
 const httpFetch = typeof globalThis.fetch === 'function' ? globalThis.fetch.bind(globalThis) : nodeFetch;
 
 const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
+const PRIVILEGED_OTP_ROLES = new Set(['admin']);
 
 // Generate JWT Token
 const generateToken = (id, role) => {
@@ -135,12 +136,13 @@ export const login = async (req, res, next) => {
       });
     }
 
-    // Check if user is admin - if yes, check if OTP should be skipped
+    // Check if user is privileged - if yes, check if OTP should be skipped
     const skipOTP = env.SKIP_OTP === 'true' || env.NODE_ENV === 'development';
+    const requiresPrivilegedOTP = PRIVILEGED_OTP_ROLES.has(user.role);
     
-    // If admin and OTP not skipped, require OTP verification
-    if (user.role === 'admin' && !skipOTP) {
-      console.log('Admin login detected, generating OTP for:', user.email);
+    // If privileged role and OTP not skipped, require OTP verification
+    if (requiresPrivilegedOTP && !skipOTP) {
+      console.log('Privileged login detected, generating OTP for:', user.email, 'Role:', user.role);
       
       // Generate cryptographically secure 6-digit OTP
       const otp = generateSecureOTP();
@@ -205,8 +207,8 @@ export const login = async (req, res, next) => {
     }
     
     // OTP is skipped (development mode) or user is not admin
-    if (skipOTP && user.role === 'admin') {
-      console.log('⚠️  OTP verification SKIPPED for admin (SKIP_OTP=true)');
+    if (skipOTP && requiresPrivilegedOTP) {
+      console.log('⚠️  OTP verification SKIPPED for privileged role (SKIP_OTP=true):', user.role);
     }
 
     // Generate token and proceed with normal login
@@ -468,10 +470,10 @@ export const resendOTP = async (req, res, next) => {
       return res.status(400).json({ error: 'Please provide email' });
     }
 
-    // Check if user exists and is admin
+    // Check if user exists and is a privileged role
     const user = await User.findOne({ email });
 
-    if (!user || user.role !== 'admin') {
+    if (!user || !PRIVILEGED_OTP_ROLES.has(user.role)) {
       return res.status(404).json({ error: 'User not found' });
     }
 

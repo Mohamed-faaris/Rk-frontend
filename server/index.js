@@ -24,6 +24,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import { verifyEmailConnection } from './utils/emailService.js';
+import { ensureCEOUser } from './utils/ensureCEOUser.js';
 import { env } from './env.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -121,6 +122,7 @@ const connectDB = async () => {
       minPoolSize: 1,
     });
     console.log('✅ MongoDB connected');
+    await ensureCEOUser();
   } catch (err) {
     console.warn('⚠️  MongoDB connection failed:', err.message);
   }

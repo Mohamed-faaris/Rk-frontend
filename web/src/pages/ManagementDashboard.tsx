@@ -330,13 +330,13 @@ export default function ManagementDashboard() {
     salary: ''
   });
 
-  // Redirect if not admin
+  // Redirect if not management role
   useEffect(() => {
     if (!user) return; // Wait for user to load
     
     setIsInitialized(true);
     
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'ceo') {
       navigate('/');
     }
   }, [user, navigate]);
@@ -867,7 +867,7 @@ export default function ManagementDashboard() {
           name: userForm.name,
           email: userForm.email,
           phone: userForm.phone,
-          role: userForm.role as 'user' | 'admin',
+          role: userForm.role as 'user' | 'admin' | 'ceo',
           isActive: userForm.isActive
         };
         await userService.updateUser(editingUser._id, updateData);
@@ -883,7 +883,7 @@ export default function ManagementDashboard() {
           email: userForm.email,
           phone: userForm.phone,
           password: userForm.password,
-          role: userForm.role as 'user' | 'admin',
+          role: userForm.role as 'user' | 'admin' | 'ceo',
           isActive: userForm.isActive
         });
         setSuccess('User created successfully');
@@ -1234,12 +1234,12 @@ export default function ManagementDashboard() {
     }
   };
 
-  if (user?.role !== 'admin') {
+  if (user?.role !== 'admin' && user?.role !== 'ceo') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-          <p className="text-muted-foreground mb-4">You need admin privileges to access this page.</p>
+          <p className="text-muted-foreground mb-4">You need management privileges to access this page.</p>
           <Button onClick={() => navigate('/')}>Go Home</Button>
         </div>
       </div>
@@ -2356,7 +2356,7 @@ export default function ManagementDashboard() {
                         </SelectTrigger>
                         <SelectContent>
                           {users
-                            .filter((u: any) => u.role !== 'admin')
+                            .filter((u: any) => u.role !== 'admin' && u.role !== 'ceo')
                             .map((u: any) => (
                               <SelectItem key={u._id} value={u._id}>
                                 {u.name} ({u.email})
@@ -3064,6 +3064,7 @@ export default function ManagementDashboard() {
                   <SelectContent>
                     <SelectItem value="user">User</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="ceo">CEO</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
-import { ProtectedRoute, AdminRoute } from "@/components/ProtectedRoute";
+import { ProtectedRoute, AdminRoute, ManagementRoute } from "@/components/ProtectedRoute";
 import AuthPopupModal from "./components/AuthPopupModal";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -181,13 +181,13 @@ const AppContent = () => {
           </AdminRoute>
         } />
         <Route path="/management" element={
-          <AdminRoute>
+          <ManagementRoute>
             <main>
               <Suspense fallback={<PageLoader />}>
                 <ManagementDashboard />
               </Suspense>
             </main>
-          </AdminRoute>
+          </ManagementRoute>
         } />
         <Route path="/chatbot-dashboard" element={
           <AdminRoute>

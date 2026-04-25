@@ -29,3 +29,17 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
+
+export function ManagementRoute({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user || (user.role !== 'admin' && user.role !== 'ceo')) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+}

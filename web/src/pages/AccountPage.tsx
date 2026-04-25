@@ -150,6 +150,8 @@ const AccountPage = () => {
     : user?.isActive === false
       ? "border-yellow-500 text-yellow-500"
       : "border-green-500 text-green-500";
+  const isManagementRole = user.role === "admin" || user.role === "ceo";
+  const roleLabel = user.role === "admin" ? "Admin" : user.role === "ceo" ? "CEO" : "User";
 
   if (!user) {
     navigate("/login");
@@ -203,10 +205,10 @@ const AccountPage = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Role</span>
                       <Badge
-                        variant={user.role === "admin" ? "default" : "secondary"}
-                        className={user.role === "admin" ? "bg-accent text-black" : ""}
+                        variant={isManagementRole ? "default" : "secondary"}
+                        className={isManagementRole ? "bg-accent text-black" : ""}
                       >
-                        {user.role === "admin" ? "Admin" : "User"}
+                        {roleLabel}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
@@ -256,6 +258,28 @@ const AccountPage = () => {
                         className="w-full bg-accent hover:bg-accent/90"
                       >
                         Admin Dashboard
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {user.role === "ceo" && (
+                  <Card className="border-border bg-gradient-to-br from-accent/5 to-transparent">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-accent" />
+                        CEO Access
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        You can access only the Management Dashboard along with regular user features.
+                      </p>
+                      <Button
+                        onClick={() => navigate("/management")}
+                        className="w-full bg-accent hover:bg-accent/90"
+                      >
+                        Management Dashboard
                       </Button>
                     </CardContent>
                   </Card>
