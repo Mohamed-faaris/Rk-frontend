@@ -122,8 +122,8 @@ export const getOrder = async (req, res, next) => {
       });
     }
 
-    // Make sure user owns order or is admin
-    if (order.user._id.toString() !== req.user.id && req.user.role !== 'admin') {
+    // Make sure user owns order or is management role
+    if (order.user._id.toString() !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'ceo') {
       return res.status(401).json({
         success: false,
         error: 'Not authorized to access this order'
@@ -151,7 +151,7 @@ export const createOrder = async (req, res, next) => {
 
     let targetUserId = req.user.id;
 
-    if (req.user.role === 'admin' && userId) {
+    if ((req.user.role === 'admin' || req.user.role === 'ceo') && userId) {
       const targetUser = await User.findById(userId).select('_id');
 
       if (!targetUser) {
@@ -221,8 +221,8 @@ export const updateOrder = async (req, res, next) => {
       });
     }
 
-    // Make sure user owns order or is admin
-    if (order.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    // Make sure user owns order or is management role
+    if (order.user.toString() !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'ceo') {
       return res.status(401).json({
         success: false,
         error: 'Not authorized to update this order'
@@ -353,8 +353,8 @@ export const deleteOrder = async (req, res, next) => {
       });
     }
 
-    // Make sure user owns order or is admin
-    if (order.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    // Make sure user owns order or is management role
+    if (order.user.toString() !== req.user.id && req.user.role !== 'admin' && req.user.role !== 'ceo') {
       return res.status(401).json({
         success: false,
         error: 'Not authorized to delete this order'

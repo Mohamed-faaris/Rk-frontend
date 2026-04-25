@@ -34,8 +34,8 @@ router.route('/:id')
   .delete(deleteOrder);
 
 // Admin routes
-router.get('/admin/all', authorize('admin'), getAllOrdersAdmin);
-router.get('/admin/canceled', authorize('admin'), getAllCanceledOrders);
-router.patch('/:id/status', authorize('admin'), updateOrderStatus);
+router.get('/admin/all', authorize('admin', 'ceo'), getAllOrdersAdmin);
+router.get('/admin/canceled', authorize('admin', 'ceo'), getAllCanceledOrders);
+router.patch('/:id/status', authorize('admin', 'ceo'), updateOrderStatus);
 
 export default router;
