@@ -9,6 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useAuth } from '@/context/AuthContext';
 import revenueService, { RevenueStats } from '@/lib/revenueService';
 import businessAnalyticsUpdateService, { BusinessAnalyticsUpdate } from '@/lib/businessAnalyticsUpdateService';
@@ -30,8 +37,40 @@ export default function FinanceAnalyticsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [filterType, setFilterType] = useState('last30days');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [specificDate, setSpecificDate] = useState('');
+
+  // Helper function to calculate dates based on filter type
+  const getDateRange = (type: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const start = new Date(today);
+    const end = new Date(today);
+
+    switch (type) {
+      case 'today':
+        return { start: today.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'last7days':
+        start.setDate(start.getDate() - 7);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'last30days':
+        start.setDate(start.getDate() - 30);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'thismonth':
+        start.setDate(1);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'specific':
+        return { start: specificDate, end: specificDate };
+      case 'custom':
+        return { start: startDate, end: endDate };
+      default:
+        start.setDate(start.getDate() - 30);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -45,8 +84,12 @@ export default function FinanceAnalyticsPage() {
     const loadData = async () => {
       try {
         setIsLoading(true);
+        const dateRange = getDateRange(filterType);
         const [statsData, updateData] = await Promise.all([
-          revenueService.getRevenueStats(startDate || undefined, endDate || undefined),
+          revenueService.getRevenueStats(
+            dateRange.start || undefined,
+            dateRange.end || undefined
+          ),
           businessAnalyticsUpdateService.listPublished()
         ]);
         setStats(statsData);
@@ -59,7 +102,7 @@ export default function FinanceAnalyticsPage() {
     };
 
     loadData();
-  }, [navigate, user, startDate, endDate]);
+  }, [navigate, user, filterType, startDate, endDate, specificDate]);
 
   const chartPoints = useMemo(() => {
     if (!stats?.chart?.length) return '';
@@ -103,8 +146,9 @@ export default function FinanceAnalyticsPage() {
       setContent('');
       setSuccess('Business analytics update published successfully.');
 
+      const dateRange = getDateRange(filterType);
       const [statsData, updateData] = await Promise.all([
-        revenueService.getRevenueStats(startDate || undefined, endDate || undefined),
+        revenueService.getRevenueStats(dateRange.start || undefined, dateRange.end || undefined),
         businessAnalyticsUpdateService.listPublished()
       ]);
       setStats(statsData);
@@ -159,44 +203,66 @@ export default function FinanceAnalyticsPage() {
           {!isLoading && (
             <Card className="border-border mb-6">
               <CardHeader>
-                <CardTitle>Filter by Date Range</CardTitle>
-                <CardDescription>Select dates to filter revenue data</CardDescription>
+                <CardTitle>Filter Revenue Data</CardTitle>
+                <CardDescription>Select a time period or custom date range</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="start-date">Start Date</Label>
-                    <Input
-                      id="start-date"
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="border-border"
-                    />
+                    <Label htmlFor="filter-type">Select Period</Label>
+                    <Select value={filterType} onValueChange={setFilterType}>
+                      <SelectTrigger className="border-border">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">Today</SelectItem>
+                        <SelectItem value="last7days">Last 7 Days</SelectItem>
+                        <SelectItem value="last30days">Last 30 Days</SelectItem>
+                        <SelectItem value="thismonth">This Month</SelectItem>
+                        <SelectItem value="specific">Specific Date</SelectItem>
+                        <SelectItem value="custom">Custom Range</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="end-date">End Date</Label>
-                    <Input
-                      id="end-date"
-                      type="date"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="border-border"
-                    />
-                  </div>
+
+                  {filterType === 'specific' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="specific-date">Select Date</Label>
+                      <Input
+                        id="specific-date"
+                        type="date"
+                        value={specificDate}
+                        onChange={(e) => setSpecificDate(e.target.value)}
+                        className="border-border"
+                      />
+                    </div>
+                  )}
+
+                  {filterType === 'custom' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="start-date">Start Date</Label>
+                        <Input
+                          id="start-date"
+                          type="date"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="border-border"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="end-date">End Date</Label>
+                        <Input
+                          id="end-date"
+                          type="date"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="border-border"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {(startDate || endDate) && (
-                  <Button
-                    onClick={() => {
-                      setStartDate('');
-                      setEndDate('');
-                    }}
-                    variant="outline"
-                    className="mt-4"
-                  >
-                    Clear Filters
-                  </Button>
-                )}
               </CardContent>
             </Card>
           )}
@@ -238,14 +304,16 @@ export default function FinanceAnalyticsPage() {
               <Card className="border-border mb-8">
                 <CardHeader>
                   <CardTitle>
-                    {startDate && endDate 
-                      ? `Revenue Graph (${new Date(startDate).toLocaleDateString('en-IN')} to ${new Date(endDate).toLocaleDateString('en-IN')})`
-                      : 'Revenue Graph (Last 30 Days)'}
+                    {filterType === 'today' && 'Revenue Graph - Today'}
+                    {filterType === 'last7days' && 'Revenue Graph - Last 7 Days'}
+                    {filterType === 'last30days' && 'Revenue Graph - Last 30 Days'}
+                    {filterType === 'thismonth' && 'Revenue Graph - This Month'}
+                    {filterType === 'specific' && `Revenue Graph - ${specificDate ? new Date(specificDate).toLocaleDateString('en-IN') : 'Select Date'}`}
+                    {filterType === 'custom' && startDate && endDate && `Revenue Graph - ${new Date(startDate).toLocaleDateString('en-IN')} to ${new Date(endDate).toLocaleDateString('en-IN')}`}
+                    {filterType === 'custom' && (!startDate || !endDate) && 'Revenue Graph - Select Date Range'}
                   </CardTitle>
                   <CardDescription>
-                    {startDate && endDate 
-                      ? 'Revenue from completed orders for selected date range.'
-                      : 'Revenue from completed orders over the last 30 days.'}
+                    {filterType === 'specific' ? 'Revenue for selected date.' : 'Revenue from completed orders for selected period.'}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

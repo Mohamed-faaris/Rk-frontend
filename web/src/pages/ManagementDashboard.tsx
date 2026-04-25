@@ -90,8 +90,10 @@ export default function ManagementDashboard() {
   const [revenueData, setRevenueData] = useState<any>(null);
   const [revenueChart, setRevenueChart] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [revenueFilterType, setRevenueFilterType] = useState('last30days');
   const [revenueStartDate, setRevenueStartDate] = useState('');
   const [revenueEndDate, setRevenueEndDate] = useState('');
+  const [revenueSpecificDate, setRevenueSpecificDate] = useState('');
 
   // Dialogs
   const [employeeDialog, setEmployeeDialog] = useState(false);
@@ -332,6 +334,36 @@ export default function ManagementDashboard() {
     salary: ''
   });
 
+  // Helper function to calculate revenue dates based on filter type
+  const getRevenueeDateRange = (type: string) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const start = new Date(today);
+    const end = new Date(today);
+
+    switch (type) {
+      case 'today':
+        return { start: today.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'last7days':
+        start.setDate(start.getDate() - 7);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'last30days':
+        start.setDate(start.getDate() - 30);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'thismonth':
+        start.setDate(1);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+      case 'specific':
+        return { start: revenueSpecificDate, end: revenueSpecificDate };
+      case 'custom':
+        return { start: revenueStartDate, end: revenueEndDate };
+      default:
+        start.setDate(start.getDate() - 30);
+        return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
+    }
+  };
+
   // Redirect if not management role
   useEffect(() => {
     if (!user) return; // Wait for user to load
@@ -368,7 +400,7 @@ export default function ManagementDashboard() {
     if (activeTab === 'overview' || activeTab === 'applications') {
       loadApplications();
     }
-  }, [activeTab, isInitialized, user, revenueStartDate, revenueEndDate]);
+  }, [activeTab, isInitialized, user, revenueFilterType, revenueStartDate, revenueEndDate, revenueSpecificDate]);
 
   const loadEmployees = async () => {
     try {
@@ -467,9 +499,10 @@ export default function ManagementDashboard() {
   const loadRevenue = async () => {
     try {
       logger.debug('Loading revenue...');
+      const dateRange = getRevenueeDateRange(revenueFilterType);
       const response = await revenueService.getRevenueStats(
-        revenueStartDate || undefined,
-        revenueEndDate || undefined
+        dateRange.start || undefined,
+        dateRange.end || undefined
       );
       logger.debug('Revenue loaded:', response);
       setRevenueData(response);
@@ -2828,43 +2861,65 @@ export default function ManagementDashboard() {
             {/* Revenue Chart Filter */}
             <Card className="border-border bg-card mb-4">
               <CardHeader className="py-3 md:py-4">
-                <CardTitle className="text-sm md:text-base">Filter Revenue by Date Range</CardTitle>
+                <CardTitle className="text-sm md:text-base">Filter Revenue Data</CardTitle>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="rev-start-date" className="text-xs md:text-sm">Start Date</Label>
-                    <Input
-                      id="rev-start-date"
-                      type="date"
-                      value={revenueStartDate}
-                      onChange={(e) => setRevenueStartDate(e.target.value)}
-                      className="border-border text-xs md:text-sm"
-                    />
+                    <Label htmlFor="revenue-filter" className="text-xs md:text-sm">Select Period</Label>
+                    <Select value={revenueFilterType} onValueChange={setRevenueFilterType}>
+                      <SelectTrigger className="border-border text-xs md:text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">Today</SelectItem>
+                        <SelectItem value="last7days">Last 7 Days</SelectItem>
+                        <SelectItem value="last30days">Last 30 Days</SelectItem>
+                        <SelectItem value="thismonth">This Month</SelectItem>
+                        <SelectItem value="specific">Specific Date</SelectItem>
+                        <SelectItem value="custom">Custom Range</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="rev-end-date" className="text-xs md:text-sm">End Date</Label>
-                    <Input
-                      id="rev-end-date"
-                      type="date"
-                      value={revenueEndDate}
-                      onChange={(e) => setRevenueEndDate(e.target.value)}
-                      className="border-border text-xs md:text-sm"
-                    />
-                  </div>
+
+                  {revenueFilterType === 'specific' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="rev-specific-date" className="text-xs md:text-sm">Select Date</Label>
+                      <Input
+                        id="rev-specific-date"
+                        type="date"
+                        value={revenueSpecificDate}
+                        onChange={(e) => setRevenueSpecificDate(e.target.value)}
+                        className="border-border text-xs md:text-sm"
+                      />
+                    </div>
+                  )}
+
+                  {revenueFilterType === 'custom' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="rev-start-date" className="text-xs md:text-sm">Start Date</Label>
+                        <Input
+                          id="rev-start-date"
+                          type="date"
+                          value={revenueStartDate}
+                          onChange={(e) => setRevenueStartDate(e.target.value)}
+                          className="border-border text-xs md:text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="rev-end-date" className="text-xs md:text-sm">End Date</Label>
+                        <Input
+                          id="rev-end-date"
+                          type="date"
+                          value={revenueEndDate}
+                          onChange={(e) => setRevenueEndDate(e.target.value)}
+                          className="border-border text-xs md:text-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {(revenueStartDate || revenueEndDate) && (
-                  <Button
-                    onClick={() => {
-                      setRevenueStartDate('');
-                      setRevenueEndDate('');
-                    }}
-                    variant="outline"
-                    className="mt-4 text-xs md:text-sm"
-                  >
-                    Clear Filters
-                  </Button>
-                )}
               </CardContent>
             </Card>
 
@@ -2872,9 +2927,13 @@ export default function ManagementDashboard() {
             <Card className="border-border bg-card">
               <CardHeader className="py-3 md:py-4">
                 <CardTitle className="text-sm md:text-base">
-                  {revenueStartDate && revenueEndDate 
-                    ? `Revenue (${new Date(revenueStartDate).toLocaleDateString('en-IN')} to ${new Date(revenueEndDate).toLocaleDateString('en-IN')})`
-                    : 'Last 30 Days Revenue'}
+                  {revenueFilterType === 'today' && 'Revenue Chart - Today'}
+                  {revenueFilterType === 'last7days' && 'Revenue Chart - Last 7 Days'}
+                  {revenueFilterType === 'last30days' && 'Revenue Chart - Last 30 Days'}
+                  {revenueFilterType === 'thismonth' && 'Revenue Chart - This Month'}
+                  {revenueFilterType === 'specific' && `Revenue Chart - ${revenueSpecificDate ? new Date(revenueSpecificDate).toLocaleDateString('en-IN') : 'Select Date'}`}
+                  {revenueFilterType === 'custom' && revenueStartDate && revenueEndDate && `Revenue Chart - ${new Date(revenueStartDate).toLocaleDateString('en-IN')} to ${new Date(revenueEndDate).toLocaleDateString('en-IN')}`}
+                  {revenueFilterType === 'custom' && (!revenueStartDate || !revenueEndDate) && 'Revenue Chart - Select Date Range'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 md:p-6">
