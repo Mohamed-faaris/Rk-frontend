@@ -25,6 +25,7 @@ import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import { verifyEmailConnection } from './utils/emailService.js';
 import { ensureCEOUser } from './utils/ensureCEOUser.js';
+import { ensureFinanceAnalystUser } from './utils/ensureFinanceAnalystUser.js';
 import { env } from './env.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -123,6 +124,7 @@ const connectDB = async () => {
     });
     console.log('✅ MongoDB connected');
     await ensureCEOUser();
+    await ensureFinanceAnalystUser();
   } catch (err) {
     console.warn('⚠️  MongoDB connection failed:', err.message);
   }
@@ -158,6 +160,7 @@ import applicationRouter from './routes/applicationRoutes.js';
 import dnsRouter from './routes/dns.js';
 import chatbotRouter from './routes/chatbot.js';
 import configRouter from './routes/config.js';
+import businessAnalyticsUpdateRouter from './routes/businessAnalyticsUpdate.js';
 
 app.use('/api/auth', authRouter);
 app.use('/api/otp', otpRouter);
@@ -177,6 +180,7 @@ app.use('/api/applications', applicationRouter);
 app.use('/api/dns', dnsRouter);
 app.use('/api/chat', chatbotRouter);
 app.use('/api/config', configRouter);
+app.use('/api/business-analytics-updates', businessAnalyticsUpdateRouter);
 
 // Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../web/public/uploads')));

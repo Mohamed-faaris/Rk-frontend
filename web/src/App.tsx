@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
-import { ProtectedRoute, AdminRoute, ManagementRoute } from "@/components/ProtectedRoute";
+import { ProtectedRoute, AdminRoute, ManagementRoute, FinanceAnalyticsRoute } from "@/components/ProtectedRoute";
 import AuthPopupModal from "./components/AuthPopupModal";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -32,6 +32,8 @@ const ManagementDashboard = lazy(() => import("./pages/ManagementDashboard"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
+const BusinessInsightsPage = lazy(() => import("./pages/BusinessInsightsPage"));
+const FinanceAnalyticsPage = lazy(() => import("./pages/FinanceAnalyticsPage"));
 const ApplyForEmployee = lazy(() => import("./pages/ApplyForEmployee"));
 const ApplyForPosition = lazy(() => import("./pages/ApplyForPosition"));
 const EmployeeDetailsPage = lazy(() => import("./pages/EmployeeDetailsPage"));
@@ -130,6 +132,7 @@ const AppContent = () => {
         <Route path="/privacy-policy" element={<main><Suspense fallback={<PageLoader />}><PrivacyPolicyPage /></Suspense></main>} />
         <Route path="/terms-of-service" element={<main><Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense></main>} />
         <Route path="/contact" element={<main><Suspense fallback={<PageLoader />}><ContactPage /></Suspense></main>} />
+        <Route path="/business-insights" element={<main><Suspense fallback={<PageLoader />}><BusinessInsightsPage /></Suspense></main>} />
         <Route path="/apply-employee" element={<Suspense fallback={<PageLoader />}><ApplyForEmployee /></Suspense>} />
         <Route path="/apply-position/:positionId" element={<Suspense fallback={<PageLoader />}><ApplyForPosition /></Suspense>} />
         <Route path="/employee/:id" element={<Suspense fallback={<PageLoader />}><EmployeeDetailsPage /></Suspense>} />
@@ -168,6 +171,15 @@ const AppContent = () => {
               </Suspense>
             </main>
           </ProtectedRoute>
+        } />
+        <Route path="/finance-analytics" element={
+          <FinanceAnalyticsRoute>
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <FinanceAnalyticsPage />
+              </Suspense>
+            </main>
+          </FinanceAnalyticsRoute>
         } />
 
         {/* Admin Routes */}

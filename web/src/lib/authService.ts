@@ -22,7 +22,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
-  role: 'user' | 'admin' | 'ceo';
+  role: 'user' | 'admin' | 'ceo' | 'finance_analyst';
   isActive?: boolean;
   isDeleted?: boolean;
   deletedAt?: string | null;

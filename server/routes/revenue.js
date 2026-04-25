@@ -1,12 +1,12 @@
 import express from 'express';
 import * as revenueController from '../controllers/revenueController.js';
-import { protect, adminOnly } from '../middleware/auth.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// All routes require admin access
+// All routes require management or finance analyst access
 router.use(protect);
-router.use(adminOnly);
+router.use(authorize('admin', 'ceo', 'finance_analyst'));
 
 // Get revenue statistics
 router.get('/stats', revenueController.getRevenueStats);

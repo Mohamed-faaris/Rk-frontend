@@ -66,6 +66,11 @@ const Navbar = () => {
                   Management Dashboard
                 </DropdownMenuItem>
               )}
+              {(user?.role === 'admin' || user?.role === 'ceo' || user?.role === 'finance_analyst') && (
+                <DropdownMenuItem onSelect={() => navigate('/finance-analytics')}>
+                  Finance Analytics Update
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={() => {
