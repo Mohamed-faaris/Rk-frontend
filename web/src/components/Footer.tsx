@@ -14,10 +14,12 @@ const Footer = () => {
 
   const footerLinks = {
     Services: [
-      { name: "Web Development", href: "/web-development" },
-      { name: "Branding & Identity", href: "/branding-identity" },
-      { name: "UI/UX Design", href: "/uiux-design" },
-      { name: "3D Animation", href: "/3d-animation" },
+      { name: "Identity Starter Kit", href: "/services" },
+      { name: "Campaign Visual Packs", href: "/services" },
+      { name: "Motion Edit Studio", href: "/services" },
+      { name: "Design Fix & Polish", href: "/services" },
+      { name: "Website Growth Build", href: "/services" },
+      { name: "Tech Support Cell", href: "/services" },
     ],
     Resources: [
       { name: "Contact", href: "/contact" },

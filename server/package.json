@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development MODE=api nodemon index.js",
-    "start": "NODE_ENV=production MODE=api node index.js",
-    "start:full": "NODE_ENV=production MODE=full node index.js",
+    "dev": "cross-env NODE_ENV=development MODE=api nodemon index.js",
+    "start": "cross-env NODE_ENV=production MODE=api node index.js",
+    "start:full": "cross-env NODE_ENV=production MODE=full node index.js",
     "migrate:service-categories": "node scripts/migrate-service-categories.js"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.0.2"
   }
 }
