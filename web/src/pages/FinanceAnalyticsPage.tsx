@@ -44,7 +44,7 @@ export default function FinanceAnalyticsPage() {
   const [isAutoRefreshEnabled, setIsAutoRefreshEnabled] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState(30);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
-  const autoRefreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const autoRefreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Helper function to calculate dates based on filter type
   const getDateRange = (type: string) => {

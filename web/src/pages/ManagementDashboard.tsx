@@ -98,7 +98,7 @@ export default function ManagementDashboard() {
   const [isRevenueAutoRefreshEnabled, setIsRevenueAutoRefreshEnabled] = useState(false);
   const [revenueRefreshInterval, setRevenueRefreshInterval] = useState(30);
   const [lastRevenueRefreshTime, setLastRevenueRefreshTime] = useState<Date | null>(null);
-  const revenueAutoRefreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const revenueAutoRefreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Dialogs
   const [employeeDialog, setEmployeeDialog] = useState(false);
@@ -2910,64 +2910,60 @@ export default function ManagementDashboard() {
             {/* Revenue Chart Filter */}
             <Card className="border-border bg-card mb-4">
               <CardHeader className="py-3 md:py-4">
-                <CardTitle className="text-sm md:text-base">Filter Revenue Data</CardTitle>
+                <CardTitle className="text-sm md:text-base">Auto-Refresh Settings</CardTitle>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="revenue-filter" className="text-xs md:text-sm">Select Period</Label>
-                    <Select value={revenueFilterType} onValueChange={setRevenueFilterType}>
-                      <SelectTrigger className="border-border text-xs md:text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="today">Today</SelectItem>
-                        <SelectItem value="last7days">Last 7 Days</SelectItem>
-                        <SelectItem value="last30days">Last 30 Days</SelectItem>
-                        <SelectItem value="thismonth">This Month</SelectItem>
-                        <SelectItem value="specific">Specific Date</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="flex items-center gap-3">
+                    <input
+                      id="revenue-auto-refresh-toggle"
+                      type="checkbox"
+                      checked={isRevenueAutoRefreshEnabled}
+                      onChange={(e) => setIsRevenueAutoRefreshEnabled(e.target.checked)}
+                      className="w-5 h-5 rounded border-border cursor-pointer"
+                    />
+                    <Label htmlFor="revenue-auto-refresh-toggle" className="cursor-pointer text-xs md:text-sm">
+                      {isRevenueAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
+                    </Label>
                   </div>
 
-                  {revenueFilterType === 'specific' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="rev-specific-date" className="text-xs md:text-sm">Select Date</Label>
-                      <Input
-                        id="rev-specific-date"
-                        type="date"
-                        value={revenueSpecificDate}
-                        onChange={(e) => setRevenueSpecificDate(e.target.value)}
-                        className="border-border text-xs md:text-sm"
-                      />
+                  {isRevenueAutoRefreshEnabled && (
+                    <div className="space-y-2 pl-8">
+                      <Label htmlFor="revenue-refresh-interval" className="text-xs md:text-sm">Refresh Interval (seconds)</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="revenue-refresh-interval"
+                          type="number"
+                          min="10"
+                          max="300"
+                          value={revenueRefreshInterval}
+                          onChange={(e) => setRevenueRefreshInterval(Math.max(10, parseInt(e.target.value) || 30))}
+                          className="border-border w-24 text-xs md:text-sm"
+                        />
+                        <span className="text-xs text-muted-foreground">seconds</span>
+                      </div>
                     </div>
                   )}
 
-                  {revenueFilterType === 'custom' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="rev-start-date" className="text-xs md:text-sm">Start Date</Label>
-                        <Input
-                          id="rev-start-date"
-                          type="date"
-                          value={revenueStartDate}
-                          onChange={(e) => setRevenueStartDate(e.target.value)}
-                          className="border-border text-xs md:text-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="rev-end-date" className="text-xs md:text-sm">End Date</Label>
-                        <Input
-                          id="rev-end-date"
-                          type="date"
-                          value={revenueEndDate}
-                          onChange={(e) => setRevenueEndDate(e.target.value)}
-                          className="border-border text-xs md:text-sm"
-                        />
-                      </div>
+                  {lastRevenueRefreshTime && (
+                    <div className="text-xs text-muted-foreground pl-8">
+                      Last refresh: {lastRevenueRefreshTime.toLocaleTimeString('en-IN')}
                     </div>
                   )}
+
+                  <Button
+                    onClick={() => {
+                      if (isRevenueAutoRefreshEnabled) {
+                        setIsRevenueAutoRefreshEnabled(false);
+                      }
+                    }}
+                    disabled={!isRevenueAutoRefreshEnabled}
+                    variant="outline"
+                    className="gap-2 w-full text-xs md:text-sm"
+                  >
+                    <RotateCw className="w-4 h-4" />
+                    Stop Auto-Refresh
+                  </Button>
                 </div>
               </CardContent>
             </Card>
