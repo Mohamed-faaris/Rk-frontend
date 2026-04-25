@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -54,7 +54,8 @@ import {
   Download,
   Eye,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  RotateCw
 } from 'lucide-react';
 import { employeeService } from '@/lib/employeeService';
 import { projectService } from '@/lib/projectService';
@@ -94,6 +95,10 @@ export default function ManagementDashboard() {
   const [revenueStartDate, setRevenueStartDate] = useState('');
   const [revenueEndDate, setRevenueEndDate] = useState('');
   const [revenueSpecificDate, setRevenueSpecificDate] = useState('');
+  const [isRevenueAutoRefreshEnabled, setIsRevenueAutoRefreshEnabled] = useState(false);
+  const [revenueRefreshInterval, setRevenueRefreshInterval] = useState(30);
+  const [lastRevenueRefreshTime, setLastRevenueRefreshTime] = useState<Date | null>(null);
+  const revenueAutoRefreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Dialogs
   const [employeeDialog, setEmployeeDialog] = useState(false);
@@ -400,7 +405,50 @@ export default function ManagementDashboard() {
     if (activeTab === 'overview' || activeTab === 'applications') {
       loadApplications();
     }
-  }, [activeTab, isInitialized, user, revenueFilterType, revenueStartDate, revenueEndDate, revenueSpecificDate]);
+  }, [activeTab, isInitialized, user, revenueFilterType, revenueStartDate, revenueEndDate, revenueSpecificDate, isRevenueAutoRefreshEnabled, revenueRefreshInterval]);
+
+  // Revenue auto-refresh effect
+  useEffect(() => {
+    if (!isRevenueAutoRefreshEnabled) {
+      if (revenueAutoRefreshIntervalRef.current) {
+        clearInterval(revenueAutoRefreshIntervalRef.current);
+        revenueAutoRefreshIntervalRef.current = null;
+      }
+      return;
+    }
+
+    const autoRefreshLoadRevenue = async () => {
+      try {
+        const dateRange = getRevenueeDateRange(revenueFilterType);
+        const response = await revenueService.getRevenueStats(
+          dateRange.start || undefined,
+          dateRange.end || undefined
+        );
+        setRevenueData(response);
+        setRevenueChart(response.chart || []);
+        setLastRevenueRefreshTime(new Date());
+        setStats(prev => ({ 
+          ...prev, 
+          revenue: { 
+            today: response.today?.revenue || 0, 
+            week: response.week?.revenue || 0, 
+            month: response.month?.revenue || 0 
+          } 
+        }));
+      } catch (err) {
+        logger.error('Auto-refresh revenue error:', err);
+      }
+    };
+
+    revenueAutoRefreshIntervalRef.current = setInterval(autoRefreshLoadRevenue, revenueRefreshInterval * 1000);
+
+    return () => {
+      if (revenueAutoRefreshIntervalRef.current) {
+        clearInterval(revenueAutoRefreshIntervalRef.current);
+        revenueAutoRefreshIntervalRef.current = null;
+      }
+    };
+  }, [isRevenueAutoRefreshEnabled, revenueRefreshInterval, revenueFilterType, revenueStartDate, revenueEndDate, revenueSpecificDate]);
 
   const loadEmployees = async () => {
     try {
@@ -507,6 +555,7 @@ export default function ManagementDashboard() {
       logger.debug('Revenue loaded:', response);
       setRevenueData(response);
       setRevenueChart(response.chart || []);
+      setLastRevenueRefreshTime(new Date());
       setStats(prev => ({ 
         ...prev, 
         revenue: { 

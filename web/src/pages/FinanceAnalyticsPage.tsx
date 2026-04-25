@@ -1,6 +1,6 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, LineChart, RefreshCw, Save } from 'lucide-react';
+import { ArrowLeft, LineChart, RefreshCw, Save, RotateCw } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -41,6 +41,10 @@ export default function FinanceAnalyticsPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [specificDate, setSpecificDate] = useState('');
+  const [isAutoRefreshEnabled, setIsAutoRefreshEnabled] = useState(false);
+  const [refreshInterval, setRefreshInterval] = useState(30);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
+  const autoRefreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Helper function to calculate dates based on filter type
   const getDateRange = (type: string) => {
@@ -94,6 +98,7 @@ export default function FinanceAnalyticsPage() {
         ]);
         setStats(statsData);
         setUpdates(updateData);
+        setLastRefreshTime(new Date());
       } catch {
         setError('Failed to load finance analytics data.');
       } finally {
@@ -103,6 +108,44 @@ export default function FinanceAnalyticsPage() {
 
     loadData();
   }, [navigate, user, filterType, startDate, endDate, specificDate]);
+
+  // Auto-refresh effect
+  useEffect(() => {
+    if (!isAutoRefreshEnabled) {
+      if (autoRefreshIntervalRef.current) {
+        clearInterval(autoRefreshIntervalRef.current);
+        autoRefreshIntervalRef.current = null;
+      }
+      return;
+    }
+
+    const loadData = async () => {
+      try {
+        const dateRange = getDateRange(filterType);
+        const [statsData, updateData] = await Promise.all([
+          revenueService.getRevenueStats(
+            dateRange.start || undefined,
+            dateRange.end || undefined
+          ),
+          businessAnalyticsUpdateService.listPublished()
+        ]);
+        setStats(statsData);
+        setUpdates(updateData);
+        setLastRefreshTime(new Date());
+      } catch (err) {
+        console.error('Auto-refresh error:', err);
+      }
+    };
+
+    autoRefreshIntervalRef.current = setInterval(loadData, refreshInterval * 1000);
+
+    return () => {
+      if (autoRefreshIntervalRef.current) {
+        clearInterval(autoRefreshIntervalRef.current);
+        autoRefreshIntervalRef.current = null;
+      }
+    };
+  }, [isAutoRefreshEnabled, refreshInterval, filterType, startDate, endDate, specificDate]);
 
   const chartPoints = useMemo(() => {
     if (!stats?.chart?.length) return '';
@@ -203,65 +246,61 @@ export default function FinanceAnalyticsPage() {
           {!isLoading && (
             <Card className="border-border mb-6">
               <CardHeader>
-                <CardTitle>Filter Revenue Data</CardTitle>
-                <CardDescription>Select a time period or custom date range</CardDescription>
+                <CardTitle>Auto-Refresh Settings</CardTitle>
+                <CardDescription>Enable automatic data refresh</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="filter-type">Select Period</Label>
-                    <Select value={filterType} onValueChange={setFilterType}>
-                      <SelectTrigger className="border-border">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="today">Today</SelectItem>
-                        <SelectItem value="last7days">Last 7 Days</SelectItem>
-                        <SelectItem value="last30days">Last 30 Days</SelectItem>
-                        <SelectItem value="thismonth">This Month</SelectItem>
-                        <SelectItem value="specific">Specific Date</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="flex items-center gap-3">
+                    <input
+                      id="auto-refresh-toggle"
+                      type="checkbox"
+                      checked={isAutoRefreshEnabled}
+                      onChange={(e) => setIsAutoRefreshEnabled(e.target.checked)}
+                      className="w-5 h-5 rounded border-border cursor-pointer"
+                    />
+                    <Label htmlFor="auto-refresh-toggle" className="cursor-pointer">
+                      {isAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
+                    </Label>
                   </div>
 
-                  {filterType === 'specific' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="specific-date">Select Date</Label>
-                      <Input
-                        id="specific-date"
-                        type="date"
-                        value={specificDate}
-                        onChange={(e) => setSpecificDate(e.target.value)}
-                        className="border-border"
-                      />
+                  {isAutoRefreshEnabled && (
+                    <div className="space-y-2 pl-8">
+                      <Label htmlFor="refresh-interval">Refresh Interval (seconds)</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="refresh-interval"
+                          type="number"
+                          min="10"
+                          max="300"
+                          value={refreshInterval}
+                          onChange={(e) => setRefreshInterval(Math.max(10, parseInt(e.target.value) || 30))}
+                          className="border-border w-24"
+                        />
+                        <span className="text-xs text-muted-foreground">seconds</span>
+                      </div>
                     </div>
                   )}
 
-                  {filterType === 'custom' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="start-date">Start Date</Label>
-                        <Input
-                          id="start-date"
-                          type="date"
-                          value={startDate}
-                          onChange={(e) => setStartDate(e.target.value)}
-                          className="border-border"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="end-date">End Date</Label>
-                        <Input
-                          id="end-date"
-                          type="date"
-                          value={endDate}
-                          onChange={(e) => setEndDate(e.target.value)}
-                          className="border-border"
-                        />
-                      </div>
+                  {lastRefreshTime && (
+                    <div className="text-xs text-muted-foreground pl-8">
+                      Last refresh: {lastRefreshTime.toLocaleTimeString('en-IN')}
                     </div>
                   )}
+
+                  <Button
+                    onClick={() => {
+                      if (isAutoRefreshEnabled) {
+                        setIsAutoRefreshEnabled(false);
+                      }
+                    }}
+                    disabled={!isAutoRefreshEnabled}
+                    variant="outline"
+                    className="gap-2 w-full"
+                  >
+                    <RotateCw className="w-4 h-4" />
+                    Stop Auto-Refresh
+                  </Button>
                 </div>
               </CardContent>
             </Card>
