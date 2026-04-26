@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -99,6 +99,8 @@ export default function ManagementDashboard() {
   const [revenueRefreshInterval, setRevenueRefreshInterval] = useState(30);
   const [lastRevenueRefreshTime, setLastRevenueRefreshTime] = useState<Date | null>(null);
   const revenueAutoRefreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [revenueFilterError, setRevenueFilterError] = useState('');
+  const [isApplyingRevenueFilter, setIsApplyingRevenueFilter] = useState(false);
 
   // Dialogs
   const [employeeDialog, setEmployeeDialog] = useState(false);
@@ -367,6 +369,35 @@ export default function ManagementDashboard() {
         start.setDate(start.getDate() - 30);
         return { start: start.toISOString().split('T')[0], end: today.toISOString().split('T')[0] };
     }
+  };
+
+  // Validate revenue date range
+  const validateRevenueDateRange = (): boolean => {
+    setRevenueFilterError('');
+    
+    if (revenueFilterType === 'specific' && !revenueSpecificDate) {
+      setRevenueFilterError('Please select a date');
+      return false;
+    }
+    
+    if (revenueFilterType === 'custom') {
+      if (!revenueStartDate || !revenueEndDate) {
+        setRevenueFilterError('Please select both start and end dates');
+        return false;
+      }
+      if (new Date(revenueStartDate) > new Date(revenueEndDate)) {
+        setRevenueFilterError('Start date must be before end date');
+        return false;
+      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (new Date(revenueEndDate) > today) {
+        setRevenueFilterError('End date cannot be in the future');
+        return false;
+      }
+    }
+    
+    return true;
   };
 
   // Redirect if not management role
@@ -2908,77 +2939,141 @@ export default function ManagementDashboard() {
             </div>
 
             {/* Filter Revenue Data Card */}
-            <Card className="border-border bg-card mb-4">
-              <CardHeader className="py-3 md:py-4">
-                <CardTitle className="text-sm md:text-base">Filter Revenue Data</CardTitle>
-                <CardDescription className="text-xs md:text-sm">Select date range and configure auto-refresh</CardDescription>
+            <Card className="border-border bg-card/50 backdrop-blur mb-4">
+              <CardHeader className="border-b border-border/50 py-3 md:py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <CardTitle className="text-sm md:text-base">Filter Revenue Data</CardTitle>
+                    <span className="px-3 py-1 bg-accent/10 text-accent text-xs md:text-sm rounded-full font-medium">
+                      {revenueFilterType === 'today' && 'Today'}
+                      {revenueFilterType === 'last7days' && 'Last 7 Days'}
+                      {revenueFilterType === 'last30days' && 'Last 30 Days'}
+                      {revenueFilterType === 'thismonth' && 'This Month'}
+                      {revenueFilterType === 'specific' && 'Specific Date'}
+                      {revenueFilterType === 'custom' && 'Custom Range'}
+                    </span>
+                  </div>
+                </div>
+                <CardDescription className="text-xs md:text-sm mt-1">Select date range and configure auto-refresh settings</CardDescription>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
-                <div className="space-y-4">
+                <div className="space-y-4 md:space-y-5">
                   {/* Filter Dropdown */}
                   <div className="space-y-2">
-                    <Label htmlFor="revenue-filter-type" className="text-xs md:text-sm">Date Filter</Label>
-                    <Select value={revenueFilterType} onValueChange={setRevenueFilterType}>
-                      <SelectTrigger id="revenue-filter-type" className="border-border text-xs md:text-sm">
+                    <Label htmlFor="revenue-filter-type" className="text-xs md:text-sm font-semibold">Date Filter</Label>
+                    <Select value={revenueFilterType} onValueChange={(value) => { setRevenueFilterType(value); setRevenueFilterError(''); }}>
+                      <SelectTrigger id="revenue-filter-type" className="border-border bg-background hover:bg-muted/50 transition text-xs md:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="today">Today</SelectItem>
-                        <SelectItem value="last7days">Last 7 Days</SelectItem>
-                        <SelectItem value="last30days">Last 30 Days</SelectItem>
-                        <SelectItem value="thismonth">This Month</SelectItem>
-                        <SelectItem value="specific">Specific Date</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
+                        <SelectItem value="today">📅 Today</SelectItem>
+                        <SelectItem value="last7days">📊 Last 7 Days</SelectItem>
+                        <SelectItem value="last30days">📈 Last 30 Days</SelectItem>
+                        <SelectItem value="thismonth">🗓️ This Month</SelectItem>
+                        <SelectItem value="specific">📍 Specific Date</SelectItem>
+                        <SelectItem value="custom">🔄 Custom Range</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Specific Date Input */}
                   {revenueFilterType === 'specific' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="revenue-specific-date" className="text-xs md:text-sm">Select Date</Label>
+                    <div className="space-y-2 p-3 md:p-4 bg-muted/30 rounded-lg border border-border/50">
+                      <Label htmlFor="revenue-specific-date" className="text-xs md:text-sm font-semibold">Select Date</Label>
                       <Input
                         id="revenue-specific-date"
                         type="date"
                         value={revenueSpecificDate}
-                        onChange={(e) => setRevenueSpecificDate(e.target.value)}
-                        className="border-border text-xs md:text-sm"
+                        onChange={(e) => { setRevenueSpecificDate(e.target.value); setRevenueFilterError(''); }}
+                        className="border-border bg-background text-xs md:text-sm"
                       />
+                      <p className="text-xs text-muted-foreground">View revenue for a specific day</p>
                     </div>
                   )}
 
                   {/* Custom Date Range Inputs */}
                   {revenueFilterType === 'custom' && (
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label htmlFor="revenue-start-date" className="text-xs md:text-sm">Start Date</Label>
-                        <Input
-                          id="revenue-start-date"
-                          type="date"
-                          value={revenueStartDate}
-                          onChange={(e) => setRevenueStartDate(e.target.value)}
-                          className="border-border text-xs md:text-sm"
-                        />
+                    <div className="space-y-3 p-3 md:p-4 bg-muted/30 rounded-lg border border-border/50">
+                      <p className="text-xs md:text-sm font-semibold">Select Date Range</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="revenue-start-date" className="text-xs">Start Date</Label>
+                          <Input
+                            id="revenue-start-date"
+                            type="date"
+                            value={revenueStartDate}
+                            onChange={(e) => { setRevenueStartDate(e.target.value); setRevenueFilterError(''); }}
+                            className="border-border bg-background text-xs"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="revenue-end-date" className="text-xs">End Date</Label>
+                          <Input
+                            id="revenue-end-date"
+                            type="date"
+                            value={revenueEndDate}
+                            onChange={(e) => { setRevenueEndDate(e.target.value); setRevenueFilterError(''); }}
+                            className="border-border bg-background text-xs"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="revenue-end-date" className="text-xs md:text-sm">End Date</Label>
-                        <Input
-                          id="revenue-end-date"
-                          type="date"
-                          value={revenueEndDate}
-                          onChange={(e) => setRevenueEndDate(e.target.value)}
-                          className="border-border text-xs md:text-sm"
-                        />
-                      </div>
+                      <p className="text-xs text-muted-foreground">Analyze revenue trends between two dates</p>
                     </div>
                   )}
 
+                  {/* Validation Error Message */}
+                  {revenueFilterError && (
+                    <Alert variant="destructive" className="border-red-500/50 bg-red-500/10">
+                      <AlertDescription className="text-xs md:text-sm">{revenueFilterError}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {/* Apply/Reset Buttons */}
+                  <div className="flex gap-2 pt-1">
+                    <Button
+                      onClick={async () => {
+                        if (!validateRevenueDateRange()) return;
+                        setIsApplyingRevenueFilter(true);
+                        await new Promise(r => setTimeout(r, 300));
+                        setIsApplyingRevenueFilter(false);
+                      }}
+                      disabled={isApplyingRevenueFilter}
+                      className="flex-1 bg-accent hover:bg-accent/90 gap-2 text-xs md:text-sm"
+                    >
+                      {isApplyingRevenueFilter ? (
+                        <>
+                          <RotateCw className="w-3 h-3 md:w-4 md:h-4 animate-spin" />
+                          <span>Updating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <RotateCw className="w-3 h-3 md:w-4 md:h-4" />
+                          <span>Apply Filter</span>
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setRevenueFilterType('last30days');
+                        setRevenueSpecificDate('');
+                        setRevenueStartDate('');
+                        setRevenueEndDate('');
+                        setRevenueFilterError('');
+                      }}
+                      variant="outline"
+                      className="gap-2 text-xs md:text-sm"
+                    >
+                      ↺ <span className="hidden sm:inline">Reset</span>
+                    </Button>
+                  </div>
+
                   {/* Divider */}
-                  <div className="border-t border-border mt-4 pt-4" />
+                  <div className="border-t border-border mt-5 pt-4 md:pt-5" />
 
                   {/* Auto-Refresh Section */}
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
+                    <p className="text-xs md:text-sm font-semibold">Auto-Refresh Settings</p>
+                    <div className="flex items-center gap-3 p-3 bg-muted/20 rounded-lg border border-border/50">
                       <input
                         id="revenue-auto-refresh-toggle"
                         type="checkbox"
@@ -2986,14 +3081,14 @@ export default function ManagementDashboard() {
                         onChange={(e) => setIsRevenueAutoRefreshEnabled(e.target.checked)}
                         className="w-5 h-5 rounded border-border cursor-pointer"
                       />
-                      <Label htmlFor="revenue-auto-refresh-toggle" className="cursor-pointer text-xs md:text-sm">
-                        {isRevenueAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
+                      <Label htmlFor="revenue-auto-refresh-toggle" className="cursor-pointer flex-1 text-xs md:text-sm">
+                        {isRevenueAutoRefreshEnabled ? '✓ Auto-Refresh Active' : 'Enable Auto-Refresh'}
                       </Label>
                     </div>
 
                     {isRevenueAutoRefreshEnabled && (
-                      <div className="space-y-2 pl-8">
-                        <Label htmlFor="revenue-refresh-interval" className="text-xs md:text-sm">Refresh Interval (seconds)</Label>
+                      <div className="space-y-3 p-3 md:p-4 bg-accent/5 rounded-lg border border-accent/20">
+                        <Label htmlFor="revenue-refresh-interval" className="text-xs md:text-sm font-semibold">Refresh Interval</Label>
                         <div className="flex items-center gap-2">
                           <Input
                             id="revenue-refresh-interval"
@@ -3002,15 +3097,16 @@ export default function ManagementDashboard() {
                             max="300"
                             value={revenueRefreshInterval}
                             onChange={(e) => setRevenueRefreshInterval(Math.max(10, Math.min(300, parseInt(e.target.value) || 30)))}
-                            className="border-border w-24 text-xs md:text-sm"
+                            className="border-border w-20 md:w-24 bg-background text-xs"
                           />
-                          <span className="text-xs text-muted-foreground">seconds (10-300)</span>
+                          <span className="text-xs text-muted-foreground">seconds</span>
                         </div>
                       </div>
                     )}
 
                     {lastRevenueRefreshTime && (
-                      <div className="text-xs text-muted-foreground pl-8">
+                      <div className="text-xs text-muted-foreground flex items-center gap-2 px-3">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
                         Last refresh: {lastRevenueRefreshTime.toLocaleTimeString('en-IN')}
                       </div>
                     )}

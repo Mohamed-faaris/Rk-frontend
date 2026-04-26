@@ -45,6 +45,37 @@ export default function FinanceAnalyticsPage() {
   const [refreshInterval, setRefreshInterval] = useState(30);
   const [lastRefreshTime, setLastRefreshTime] = useState<Date | null>(null);
   const autoRefreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [filterError, setFilterError] = useState('');
+  const [isApplyingFilter, setIsApplyingFilter] = useState(false);
+
+  // Validate date range
+  const validateDateRange = (): boolean => {
+    setFilterError('');
+    
+    if (filterType === 'specific' && !specificDate) {
+      setFilterError('Please select a date');
+      return false;
+    }
+    
+    if (filterType === 'custom') {
+      if (!startDate || !endDate) {
+        setFilterError('Please select both start and end dates');
+        return false;
+      }
+      if (new Date(startDate) > new Date(endDate)) {
+        setFilterError('Start date must be before end date');
+        return false;
+      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (new Date(endDate) > today) {
+        setFilterError('End date cannot be in the future');
+        return false;
+      }
+    }
+    
+    return true;
+  };
 
   // Helper function to calculate dates based on filter type
   const getDateRange = (type: string) => {
@@ -244,77 +275,141 @@ export default function FinanceAnalyticsPage() {
           )}
 
           {!isLoading && (
-            <Card className="border-border mb-6">
-              <CardHeader>
-                <CardTitle>Filter Revenue Data</CardTitle>
-                <CardDescription>Select date range and configure auto-refresh</CardDescription>
+            <Card className="border-border mb-6 bg-card/50 backdrop-blur">
+              <CardHeader className="border-b border-border/50">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <CardTitle>Filter Revenue Data</CardTitle>
+                    <span className="px-3 py-1 bg-accent/10 text-accent text-sm rounded-full font-medium">
+                      {filterType === 'today' && 'Today'}
+                      {filterType === 'last7days' && 'Last 7 Days'}
+                      {filterType === 'last30days' && 'Last 30 Days'}
+                      {filterType === 'thismonth' && 'This Month'}
+                      {filterType === 'specific' && 'Specific Date'}
+                      {filterType === 'custom' && 'Custom Range'}
+                    </span>
+                  </div>
+                </div>
+                <CardDescription>Select date range and configure auto-refresh settings</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-6">
+                <div className="space-y-5">
                   {/* Filter Dropdown */}
                   <div className="space-y-2">
-                    <Label htmlFor="filter-type">Date Filter</Label>
-                    <Select value={filterType} onValueChange={setFilterType}>
-                      <SelectTrigger id="filter-type" className="border-border">
+                    <Label htmlFor="filter-type" className="font-semibold text-sm">Date Filter</Label>
+                    <Select value={filterType} onValueChange={(value) => { setFilterType(value); setFilterError(''); }}>
+                      <SelectTrigger id="filter-type" className="border-border bg-background hover:bg-muted/50 transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="today">Today</SelectItem>
-                        <SelectItem value="last7days">Last 7 Days</SelectItem>
-                        <SelectItem value="last30days">Last 30 Days</SelectItem>
-                        <SelectItem value="thismonth">This Month</SelectItem>
-                        <SelectItem value="specific">Specific Date</SelectItem>
-                        <SelectItem value="custom">Custom Range</SelectItem>
+                        <SelectItem value="today">📅 Today</SelectItem>
+                        <SelectItem value="last7days">📊 Last 7 Days</SelectItem>
+                        <SelectItem value="last30days">📈 Last 30 Days</SelectItem>
+                        <SelectItem value="thismonth">🗓️ This Month</SelectItem>
+                        <SelectItem value="specific">📍 Specific Date</SelectItem>
+                        <SelectItem value="custom">🔄 Custom Range</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Specific Date Input */}
                   {filterType === 'specific' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="specific-date">Select Date</Label>
+                    <div className="space-y-2 p-4 bg-muted/30 rounded-lg border border-border/50">
+                      <Label htmlFor="specific-date" className="font-semibold text-sm">Select Date</Label>
                       <Input
                         id="specific-date"
                         type="date"
                         value={specificDate}
-                        onChange={(e) => setSpecificDate(e.target.value)}
-                        className="border-border"
+                        onChange={(e) => { setSpecificDate(e.target.value); setFilterError(''); }}
+                        className="border-border bg-background"
                       />
+                      <p className="text-xs text-muted-foreground">View revenue for a specific day</p>
                     </div>
                   )}
 
                   {/* Custom Date Range Inputs */}
                   {filterType === 'custom' && (
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label htmlFor="start-date">Start Date</Label>
-                        <Input
-                          id="start-date"
-                          type="date"
-                          value={startDate}
-                          onChange={(e) => setStartDate(e.target.value)}
-                          className="border-border"
-                        />
+                    <div className="space-y-3 p-4 bg-muted/30 rounded-lg border border-border/50">
+                      <p className="text-sm font-semibold">Select Date Range</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="start-date" className="text-xs">Start Date</Label>
+                          <Input
+                            id="start-date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => { setStartDate(e.target.value); setFilterError(''); }}
+                            className="border-border bg-background text-sm"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="end-date" className="text-xs">End Date</Label>
+                          <Input
+                            id="end-date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => { setEndDate(e.target.value); setFilterError(''); }}
+                            className="border-border bg-background text-sm"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="end-date">End Date</Label>
-                        <Input
-                          id="end-date"
-                          type="date"
-                          value={endDate}
-                          onChange={(e) => setEndDate(e.target.value)}
-                          className="border-border"
-                        />
-                      </div>
+                      <p className="text-xs text-muted-foreground">Analyze revenue trends between two dates</p>
                     </div>
                   )}
 
+                  {/* Validation Error Message */}
+                  {filterError && (
+                    <Alert variant="destructive" className="border-red-500/50 bg-red-500/10">
+                      <AlertDescription className="text-sm">{filterError}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  {/* Apply/Reset Buttons */}
+                  <div className="flex gap-2 pt-1">
+                    <Button
+                      onClick={async () => {
+                        if (!validateDateRange()) return;
+                        setIsApplyingFilter(true);
+                        await new Promise(r => setTimeout(r, 300));
+                        setIsApplyingFilter(false);
+                      }}
+                      disabled={isApplyingFilter}
+                      className="flex-1 bg-accent hover:bg-accent/90 gap-2"
+                    >
+                      {isApplyingFilter ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <RotateCw className="w-4 h-4" />
+                          Apply Filter
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setFilterType('last30days');
+                        setSpecificDate('');
+                        setStartDate('');
+                        setEndDate('');
+                        setFilterError('');
+                      }}
+                      variant="outline"
+                      className="gap-2"
+                    >
+                      ↺ Reset
+                    </Button>
+                  </div>
+
                   {/* Divider */}
-                  <div className="border-t border-border mt-4 pt-4" />
+                  <div className="border-t border-border mt-5 pt-5" />
 
                   {/* Auto-Refresh Section */}
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
+                    <p className="font-semibold text-sm">Auto-Refresh Settings</p>
+                    <div className="flex items-center gap-3 p-3 bg-muted/20 rounded-lg border border-border/50">
                       <input
                         id="auto-refresh-toggle"
                         type="checkbox"
@@ -322,14 +417,14 @@ export default function FinanceAnalyticsPage() {
                         onChange={(e) => setIsAutoRefreshEnabled(e.target.checked)}
                         className="w-5 h-5 rounded border-border cursor-pointer"
                       />
-                      <Label htmlFor="auto-refresh-toggle" className="cursor-pointer">
-                        {isAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
+                      <Label htmlFor="auto-refresh-toggle" className="cursor-pointer flex-1">
+                        {isAutoRefreshEnabled ? '✓ Auto-Refresh Active' : 'Enable Auto-Refresh'}
                       </Label>
                     </div>
 
                     {isAutoRefreshEnabled && (
-                      <div className="space-y-2 pl-8">
-                        <Label htmlFor="refresh-interval">Refresh Interval (seconds)</Label>
+                      <div className="space-y-3 p-4 bg-accent/5 rounded-lg border border-accent/20">
+                        <Label htmlFor="refresh-interval" className="text-sm font-semibold">Refresh Interval</Label>
                         <div className="flex items-center gap-2">
                           <Input
                             id="refresh-interval"
@@ -338,15 +433,16 @@ export default function FinanceAnalyticsPage() {
                             max="300"
                             value={refreshInterval}
                             onChange={(e) => setRefreshInterval(Math.max(10, Math.min(300, parseInt(e.target.value) || 30)))}
-                            className="border-border w-24"
+                            className="border-border w-24 bg-background"
                           />
-                          <span className="text-xs text-muted-foreground">seconds (10-300)</span>
+                          <span className="text-sm text-muted-foreground">seconds (10-300)</span>
                         </div>
                       </div>
                     )}
 
                     {lastRefreshTime && (
-                      <div className="text-xs text-muted-foreground pl-8">
+                      <div className="text-xs text-muted-foreground flex items-center gap-2 px-3">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
                         Last refresh: {lastRefreshTime.toLocaleTimeString('en-IN')}
                       </div>
                     )}
@@ -354,11 +450,6 @@ export default function FinanceAnalyticsPage() {
                 </div>
               </CardContent>
             </Card>
-          )}
-          {success && (
-            <Alert className="mb-6 bg-green-900/20 border-green-500/50">
-              <AlertDescription className="text-green-500">{success}</AlertDescription>
-            </Alert>
           )}
 
           {isLoading ? (
