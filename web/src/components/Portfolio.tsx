@@ -76,11 +76,11 @@ const Portfolio = () => {
             {/* Slide 2: Blog/Insights Intro */}
             {currentSlide === 1 && (
               <div className="space-y-4 sm:space-y-5 animate-fade-in">
-                <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl border border-border/60 shadow-gold bg-black aspect-video flex items-center justify-center p-6 sm:p-8">
+                <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl border border-border/60 shadow-gold bg-black aspect-video flex items-center justify-center">
                   <img 
                     src={rkchblogsImage} 
                     alt="Business Insights Blog" 
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
