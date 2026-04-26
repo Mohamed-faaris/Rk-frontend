@@ -2907,63 +2907,114 @@ export default function ManagementDashboard() {
               </Card>
             </div>
 
-            {/* Revenue Chart Filter */}
+            {/* Filter Revenue Data Card */}
             <Card className="border-border bg-card mb-4">
               <CardHeader className="py-3 md:py-4">
-                <CardTitle className="text-sm md:text-base">Auto-Refresh Settings</CardTitle>
+                <CardTitle className="text-sm md:text-base">Filter Revenue Data</CardTitle>
+                <CardDescription className="text-xs md:text-sm">Select date range and configure auto-refresh</CardDescription>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <input
-                      id="revenue-auto-refresh-toggle"
-                      type="checkbox"
-                      checked={isRevenueAutoRefreshEnabled}
-                      onChange={(e) => setIsRevenueAutoRefreshEnabled(e.target.checked)}
-                      className="w-5 h-5 rounded border-border cursor-pointer"
-                    />
-                    <Label htmlFor="revenue-auto-refresh-toggle" className="cursor-pointer text-xs md:text-sm">
-                      {isRevenueAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
-                    </Label>
+                  {/* Filter Dropdown */}
+                  <div className="space-y-2">
+                    <Label htmlFor="revenue-filter-type" className="text-xs md:text-sm">Date Filter</Label>
+                    <Select value={revenueFilterType} onValueChange={setRevenueFilterType}>
+                      <SelectTrigger id="revenue-filter-type" className="border-border text-xs md:text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">Today</SelectItem>
+                        <SelectItem value="last7days">Last 7 Days</SelectItem>
+                        <SelectItem value="last30days">Last 30 Days</SelectItem>
+                        <SelectItem value="thismonth">This Month</SelectItem>
+                        <SelectItem value="specific">Specific Date</SelectItem>
+                        <SelectItem value="custom">Custom Range</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {isRevenueAutoRefreshEnabled && (
-                    <div className="space-y-2 pl-8">
-                      <Label htmlFor="revenue-refresh-interval" className="text-xs md:text-sm">Refresh Interval (seconds)</Label>
-                      <div className="flex items-center gap-2">
+                  {/* Specific Date Input */}
+                  {revenueFilterType === 'specific' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="revenue-specific-date" className="text-xs md:text-sm">Select Date</Label>
+                      <Input
+                        id="revenue-specific-date"
+                        type="date"
+                        value={revenueSpecificDate}
+                        onChange={(e) => setRevenueSpecificDate(e.target.value)}
+                        className="border-border text-xs md:text-sm"
+                      />
+                    </div>
+                  )}
+
+                  {/* Custom Date Range Inputs */}
+                  {revenueFilterType === 'custom' && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="revenue-start-date" className="text-xs md:text-sm">Start Date</Label>
                         <Input
-                          id="revenue-refresh-interval"
-                          type="number"
-                          min="10"
-                          max="300"
-                          value={revenueRefreshInterval}
-                          onChange={(e) => setRevenueRefreshInterval(Math.max(10, parseInt(e.target.value) || 30))}
-                          className="border-border w-24 text-xs md:text-sm"
+                          id="revenue-start-date"
+                          type="date"
+                          value={revenueStartDate}
+                          onChange={(e) => setRevenueStartDate(e.target.value)}
+                          className="border-border text-xs md:text-sm"
                         />
-                        <span className="text-xs text-muted-foreground">seconds</span>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="revenue-end-date" className="text-xs md:text-sm">End Date</Label>
+                        <Input
+                          id="revenue-end-date"
+                          type="date"
+                          value={revenueEndDate}
+                          onChange={(e) => setRevenueEndDate(e.target.value)}
+                          className="border-border text-xs md:text-sm"
+                        />
                       </div>
                     </div>
                   )}
 
-                  {lastRevenueRefreshTime && (
-                    <div className="text-xs text-muted-foreground pl-8">
-                      Last refresh: {lastRevenueRefreshTime.toLocaleTimeString('en-IN')}
-                    </div>
-                  )}
+                  {/* Divider */}
+                  <div className="border-t border-border mt-4 pt-4" />
 
-                  <Button
-                    onClick={() => {
-                      if (isRevenueAutoRefreshEnabled) {
-                        setIsRevenueAutoRefreshEnabled(false);
-                      }
-                    }}
-                    disabled={!isRevenueAutoRefreshEnabled}
-                    variant="outline"
-                    className="gap-2 w-full text-xs md:text-sm"
-                  >
-                    <RotateCw className="w-4 h-4" />
-                    Stop Auto-Refresh
-                  </Button>
+                  {/* Auto-Refresh Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <input
+                        id="revenue-auto-refresh-toggle"
+                        type="checkbox"
+                        checked={isRevenueAutoRefreshEnabled}
+                        onChange={(e) => setIsRevenueAutoRefreshEnabled(e.target.checked)}
+                        className="w-5 h-5 rounded border-border cursor-pointer"
+                      />
+                      <Label htmlFor="revenue-auto-refresh-toggle" className="cursor-pointer text-xs md:text-sm">
+                        {isRevenueAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
+                      </Label>
+                    </div>
+
+                    {isRevenueAutoRefreshEnabled && (
+                      <div className="space-y-2 pl-8">
+                        <Label htmlFor="revenue-refresh-interval" className="text-xs md:text-sm">Refresh Interval (seconds)</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="revenue-refresh-interval"
+                            type="number"
+                            min="10"
+                            max="300"
+                            value={revenueRefreshInterval}
+                            onChange={(e) => setRevenueRefreshInterval(Math.max(10, Math.min(300, parseInt(e.target.value) || 30)))}
+                            className="border-border w-24 text-xs md:text-sm"
+                          />
+                          <span className="text-xs text-muted-foreground">seconds (10-300)</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {lastRevenueRefreshTime && (
+                      <div className="text-xs text-muted-foreground pl-8">
+                        Last refresh: {lastRevenueRefreshTime.toLocaleTimeString('en-IN')}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>

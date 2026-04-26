@@ -246,61 +246,111 @@ export default function FinanceAnalyticsPage() {
           {!isLoading && (
             <Card className="border-border mb-6">
               <CardHeader>
-                <CardTitle>Auto-Refresh Settings</CardTitle>
-                <CardDescription>Enable automatic data refresh</CardDescription>
+                <CardTitle>Filter Revenue Data</CardTitle>
+                <CardDescription>Select date range and configure auto-refresh</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <input
-                      id="auto-refresh-toggle"
-                      type="checkbox"
-                      checked={isAutoRefreshEnabled}
-                      onChange={(e) => setIsAutoRefreshEnabled(e.target.checked)}
-                      className="w-5 h-5 rounded border-border cursor-pointer"
-                    />
-                    <Label htmlFor="auto-refresh-toggle" className="cursor-pointer">
-                      {isAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
-                    </Label>
+                  {/* Filter Dropdown */}
+                  <div className="space-y-2">
+                    <Label htmlFor="filter-type">Date Filter</Label>
+                    <Select value={filterType} onValueChange={setFilterType}>
+                      <SelectTrigger id="filter-type" className="border-border">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="today">Today</SelectItem>
+                        <SelectItem value="last7days">Last 7 Days</SelectItem>
+                        <SelectItem value="last30days">Last 30 Days</SelectItem>
+                        <SelectItem value="thismonth">This Month</SelectItem>
+                        <SelectItem value="specific">Specific Date</SelectItem>
+                        <SelectItem value="custom">Custom Range</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {isAutoRefreshEnabled && (
-                    <div className="space-y-2 pl-8">
-                      <Label htmlFor="refresh-interval">Refresh Interval (seconds)</Label>
-                      <div className="flex items-center gap-2">
+                  {/* Specific Date Input */}
+                  {filterType === 'specific' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="specific-date">Select Date</Label>
+                      <Input
+                        id="specific-date"
+                        type="date"
+                        value={specificDate}
+                        onChange={(e) => setSpecificDate(e.target.value)}
+                        className="border-border"
+                      />
+                    </div>
+                  )}
+
+                  {/* Custom Date Range Inputs */}
+                  {filterType === 'custom' && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="start-date">Start Date</Label>
                         <Input
-                          id="refresh-interval"
-                          type="number"
-                          min="10"
-                          max="300"
-                          value={refreshInterval}
-                          onChange={(e) => setRefreshInterval(Math.max(10, parseInt(e.target.value) || 30))}
-                          className="border-border w-24"
+                          id="start-date"
+                          type="date"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="border-border"
                         />
-                        <span className="text-xs text-muted-foreground">seconds</span>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="end-date">End Date</Label>
+                        <Input
+                          id="end-date"
+                          type="date"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="border-border"
+                        />
                       </div>
                     </div>
                   )}
 
-                  {lastRefreshTime && (
-                    <div className="text-xs text-muted-foreground pl-8">
-                      Last refresh: {lastRefreshTime.toLocaleTimeString('en-IN')}
-                    </div>
-                  )}
+                  {/* Divider */}
+                  <div className="border-t border-border mt-4 pt-4" />
 
-                  <Button
-                    onClick={() => {
-                      if (isAutoRefreshEnabled) {
-                        setIsAutoRefreshEnabled(false);
-                      }
-                    }}
-                    disabled={!isAutoRefreshEnabled}
-                    variant="outline"
-                    className="gap-2 w-full"
-                  >
-                    <RotateCw className="w-4 h-4" />
-                    Stop Auto-Refresh
-                  </Button>
+                  {/* Auto-Refresh Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <input
+                        id="auto-refresh-toggle"
+                        type="checkbox"
+                        checked={isAutoRefreshEnabled}
+                        onChange={(e) => setIsAutoRefreshEnabled(e.target.checked)}
+                        className="w-5 h-5 rounded border-border cursor-pointer"
+                      />
+                      <Label htmlFor="auto-refresh-toggle" className="cursor-pointer">
+                        {isAutoRefreshEnabled ? '✓ Auto-Refresh Enabled' : 'Enable Auto-Refresh'}
+                      </Label>
+                    </div>
+
+                    {isAutoRefreshEnabled && (
+                      <div className="space-y-2 pl-8">
+                        <Label htmlFor="refresh-interval">Refresh Interval (seconds)</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="refresh-interval"
+                            type="number"
+                            min="10"
+                            max="300"
+                            value={refreshInterval}
+                            onChange={(e) => setRefreshInterval(Math.max(10, Math.min(300, parseInt(e.target.value) || 30)))}
+                            className="border-border w-24"
+                          />
+                          <span className="text-xs text-muted-foreground">seconds (10-300)</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {lastRefreshTime && (
+                      <div className="text-xs text-muted-foreground pl-8">
+                        Last refresh: {lastRefreshTime.toLocaleTimeString('en-IN')}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
