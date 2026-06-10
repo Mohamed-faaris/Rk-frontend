@@ -109,32 +109,57 @@ app.get('/health', (req, res) => {
 // ============================================
 const MONGODB_URI = env.MONGODB_URI;
 
+let cachedDbPromise = null;
+
 const connectDB = async () => {
   if (mongoose.connection.readyState === 1) return;
   if (!MONGODB_URI) {
-    console.warn('⚠️  MONGODB_URI not set');
+    const msg = '⚠️  MONGODB_URI not set';
+    console.warn(msg);
+    throw new Error(msg);
+  }
+  
+  if (cachedDbPromise) {
+    await cachedDbPromise;
     return;
   }
+
   try {
-    await mongoose.connect(MONGODB_URI, {
+    cachedDbPromise = mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       maxPoolSize: 5,
       minPoolSize: 1,
     });
+    
+    await cachedDbPromise;
     console.log('✅ MongoDB connected');
-    await ensureCEOUser();
-    await ensureFinanceAnalystUser();
+    
+    // Run these in the background to not block the connection return
+    ensureCEOUser().catch(err => console.error('⚠️ Failed to ensure CEO account:', err.message));
+    ensureFinanceAnalystUser().catch(err => console.error('⚠️ Failed to ensure Finance Analyst account:', err.message));
   } catch (err) {
+    cachedDbPromise = null;
     console.warn('⚠️  MongoDB connection failed:', err.message);
+    throw err;
   }
 };
 
-connectDB();
+// Initial connection attempt
+connectDB().catch(() => {});
 
 app.use(async (req, res, next) => {
-  if (mongoose.connection.readyState !== 1 && MONGODB_URI) {
-    await connectDB();
+  // Skip DB connection check for health routes
+  if (req.path === '/api/health' || req.path === '/health') {
+    return next();
+  }
+
+  if (mongoose.connection.readyState !== 1) {
+    try {
+      await connectDB();
+    } catch (err) {
+      return res.status(500).json({ error: 'Database connection failed', details: err.message });
+    }
   }
   next();
 });
