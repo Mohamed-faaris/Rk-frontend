@@ -29,9 +29,6 @@ services:
     buildCommand: npm ci
     startCommand: npm run server:api
     
-    domains:
-      - api.rkch.tech
-    
     envVars:
       - key: MODE
         value: api
