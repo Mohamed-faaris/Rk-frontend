@@ -13,16 +13,16 @@ const envSchema = z.object({
   EMAIL_USER: z.string().default(''),
   EMAIL_PASSWORD: z.string().default(''),
   EMAIL_FROM: z.string().default(''),
-  GOOGLE_CLIENT_ID: z.string().optional(),
-  GOOGLE_CLIENT_SECRET: z.string().optional(),
-  GOOGLE_REDIRECT_URI: z.string().url().optional(),
-  APPLE_CLIENT_ID: z.string().optional(),
-  APPLE_REDIRECT_URI: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().optional().or(z.literal('')),
+  GOOGLE_CLIENT_SECRET: z.string().optional().or(z.literal('')),
+  GOOGLE_REDIRECT_URI: z.string().url().optional().or(z.literal('')),
+  APPLE_CLIENT_ID: z.string().optional().or(z.literal('')),
+  APPLE_REDIRECT_URI: z.string().optional().or(z.literal('')),
   APPLE_SCOPES: z.string().default('name email'),
-  FACEBOOK_APP_ID: z.string().optional(),
-  FACEBOOK_APP_SECRET: z.string().optional(),
+  FACEBOOK_APP_ID: z.string().optional().or(z.literal('')),
+  FACEBOOK_APP_SECRET: z.string().optional().or(z.literal('')),
   FACEBOOK_GRAPH_VERSION: z.string().default('v20.0'),
-  SKIP_OTP: z.string().optional(),
+  SKIP_OTP: z.string().optional().or(z.literal('')),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -31,8 +31,8 @@ let resolvedEnv;
 if (!parsed.success) {
   console.error('Invalid environment variables:', parsed.error.flatten().fieldErrors);
   // Do not terminate serverless initialization; keep runtime alive for non-dependent routes.
-  // Defaults are intentionally permissive to avoid Vercel cold-start crashes.
-  resolvedEnv = envSchema.parse({});
+  // Merge process.env with defaults so critical variables like MONGODB_URI are preserved even if validation fails.
+  resolvedEnv = { ...envSchema.parse({}), ...process.env };
 } else {
   const missingInProduction = [
     'MONGODB_URI',
