@@ -1,17 +1,12 @@
 {
   "version": 2,
-  "installCommand": "corepack enable && pnpm install --frozen-lockfile",
+  "installCommand": "corepack enable && pnpm install",
   "buildCommand": "pnpm --filter web build",
   "outputDirectory": "web/dist",
-  "framework": "vite",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/((?!api/|assets/|uploads/|.*\\..*).*)",
-      "dest": "/index.html"
+      "source": "/api/:path*",
+      "destination": "/api/index.js"
     }
   ]
 }

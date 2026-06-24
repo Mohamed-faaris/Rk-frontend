@@ -6,44 +6,7 @@ settings:
 
 importers:
 
-  .:
-    dependencies:
-      apple-signin-auth:
-        specifier: ^1.7.9
-        version: 1.7.9
-      bcryptjs:
-        specifier: ^2.4.3
-        version: 2.4.3
-      cors:
-        specifier: ^2.8.6
-        version: 2.8.6
-      dotenv:
-        specifier: ^16.6.1
-        version: 16.6.1
-      express:
-        specifier: ^4.22.1
-        version: 4.22.1
-      google-auth-library:
-        specifier: ^9.15.1
-        version: 9.15.1
-      jsonwebtoken:
-        specifier: ^9.0.3
-        version: 9.0.3
-      mongoose:
-        specifier: ^8.23.0
-        version: 8.23.0
-      multer:
-        specifier: ^2.1.1
-        version: 2.1.1
-      node-fetch:
-        specifier: ^2.7.0
-        version: 2.7.0
-      nodemailer:
-        specifier: ^6.10.1
-        version: 6.10.1
-      sharp:
-        specifier: ^0.34.5
-        version: 0.34.5
+  .: {}
 
   api: {}
 
@@ -58,6 +21,9 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.6
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       dotenv:
         specifier: ^16.3.1
         version: 16.6.1
@@ -89,9 +55,6 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
     devDependencies:
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       nodemon:
         specifier: ^3.0.2
         version: 3.1.11
@@ -2904,10 +2867,6 @@ packages:
 
   multer@2.0.2:
     resolution: {integrity: sha512-u7f2xaZ/UG8oLXHvtF/oWTRvT44p9ecwBBqTwgJVq0+4BW1g8OW01TyMEGWBHbyMOYVHXslaut7qEQ1meATXgw==}
-    engines: {node: '>= 10.16.0'}
-
-  multer@2.1.1:
-    resolution: {integrity: sha512-mo+QTzKlx8R7E5ylSXxWzGoXoZbOsRMpyitcht8By2KHvMbf3tjwosZ/Mu/XYU6UuJ3VZnODIrak5ZrPiPyB6A==}
     engines: {node: '>= 10.16.0'}
 
   mz@2.7.0:
@@ -6077,13 +6036,6 @@ snapshots:
       object-assign: 4.1.1
       type-is: 1.6.18
       xtend: 4.0.2
-
-  multer@2.1.1:
-    dependencies:
-      append-field: 1.0.0
-      busboy: 1.6.0
-      concat-stream: 2.0.0
-      type-is: 1.6.18
 
   mz@2.7.0:
     dependencies:
