@@ -1,4 +1,25 @@
-import 'dotenv/config';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import { existsSync } from 'fs';
+
+// Load .env file from the server directory explicitly
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+import dotenv from 'dotenv';
+
+// Try loading .env from server dir, then from project root
+const serverEnvPath = resolve(__dirname, '.env');
+const rootEnvPath = resolve(__dirname, '../.env');
+
+if (existsSync(serverEnvPath)) {
+  dotenv.config({ path: serverEnvPath });
+} else if (existsSync(rootEnvPath)) {
+  dotenv.config({ path: rootEnvPath });
+} else {
+  dotenv.config(); // fallback: load from CWD
+}
+
 import { z } from 'zod';
 
 const envSchema = z.object({
@@ -29,9 +50,7 @@ const parsed = envSchema.safeParse(process.env);
 let resolvedEnv;
 
 if (!parsed.success) {
-  console.error('Invalid environment variables:', parsed.error.flatten().fieldErrors);
-  // Do not terminate serverless initialization; keep runtime alive for non-dependent routes.
-  // Merge process.env with defaults so critical variables like MONGODB_URI are preserved even if validation fails.
+  console.error('❌ Invalid environment variables:', parsed.error.flatten().fieldErrors);
   resolvedEnv = { ...envSchema.parse({}), ...process.env };
 } else {
   const missingInProduction = [
@@ -44,10 +63,18 @@ if (!parsed.success) {
   ].filter((key) => !process.env[key]);
 
   if (parsed.data.NODE_ENV === 'production' && missingInProduction.length > 0) {
-    console.warn('Missing optional production env vars:', missingInProduction.join(', '));
+    console.warn('⚠️  Missing production env vars:', missingInProduction.join(', '));
+  }
+
+  // Hard crash if MONGODB_URI is missing in production — this prevents silent "Database connection failed"
+  if (parsed.data.NODE_ENV === 'production' && !process.env.MONGODB_URI) {
+    console.error('❌ FATAL: MONGODB_URI environment variable is not set!');
+    console.error('   → Go to Render Dashboard → rk-api → Environment → Add MONGODB_URI');
+    process.exit(1);
   }
 
   resolvedEnv = parsed.data;
 }
 
 export const env = resolvedEnv;
+
