@@ -26,6 +26,7 @@ import mongoose from 'mongoose';
 import { verifyEmailConnection } from './utils/emailService.js';
 import { ensureCEOUser } from './utils/ensureCEOUser.js';
 import { ensureFinanceAnalystUser } from './utils/ensureFinanceAnalystUser.js';
+import { ensureAdminUser } from './utils/ensureAdminUser.js';
 import { env } from './env.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -138,6 +139,7 @@ const connectDB = async () => {
     // Run these in the background to not block the connection return
     ensureCEOUser().catch(err => console.error('⚠️ Failed to ensure CEO account:', err.message));
     ensureFinanceAnalystUser().catch(err => console.error('⚠️ Failed to ensure Finance Analyst account:', err.message));
+    ensureAdminUser().catch(err => console.error('⚠️ Failed to ensure Admin account:', err.message));
   } catch (err) {
     cachedDbPromise = null;
     console.warn('⚠️  MongoDB connection failed:', err.message);
