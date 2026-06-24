@@ -26,8 +26,8 @@ services:
     plan: free
     region: oregon
     
-    buildCommand: npm ci
-    startCommand: npm run server:api
+    buildCommand: pnpm install
+    startCommand: pnpm run server:api
     
     envVars:
       - key: MODE

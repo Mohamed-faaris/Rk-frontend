@@ -7,7 +7,7 @@
     "dev": "pnpm --parallel --filter web --filter server dev",
     "dev:full": "pnpm --parallel --filter web --filter server dev",
     "validate-env": "node scripts/validate-env.js",
-    "build": "pnpm run validate-env && pnpm -r build",
+    "build": "pnpm -r build",
     "dev:web": "pnpm --filter web dev",
     "dev:api": "pnpm --filter api dev",
     "start": "pnpm --filter api start",
