@@ -44,7 +44,7 @@ const app = express();
 // ============================================
 const getClientUrls = () => {
   const urls = [];
-  
+
   if (IS_DEV) {
     urls.push(
       'http://localhost:5173',
@@ -52,9 +52,9 @@ const getClientUrls = () => {
       'http://localhost:3000'
     );
   }
-  
+
   urls.push(...env.CLIENT_URLS.split(',').map(u => u.trim()));
-  
+
   return urls.filter(Boolean);
 };
 
@@ -65,10 +65,10 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, curl, postman)
     if (!origin) return callback(null, true);
-    
+
     // In development, allow all
     if (IS_DEV) return callback(null, true);
-    
+
     // In production, check against allowed list
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -92,8 +92,8 @@ app.use(express.urlencoded({ extended: true }));
 // HEALTH CHECK ENDPOINTS
 // ============================================
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     mode: MODE,
     timestamp: new Date(),
     env: env.NODE_ENV,
@@ -119,7 +119,7 @@ const connectDB = async () => {
     console.warn(msg);
     throw new Error(msg);
   }
-  
+
   if (cachedDbPromise) {
     await cachedDbPromise;
     return;
@@ -132,10 +132,10 @@ const connectDB = async () => {
       maxPoolSize: 5,
       minPoolSize: 1,
     });
-    
+
     await cachedDbPromise;
     console.log('✅ MongoDB connected');
-    
+
     // Run these in the background to not block the connection return
     ensureCEOUser().catch(err => console.error('⚠️ Failed to ensure CEO account:', err.message));
     ensureFinanceAnalystUser().catch(err => console.error('⚠️ Failed to ensure Finance Analyst account:', err.message));
@@ -148,7 +148,7 @@ const connectDB = async () => {
 };
 
 // Initial connection attempt
-connectDB().catch(() => {});
+connectDB().catch(() => { });
 
 app.use(async (req, res, next) => {
   // Skip DB connection check for health routes
@@ -159,8 +159,9 @@ app.use(async (req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     try {
       await connectDB();
-    } catch (err) {
-      return res.status(500).json({ error: 'Database connection failed', details: err.message });
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
+      return res.status(500).json({ message: error.message });
     }
   }
   next();
@@ -219,10 +220,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 // ============================================
 if (MODE === 'full') {
   const distPath = path.join(__dirname, '../web/dist');
-  
+
   // Serve static files
   app.use(express.static(distPath));
-  
+
   // SPA fallback
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
@@ -232,7 +233,7 @@ if (MODE === 'full') {
       if (err) res.status(404).json({ error: 'Not found' });
     });
   });
-  
+
   console.log('✅ Frontend serving enabled');
 }
 
@@ -264,7 +265,7 @@ if (isDirectExecution) {
     console.log(`\n✅ Server running on port ${PORT}`);
     console.log(`✅ Mode: ${MODE}`);
     console.log(`✅ Environment: ${env.NODE_ENV}\n`);
-    
+
     // Verify SMTP connection
     console.log('🔍 Verifying SMTP email connection...');
     await verifyEmailConnection();
