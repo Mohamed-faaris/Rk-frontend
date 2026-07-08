@@ -2613,6 +2613,7 @@ export default function ManagementDashboard() {
                             <SelectItem value="technology">Technology</SelectItem>
                             <SelectItem value="healthcare">Healthcare</SelectItem>
                             <SelectItem value="finance">Finance</SelectItem>
+                            <SelectItem value="automobile">Automobile</SelectItem>
                             <SelectItem value="ecommerce">E-commerce</SelectItem>
                             <SelectItem value="education">Education</SelectItem>
                             <SelectItem value="real-estate">Real Estate</SelectItem>
