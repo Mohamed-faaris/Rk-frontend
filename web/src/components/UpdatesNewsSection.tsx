@@ -4,6 +4,7 @@ import { CalendarDays, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import GoogleDrivePreview from '@/components/GoogleDrivePreview';
 import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl } from '@/lib/updatesNewsService';
 
 const UpdatesNewsSection = () => {
@@ -78,15 +79,11 @@ const UpdatesNewsSection = () => {
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {items.map((item) => (
                 <Card key={item._id} className="group overflow-hidden border-border bg-card/90 backdrop-blur-sm hover:border-accent/50 transition-all duration-300 hover:-translate-y-1">
-                  <div className="aspect-[16/10] bg-secondary/30 overflow-hidden">
-                    <iframe
-                      src={normalizeGoogleDriveEmbedUrl(item.imageUrl)}
-                      title={item.title}
-                      className="h-full w-full border-0"
-                      loading="lazy"
-                      allow="autoplay; clipboard-read; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    />
-                  </div>
+                  <GoogleDrivePreview
+                    src={normalizeGoogleDriveEmbedUrl(item.imageUrl)}
+                    title={item.title}
+                    className="aspect-[16/10]"
+                  />
                   <CardContent className="space-y-3 p-5">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <CalendarDays className="w-3.5 h-3.5" />

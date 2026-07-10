@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import GoogleDrivePreview from '@/components/GoogleDrivePreview';
 import updatesNewsService, {
   UpdatesNewsItem,
   SaveUpdatesNewsPayload,
@@ -242,15 +243,11 @@ export default function AdminUpdatesNewsPage() {
                   {items.map((item) => (
                     <Card key={item._id} className="overflow-hidden border-border">
                       <div className="grid md:grid-cols-[220px_1fr]">
-                        <div className="bg-secondary/30 aspect-[16/11] md:aspect-auto md:min-h-[220px]">
-                          <iframe
-                            src={normalizeGoogleDriveEmbedUrl(item.imageUrl)}
-                            title={item.title}
-                            className="h-full w-full border-0"
-                            loading="lazy"
-                            allow="autoplay; clipboard-read; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          />
-                        </div>
+                        <GoogleDrivePreview
+                          src={normalizeGoogleDriveEmbedUrl(item.imageUrl)}
+                          title={item.title}
+                          className="aspect-[16/11] md:min-h-[220px]"
+                        />
                         <div className="flex flex-col justify-between">
                           <CardHeader className="pb-3">
                             <div className="flex items-center gap-2 flex-wrap">

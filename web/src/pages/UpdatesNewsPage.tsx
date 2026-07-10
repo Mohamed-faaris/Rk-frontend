@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import GoogleDrivePreview from '@/components/GoogleDrivePreview';
 import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl } from '@/lib/updatesNewsService';
 
 export default function UpdatesNewsPage() {
@@ -77,15 +78,11 @@ export default function UpdatesNewsPage() {
               {items.map((item) => (
                 <Card key={item._id} className="overflow-hidden border-border">
                   <div className="grid lg:grid-cols-[1.2fr_1fr]">
-                    <div className="bg-secondary/30 aspect-[16/10] lg:aspect-auto lg:min-h-[420px]">
-                      <iframe
-                        src={normalizeGoogleDriveEmbedUrl(item.imageUrl)}
-                        title={item.title}
-                        className="h-full w-full border-0"
-                        loading="lazy"
-                        allow="autoplay; clipboard-read; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      />
-                    </div>
+                    <GoogleDrivePreview
+                      src={normalizeGoogleDriveEmbedUrl(item.imageUrl)}
+                      title={item.title}
+                      className="aspect-[16/10] lg:min-h-[420px]"
+                    />
                     <div className="flex flex-col justify-between">
                       <CardHeader>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
