@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TechLogoStrip from "@/components/TechLogoStrip";
 import About from "@/components/About";
+import UpdatesNewsSection from "@/components/UpdatesNewsSection";
 import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
 import Testimonials from "@/components/Testimonials";
@@ -16,6 +17,7 @@ const Index = () => {
         <Hero />
         <TechLogoStrip />
         <About />
+        <UpdatesNewsSection />
         <Services />
         <Portfolio />
         <Testimonials />

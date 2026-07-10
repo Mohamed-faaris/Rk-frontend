@@ -27,6 +27,7 @@ const Footer = () => {
     ],
     Company: [
       { name: "About Us", href: "/" },
+      { name: "Updates & News", href: "/updates-news" },
       { name: "Privacy Policy", href: "/privacy-policy" },
       { name: "Terms of Service", href: "/terms-of-service" },
     ],

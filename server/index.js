@@ -189,6 +189,7 @@ import dnsRouter from './routes/dns.js';
 import chatbotRouter from './routes/chatbot.js';
 import configRouter from './routes/config.js';
 import businessAnalyticsUpdateRouter from './routes/businessAnalyticsUpdate.js';
+import updatesNewsRouter from './routes/updatesNews.js';
 
 app.use('/api/auth', authRouter);
 app.use('/api/otp', otpRouter);
@@ -209,6 +210,7 @@ app.use('/api/dns', dnsRouter);
 app.use('/api/chat', chatbotRouter);
 app.use('/api/config', configRouter);
 app.use('/api/business-analytics-updates', businessAnalyticsUpdateRouter);
+app.use('/api/updates-news', updatesNewsRouter);
 
 // Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../web/public/uploads')));

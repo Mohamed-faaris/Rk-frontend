@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(false);
@@ -107,6 +108,11 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-4 pt-20 md:pt-24 pb-8 md:pb-12">
         <div className="mb-4 md:mb-6">
           <h1 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">Admin Dashboard</h1>
+          <div className="flex flex-wrap gap-3 mt-3">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin/updates-news">Manage Updates & News</Link>
+            </Button>
+          </div>
         </div>
 
       {message && (
