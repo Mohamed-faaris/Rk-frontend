@@ -25,6 +25,35 @@ export interface SaveUpdatesNewsPayload {
   isPublished?: boolean;
 }
 
+export const extractGoogleDriveFileId = (value: string) => {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return '';
+  }
+
+  const fileMatch = trimmed.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
+  if (fileMatch?.[1]) {
+    return fileMatch[1];
+  }
+
+  const openMatch = trimmed.match(/[?&]id=([^&]+)/i);
+  if (openMatch?.[1] && trimmed.includes('drive.google.com')) {
+    return openMatch[1];
+  }
+
+  return '';
+};
+
+export const getGoogleDriveThumbnailUrl = (value: string) => {
+  const fileId = extractGoogleDriveFileId(value);
+  if (!fileId) {
+    return normalizeGoogleDriveEmbedUrl(value);
+  }
+
+  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`;
+};
+
 export const normalizeGoogleDriveEmbedUrl = (value: string) => {
   const trimmed = value.trim();
 
