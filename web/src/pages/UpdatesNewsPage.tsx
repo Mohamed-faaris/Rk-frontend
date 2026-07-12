@@ -285,27 +285,29 @@ export default function UpdatesNewsPage() {
       <Dialog open={Boolean(selectedItem)} onOpenChange={(open) => !open && setSelectedItem(null)}>
         <DialogContent className="max-w-5xl w-[calc(100%-1rem)] max-h-[90vh] overflow-y-auto p-0">
           {selectedItem && (
-            <div>
-              <div className="relative w-full">
-                <div
-                  className="absolute inset-0 scale-[1.9] bg-cover bg-center blur-[80px] brightness-95"
-                  style={{ backgroundImage: `url('${getGoogleDriveThumbnailUrl(selectedItem.imageUrl)}')` }}
-                  aria-hidden="true"
-                />
-                <div className="relative aspect-video w-full">
-                  <iframe
-                    className="h-full w-full relative z-10 rounded-xl"
-                    src={normalizeGoogleDriveEmbedUrl(selectedItem.imageUrl)}
-                    title={`${selectedItem.title} full preview`}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
+            <div className="relative overflow-hidden">
+              <div
+                className="absolute inset-0 scale-[1.9] bg-cover bg-center blur-[80px] brightness-95"
+                style={{ backgroundImage: `url('${getGoogleDriveThumbnailUrl(selectedItem.imageUrl)}')` }}
+                aria-hidden="true"
+              />
 
-              <div className="space-y-5 p-5 md:p-8">
+              <div className="relative z-10">
+                <div className="relative w-full">
+                  <div className="relative aspect-video w-full">
+                    <iframe
+                      className="h-full w-full relative z-10 rounded-xl"
+                      src={normalizeGoogleDriveEmbedUrl(selectedItem.imageUrl)}
+                      title={`${selectedItem.title} full preview`}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-5 p-5 md:p-8">
                 <DialogHeader className="text-left">
                   <DialogDescription className="flex items-center gap-2 text-xs uppercase tracking-[0.2em]">
                     <Sparkles className="h-3.5 w-3.5" />
