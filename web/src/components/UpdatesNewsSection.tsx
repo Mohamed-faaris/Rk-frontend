@@ -219,30 +219,28 @@ const UpdatesNewsSection = () => {
                     </CardContent>
                   </div>
                 </div>
-                  {/* left/right overlay nav */}
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-2 sm:pl-4">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={goToPrevious}
-                      aria-label="Previous slide"
-                      className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-black/30 hover:bg-accent/15 text-white shadow-sm transition"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </Button>
-                  </div>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-4">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={goToNext}
-                      aria-label="Next slide"
-                      className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-black/30 hover:bg-accent/15 text-white shadow-sm transition"
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                    </Button>
-                  </div>
                 </Card>
+
+                <div className="flex items-center justify-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={goToPrevious}
+                    aria-label="Previous slide"
+                    className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-black/30 hover:bg-accent/15 text-white shadow-sm transition"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={goToNext}
+                    aria-label="Next slide"
+                    className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-black/30 hover:bg-accent/15 text-white shadow-sm transition"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </div>
 
                 {/* Bottom-centered indicators */}
                 <div className="mt-4 flex justify-center">
