@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl } from '@/lib/updatesNewsService';
+import GoogleDrivePreview from '@/components/GoogleDrivePreview';
 
 const getPreviewText = (value: string, maxLength = 220) => {
   const normalized = value.replace(/\s+/g, ' ').trim();
@@ -184,15 +185,11 @@ export default function UpdatesNewsPage() {
                     className="relative isolate block w-full overflow-hidden bg-black text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     aria-label={activeItem ? `Open full update for ${activeItem.title}` : 'Open update'}
                   >
-                    <div className={`aspect-video w-full bg-black transition-opacity duration-300 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
-                      <iframe
-                        className="pointer-events-none h-full w-full"
-                        src={normalizeGoogleDriveEmbedUrl(activeItem?.imageUrl || '')}
+                    <div className={`aspect-video w-full transition-opacity duration-300 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
+                      <GoogleDrivePreview
+                        src={activeItem?.imageUrl || ''}
                         title={activeItem?.title || 'Update preview'}
-                        loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
+                        className="aspect-video w-full"
                       />
                     </div>
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent p-4 md:p-6">
