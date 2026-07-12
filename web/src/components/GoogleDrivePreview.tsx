@@ -18,16 +18,16 @@ const GoogleDrivePreview = ({ src, title, className = '' }: GoogleDrivePreviewPr
   return (
     <div className={`relative isolate overflow-hidden bg-[#111111] ${getBackgroundClassName(className)}`}>
       <div
-        className="absolute inset-0 scale-[1.3] bg-cover bg-center blur-[42px] opacity-95 saturate-150 brightness-75"
+        className="absolute inset-0 scale-[1.6] bg-cover bg-center blur-[56px] opacity-95 saturate-150 brightness-85"
         style={{ backgroundImage: `url('${backgroundSrc}')` }}
         aria-hidden="true"
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-black/5 to-black/45 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/10 pointer-events-none" />
       <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-4 md:p-5">
         <img
           src={foregroundSrc}
           alt={title}
-          className="relative z-10 max-h-[88%] max-w-[88%] object-contain rounded-xl shadow-2xl ring-1 ring-white/15 bg-black/10"
+          className="relative z-10 max-h-[88%] max-w-[88%] object-contain rounded-xl shadow-2xl ring-1 ring-white/10 bg-transparent"
           loading="lazy"
         />
       </div>

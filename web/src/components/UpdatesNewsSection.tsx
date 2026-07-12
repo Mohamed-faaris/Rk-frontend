@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl } from '@/lib/updatesNewsService';
+import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl, getGoogleDriveThumbnailUrl } from '@/lib/updatesNewsService';
 import GoogleDrivePreview from '@/components/GoogleDrivePreview';
 
 const getPreviewText = (value: string, maxLength = 220) => {
@@ -275,17 +275,25 @@ const UpdatesNewsSection = () => {
         <DialogContent className="max-w-5xl w-[calc(100%-1rem)] max-h-[90vh] overflow-y-auto p-0">
           {selectedItem && (
             <div>
-              <div className="aspect-video w-full bg-black">
-                <iframe
-                  className="h-full w-full"
-                  src={normalizeGoogleDriveEmbedUrl(selectedItem.imageUrl)}
-                  title={`${selectedItem.title} full preview`}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              </div>
+                      <div className="relative w-full">
+                        <div
+                          className="absolute inset-0 scale-[1.5] bg-cover bg-center blur-[64px] brightness-80"
+                          style={{ backgroundImage: `url('${getGoogleDriveThumbnailUrl(selectedItem.imageUrl)}')` }}
+                          aria-hidden="true"
+                        />
+                        <div className="absolute inset-0 bg-black/10" aria-hidden="true" />
+                        <div className="relative aspect-video w-full">
+                          <iframe
+                            className="h-full w-full relative z-10 rounded-xl"
+                            src={normalizeGoogleDriveEmbedUrl(selectedItem.imageUrl)}
+                            title={`${selectedItem.title} full preview`}
+                            loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            allowFullScreen
+                          />
+                        </div>
+                      </div>
 
               <div className="space-y-5 p-5 md:p-8">
                 <DialogHeader className="text-left">
