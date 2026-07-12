@@ -277,11 +277,10 @@ const UpdatesNewsSection = () => {
             <div>
                       <div className="relative w-full">
                         <div
-                          className="absolute inset-0 scale-[1.5] bg-cover bg-center blur-[64px] brightness-80"
+                          className="absolute inset-0 scale-[1.9] bg-cover bg-center blur-[80px] brightness-95"
                           style={{ backgroundImage: `url('${getGoogleDriveThumbnailUrl(selectedItem.imageUrl)}')` }}
                           aria-hidden="true"
                         />
-                        <div className="absolute inset-0 bg-black/10" aria-hidden="true" />
                         <div className="relative aspect-video w-full">
                           <iframe
                             className="h-full w-full relative z-10 rounded-xl"
