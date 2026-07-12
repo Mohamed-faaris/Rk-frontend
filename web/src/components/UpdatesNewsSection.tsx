@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { CalendarDays, ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
@@ -13,8 +12,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl } from '@/lib/updatesNewsService';
-
-const AUTO_ADVANCE_MS = 10000;
 
 const getPreviewText = (value: string, maxLength = 220) => {
   const normalized = value.replace(/\s+/g, ' ').trim();
@@ -56,18 +53,6 @@ const UpdatesNewsSection = () => {
 
     setActiveIndex((currentIndex) => Math.min(currentIndex, items.length - 1));
   }, [items]);
-
-  useEffect(() => {
-    if (items.length < 2 || selectedItem) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % items.length);
-    }, AUTO_ADVANCE_MS);
-
-    return () => window.clearInterval(intervalId);
-  }, [items, selectedItem]);
 
   const activeItem = items[activeIndex] || null;
 
@@ -140,12 +125,6 @@ const UpdatesNewsSection = () => {
           ) : (
             <div className="space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Badge variant="secondary" className="rounded-full px-3 py-1">
-                    Slide {activeIndex + 1} of {items.length}
-                  </Badge>
-                  <span className="hidden sm:inline">Auto-rotating every 10 seconds</span>
-                </div>
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"
@@ -237,20 +216,6 @@ const UpdatesNewsSection = () => {
                         </Button>
                       </div>
 
-                      <div className="flex gap-2 pt-1">
-                        {items.map((item, index) => (
-                          <button
-                            key={item._id}
-                            type="button"
-                            onClick={() => setActiveIndex(index)}
-                            className={`h-2 rounded-full transition-all duration-300 ${
-                              index === activeIndex ? 'w-8 bg-accent' : 'w-2 bg-border hover:bg-border/90'
-                            }`}
-                            aria-label={`Go to update ${index + 1}`}
-                            aria-current={index === activeIndex ? 'true' : 'false'}
-                          />
-                        ))}
-                      </div>
                     </CardContent>
                   </div>
                 </div>
