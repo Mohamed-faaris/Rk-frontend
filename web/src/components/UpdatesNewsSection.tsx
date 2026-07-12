@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -182,12 +182,7 @@ const UpdatesNewsSection = () => {
                         className="aspect-video w-full"
                       />
                     </div>
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent p-4 md:p-6">
-                      <div className="flex items-center gap-2 text-xs text-white/70">
-                        <Maximize2 className="h-3.5 w-3.5" />
-                        Click to view the full update
-                      </div>
-                    </div>
+                    {/* overlay CTA removed per design — click handled on the card itself */}
                   </button>
 
                   <div className="flex flex-col justify-between border-t border-border/60 lg:border-t-0 lg:border-l">
