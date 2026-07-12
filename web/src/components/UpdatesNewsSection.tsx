@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { CalendarDays, ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -91,12 +90,6 @@ const UpdatesNewsSection = () => {
                   Fresh studio announcements, project highlights, and company updates shared as a single featured slide on the homepage.
                 </p>
               </div>
-              <Button asChild variant="outline" className="gap-2 self-start lg:self-auto">
-                <Link to="/updates-news">
-                  View all updates
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button>
             </div>
           </div>
 

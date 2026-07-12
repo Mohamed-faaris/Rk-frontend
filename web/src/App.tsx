@@ -38,7 +38,6 @@ const ApplyForEmployee = lazy(() => import("./pages/ApplyForEmployee"));
 const ApplyForPosition = lazy(() => import("./pages/ApplyForPosition"));
 const EmployeeDetailsPage = lazy(() => import("./pages/EmployeeDetailsPage"));
 const ChatbotDashboard = lazy(() => import("./pages/ChatbotDashboard"));
-const UpdatesNewsPage = lazy(() => import("./pages/UpdatesNewsPage"));
 const AdminUpdatesNewsPage = lazy(() => import("./pages/AdminUpdatesNewsPage"));
 const ChatBot = lazy(() => import("./components/ChatBot"));
 
@@ -135,7 +134,6 @@ const AppContent = () => {
         <Route path="/terms-of-service" element={<main><Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense></main>} />
         <Route path="/contact" element={<main><Suspense fallback={<PageLoader />}><ContactPage /></Suspense></main>} />
         <Route path="/business-insights" element={<main><Suspense fallback={<PageLoader />}><BusinessInsightsPage /></Suspense></main>} />
-        <Route path="/updates-news" element={<main><Suspense fallback={<PageLoader />}><UpdatesNewsPage /></Suspense></main>} />
         <Route path="/apply-employee" element={<Suspense fallback={<PageLoader />}><ApplyForEmployee /></Suspense>} />
         <Route path="/apply-position/:positionId" element={<Suspense fallback={<PageLoader />}><ApplyForPosition /></Suspense>} />
         <Route path="/employee/:id" element={<Suspense fallback={<PageLoader />}><EmployeeDetailsPage /></Suspense>} />
