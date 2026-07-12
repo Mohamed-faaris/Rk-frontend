@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -33,6 +33,9 @@ export default function UpdatesNewsPage() {
   const [error, setError] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<UpdatesNewsItem | null>(null);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+  const [fadeIn, setFadeIn] = useState(true);
 
   useEffect(() => {
     const loadItems = async () => {
@@ -82,6 +85,47 @@ export default function UpdatesNewsPage() {
     setActiveIndex((currentIndex) => (currentIndex + 1) % items.length);
   };
 
+  // keyboard navigation
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goToPrevious();
+      if (e.key === 'ArrowRight') goToNext();
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [items]);
+
+  // fade animation on slide change
+  useEffect(() => {
+    setFadeIn(false);
+    const t = window.setTimeout(() => setFadeIn(true), 20);
+    return () => window.clearTimeout(t);
+  }, [activeIndex]);
+
+  // touch handlers for swipe support
+  const handleTouchStart = (e: any) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: any) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null) return;
+    const delta = touchStartX - touchEndX;
+    const threshold = 50; // px
+    if (delta > threshold) {
+      goToNext();
+    } else if (delta < -threshold) {
+      goToPrevious();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -94,7 +138,7 @@ export default function UpdatesNewsPage() {
             </Button>
           </div>
 
-          <div className="mb-8 md:mb-12 max-w-4xl space-y-4 animate-fade-in-up">
+            <div className="mb-8 md:mb-12 max-w-4xl space-y-4 animate-fade-in-up">
             <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-xs md:text-sm text-accent">
               <Sparkles className="w-4 h-4" />
               Company updates
@@ -103,7 +147,7 @@ export default function UpdatesNewsPage() {
               Updates <span className="gradient-text">& News</span>
             </h1>
             <p className="text-muted-foreground mt-3 text-base md:text-lg leading-relaxed">
-              Published announcements, project highlights, and studio news presented as a single slide at a time with automatic rotation every 10 seconds.
+              Published announcements, project highlights, and studio news presented as a single slide at a time with manual navigation.
             </p>
           </div>
 
@@ -127,45 +171,20 @@ export default function UpdatesNewsPage() {
             </Card>
           ) : (
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Badge variant="secondary" className="rounded-full px-3 py-1">
-                    Slide {activeIndex + 1} of {items.length}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={goToPrevious}
-                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
-                    aria-label="Previous update"
-                  >
-                    <ChevronLeft className="h-5 w-5 sm:h-5 sm:w-5" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={goToNext}
-                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
-                    aria-label="Next update"
-                  >
-                    <ChevronRight className="h-5 w-5 sm:h-5 sm:w-5" />
-                  </Button>
-                </div>
-              </div>
+              {/* Top navigation removed — using bottom-centered indicators */}
 
               <Card className="group overflow-hidden border-border/70 bg-card/90 shadow-xl shadow-black/5 transition-all duration-300 hover:border-accent/40">
                 <div className="grid lg:grid-cols-[1.15fr_0.85fr]">
                   <button
                     type="button"
                     onClick={() => activeItem && openItem(activeItem)}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                     className="relative isolate block w-full overflow-hidden bg-black text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     aria-label={activeItem ? `Open full update for ${activeItem.title}` : 'Open update'}
                   >
-                    <div className="aspect-video w-full bg-black">
+                    <div className={`aspect-video w-full bg-black transition-opacity duration-300 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
                       <iframe
                         className="pointer-events-none h-full w-full"
                         src={normalizeGoogleDriveEmbedUrl(activeItem?.imageUrl || '')}
@@ -222,24 +241,30 @@ export default function UpdatesNewsPage() {
                         </Button>
                       </div>
 
-                      <div className="flex gap-2 pt-1">
-                        {items.map((item, index) => (
-                          <button
-                            key={item._id}
-                            type="button"
-                            onClick={() => setActiveIndex(index)}
-                            className={`h-2 rounded-full transition-all duration-300 ${
-                              index === activeIndex ? 'w-8 bg-accent' : 'w-2 bg-border hover:bg-border/90'
-                            }`}
-                            aria-label={`Go to update ${index + 1}`}
-                            aria-current={index === activeIndex ? 'true' : 'false'}
-                          />
-                        ))}
-                      </div>
+                      {/* indicators moved below the image for centered pill/dot style */}
                     </CardContent>
                   </div>
                 </div>
               </Card>
+
+              {/* Bottom-centered indicators */}
+              <div className="mt-4 flex justify-center">
+                <div className="inline-flex items-center gap-2">
+                  {items.map((_, idx) => (
+                    <button
+                      key={idx}
+                      aria-label={`Go to slide ${idx + 1}`}
+                      onClick={() => setActiveIndex(idx)}
+                      className={
+                        idx === activeIndex
+                          ? 'h-2.5 sm:h-3 px-4 rounded-full bg-yellow-400 shadow-md transition-all duration-300 ease-in-out'
+                          : 'h-2.5 w-2.5 rounded-full bg-gray-300 transition-all duration-300 ease-in-out'
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+
             </div>
           )}
         </div>

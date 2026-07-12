@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,9 @@ const UpdatesNewsSection = () => {
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<UpdatesNewsItem | null>(null);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+  const [fadeIn, setFadeIn] = useState(true);
 
   useEffect(() => {
     const loadItems = async () => {
@@ -69,6 +72,47 @@ const UpdatesNewsSection = () => {
     }
 
     setActiveIndex((currentIndex) => (currentIndex + 1) % items.length);
+  };
+
+  // keyboard navigation
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') goToPrevious();
+      if (e.key === 'ArrowRight') goToNext();
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [items]);
+
+  // fade animation on slide change
+  useEffect(() => {
+    setFadeIn(false);
+    const t = window.setTimeout(() => setFadeIn(true), 20);
+    return () => window.clearTimeout(t);
+  }, [activeIndex]);
+
+  // touch handlers for swipe support
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null) return;
+    const delta = touchStartX - touchEndX;
+    const threshold = 50; // px
+    if (delta > threshold) {
+      goToNext();
+    } else if (delta < -threshold) {
+      goToPrevious();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
   };
 
   return (
@@ -117,40 +161,20 @@ const UpdatesNewsSection = () => {
             </Card>
           ) : (
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card/70 px-4 py-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={goToPrevious}
-                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
-                    aria-label="Previous update"
-                  >
-                    <ChevronLeft className="h-5 w-5 sm:h-5 sm:w-5" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={goToNext}
-                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
-                    aria-label="Next update"
-                  >
-                    <ChevronRight className="h-5 w-5 sm:h-5 sm:w-5" />
-                  </Button>
-                </div>
-              </div>
+              {/* Top navigation removed — using bottom indicators */}
 
               <Card className="group overflow-hidden border-border/70 bg-card/90 shadow-xl shadow-black/5 transition-all duration-300 hover:border-accent/40">
                 <div className="grid lg:grid-cols-[1.15fr_0.85fr]">
                   <button
                     type="button"
                     onClick={() => activeItem && setSelectedItem(activeItem)}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                     className="relative isolate block w-full overflow-hidden bg-black text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     aria-label={activeItem ? `Open full update for ${activeItem.title}` : 'Open update'}
                   >
-                    <div className="aspect-video w-full bg-black">
+                    <div className={`aspect-video w-full bg-black transition-opacity duration-300 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
                       <iframe
                         className="pointer-events-none h-full w-full"
                         src={normalizeGoogleDriveEmbedUrl(activeItem?.imageUrl || '')}
@@ -213,6 +237,24 @@ const UpdatesNewsSection = () => {
                   </div>
                 </div>
               </Card>
+
+                {/* Bottom-centered indicators */}
+                <div className="mt-4 flex justify-center">
+                  <div className="inline-flex items-center gap-2">
+                    {items.map((_, idx) => (
+                      <button
+                        key={idx}
+                        aria-label={`Go to slide ${idx + 1}`}
+                        onClick={() => setActiveIndex(idx)}
+                        className={
+                          idx === activeIndex
+                            ? 'h-2.5 sm:h-3 px-4 rounded-full bg-yellow-400 shadow-md transition-all duration-300 ease-in-out'
+                            : 'h-2.5 w-2.5 rounded-full bg-gray-300 transition-all duration-300 ease-in-out'
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
             </div>
           )}
         </div>
