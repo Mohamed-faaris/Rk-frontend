@@ -131,20 +131,20 @@ const UpdatesNewsSection = () => {
                     variant="outline"
                     size="icon"
                     onClick={goToPrevious}
-                    className="h-10 w-10 rounded-full"
+                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border/50 hover:border-accent/50 hover:bg-accent/10"
                     aria-label="Previous update"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     size="icon"
                     onClick={goToNext}
-                    className="h-10 w-10 rounded-full"
+                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border/50 hover:border-accent/50 hover:bg-accent/10"
                     aria-label="Next update"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
                   </Button>
                 </div>
               </div>
