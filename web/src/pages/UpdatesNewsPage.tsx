@@ -16,8 +16,6 @@ import {
 } from '@/components/ui/dialog';
 import updatesNewsService, { UpdatesNewsItem, normalizeGoogleDriveEmbedUrl } from '@/lib/updatesNewsService';
 
-const AUTO_ADVANCE_MS = 10000;
-
 const getPreviewText = (value: string, maxLength = 220) => {
   const normalized = value.replace(/\s+/g, ' ').trim();
 
@@ -61,18 +59,6 @@ export default function UpdatesNewsPage() {
 
     setActiveIndex((currentIndex) => Math.min(currentIndex, items.length - 1));
   }, [items]);
-
-  useEffect(() => {
-    if (items.length < 2 || selectedItem) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % items.length);
-    }, AUTO_ADVANCE_MS);
-
-    return () => window.clearInterval(intervalId);
-  }, [items, selectedItem]);
 
   const activeItem = items[activeIndex] || null;
 
@@ -146,28 +132,27 @@ export default function UpdatesNewsPage() {
                   <Badge variant="secondary" className="rounded-full px-3 py-1">
                     Slide {activeIndex + 1} of {items.length}
                   </Badge>
-                  <span className="hidden sm:inline">Auto-rotating every 10 seconds</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={goToPrevious}
-                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border/50 hover:border-accent/50 hover:bg-accent/10"
+                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
                     aria-label="Previous update"
                   >
-                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <ChevronLeft className="h-5 w-5 sm:h-5 sm:w-5" />
                   </Button>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={goToNext}
-                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border/50 hover:border-accent/50 hover:bg-accent/10"
+                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
                     aria-label="Next update"
                   >
-                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <ChevronRight className="h-5 w-5 sm:h-5 sm:w-5" />
                   </Button>
                 </div>
               </div>

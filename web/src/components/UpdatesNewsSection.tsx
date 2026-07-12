@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Maximize2, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -121,23 +121,23 @@ const UpdatesNewsSection = () => {
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={goToPrevious}
-                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border/50 hover:border-accent/50 hover:bg-accent/10"
+                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
                     aria-label="Previous update"
                   >
-                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <ChevronLeft className="h-5 w-5 sm:h-5 sm:w-5" />
                   </Button>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={goToNext}
-                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-border/50 hover:border-accent/50 hover:bg-accent/10"
+                    className="h-10 w-10 sm:h-11 sm:w-11 rounded-lg opacity-70 hover:opacity-100 hover:bg-accent/15 transition-all duration-200"
                     aria-label="Next update"
                   >
-                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <ChevronRight className="h-5 w-5 sm:h-5 sm:w-5" />
                   </Button>
                 </div>
               </div>
