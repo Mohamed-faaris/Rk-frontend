@@ -86,6 +86,17 @@ const UpdatesNewsSection = () => {
     return () => window.removeEventListener('keydown', onKey);
   }, [items]);
 
+  // auto scroll every 5 seconds
+  useEffect(() => {
+    if (items.length <= 1 || selectedItem) return;
+
+    const interval = setInterval(() => {
+      goToNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [items, selectedItem, activeIndex]);
+
   // fade animation on slide change
   useEffect(() => {
     setFadeIn(false);
