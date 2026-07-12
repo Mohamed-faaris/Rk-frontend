@@ -324,6 +324,7 @@ export default function UpdatesNewsPage() {
                 </p>
               </div>
             </div>
+          </div>
           )}
         </DialogContent>
       </Dialog>
