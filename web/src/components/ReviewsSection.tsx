@@ -261,6 +261,9 @@ const ReviewCard = ({
   onEdit: () => void;
   onDelete: () => void;
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isLong = review.comment && review.comment.length > 150;
+
   const initials = review.name
     .split(" ")
     .map((w) => w[0])
@@ -313,9 +316,19 @@ const ReviewCard = ({
       <h3 className="font-bold text-foreground text-base mb-2 line-clamp-1">{review.title}</h3>
 
       {/* Comment */}
-      <p className="text-muted-foreground text-sm leading-relaxed flex-1 line-clamp-4">
-        {review.comment}
-      </p>
+      <div className="flex-1 flex flex-col">
+        <p className={`text-muted-foreground text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-4'}`}>
+          {review.comment}
+        </p>
+        {isLong && (
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-xs font-semibold text-accent hover:text-accent/80 transition-colors mt-2 self-start"
+          >
+            {isExpanded ? 'Show Less' : 'Read More'}
+          </button>
+        )}
+      </div>
 
       {/* Reviewer info */}
       <div className="mt-5 pt-4 border-t border-border/60 flex items-center justify-between">
