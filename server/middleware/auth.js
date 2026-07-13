@@ -16,7 +16,7 @@ export const protect = async (req, res, next) => {
     console.log('Attempting to verify token with JWT_SECRET:', JWT_SECRET ? '(set)' : '(not set)');
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select('_id name role isActive isDeleted');
+    const user = await User.findById(decoded.id).select('_id name email role isActive isDeleted');
 
     if (!user || user.isDeleted || user.isActive === false) {
       return res.status(401).json({ error: 'Account is deleted or inactive' });
@@ -25,6 +25,7 @@ export const protect = async (req, res, next) => {
     req.user = {
       id: user._id.toString(),
       name: user.name,
+      email: user.email,
       role: user.role
     };
     console.log('User authenticated:', decoded.id, 'Role:', decoded.role, 'for route:', req.originalUrl);

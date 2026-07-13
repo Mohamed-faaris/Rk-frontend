@@ -41,7 +41,7 @@ export const reviewService = {
   },
 
   getMyReview: async (): Promise<{ success: boolean; data: Review | null }> => {
-    const response = await api.get('/reviews/my-review');
+    const response = await api.get('/reviews/user/my-review');
     return response.data;
   },
 

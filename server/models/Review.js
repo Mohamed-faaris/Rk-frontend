@@ -13,7 +13,7 @@ const reviewSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Please provide an email']
+    default: ''
   },
   rating: {
     type: Number,

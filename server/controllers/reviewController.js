@@ -1,11 +1,11 @@
 import Review from '../models/Review.js';
 
-// @desc    Get all approved reviews (public)
+// @desc    Get all approved reviews (public — visible to everyone)
 // @route   GET /api/reviews
 // @access  Public
 export const getReviews = async (req, res) => {
   try {
-    const { service, limit = 20, page = 1 } = req.query;
+    const { service, limit = 50, page = 1 } = req.query;
     let query = { status: 'approved' };
 
     if (service && service !== 'all') query.service = service;
@@ -19,7 +19,7 @@ export const getReviews = async (req, res) => {
 
     const total = await Review.countDocuments(query);
 
-    // Calculate average rating
+    // Calculate average rating across ALL approved reviews
     const ratingAgg = await Review.aggregate([
       { $match: { status: 'approved' } },
       { $group: { _id: null, avgRating: { $avg: '$rating' }, count: { $sum: 1 } } }
@@ -41,7 +41,7 @@ export const getReviews = async (req, res) => {
   }
 };
 
-// @desc    Get single review
+// @desc    Get a single review by ID (public)
 // @route   GET /api/reviews/:id
 // @access  Public
 export const getReview = async (req, res) => {
@@ -54,9 +54,22 @@ export const getReview = async (req, res) => {
   }
 };
 
-// @desc    Create a review
+// @desc    Get the logged-in user's own review
+// @route   GET /api/reviews/user/my-review
+// @access  Private
+export const getMyReview = async (req, res) => {
+  try {
+    // req.user.id is set by the protect middleware (not _id)
+    const review = await Review.findOne({ user: req.user.id });
+    res.status(200).json({ success: true, data: review || null });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// @desc    Create a review (one per user)
 // @route   POST /api/reviews
-// @access  Private (logged-in users)
+// @access  Private
 export const createReview = async (req, res) => {
   try {
     const { rating, title, comment, service } = req.body;
@@ -65,25 +78,31 @@ export const createReview = async (req, res) => {
       return res.status(400).json({ error: 'Please provide rating, title, and comment' });
     }
 
-    // Check if user already reviewed
-    const existing = await Review.findOne({ user: req.user._id });
+    // One review per user
+    const existing = await Review.findOne({ user: req.user.id });
     if (existing) {
-      return res.status(400).json({ error: 'You have already submitted a review. You can update your existing review.' });
+      return res.status(400).json({
+        error: 'You have already submitted a review. You can edit your existing review.'
+      });
     }
 
     const review = await Review.create({
-      user: req.user._id,
+      user: req.user.id,
       name: req.user.name,
-      email: req.user.email,
+      email: req.user.email || '',
       rating: parseInt(rating),
-      title,
-      comment,
+      title: title.trim(),
+      comment: comment.trim(),
       service: service || 'general'
     });
 
     console.log('Review created:', { id: review._id, name: review.name, rating: review.rating });
 
-    res.status(201).json({ success: true, message: 'Review submitted successfully!', data: review });
+    res.status(201).json({
+      success: true,
+      message: 'Review submitted successfully!',
+      data: review
+    });
   } catch (error) {
     console.error('Create review error:', error);
     res.status(500).json({ error: error.message });
@@ -92,7 +111,7 @@ export const createReview = async (req, res) => {
 
 // @desc    Update own review
 // @route   PUT /api/reviews/:id
-// @access  Private (owner)
+// @access  Private (owner or admin)
 export const updateReview = async (req, res) => {
   try {
     const { rating, title, comment, service } = req.body;
@@ -100,14 +119,20 @@ export const updateReview = async (req, res) => {
     let review = await Review.findById(req.params.id);
     if (!review) return res.status(404).json({ error: 'Review not found' });
 
-    // Check ownership (or admin)
-    if (review.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    // Ownership check
+    if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Not authorized to update this review' });
     }
 
     review = await Review.findByIdAndUpdate(
       req.params.id,
-      { rating: parseInt(rating), title, comment, service, status: 'approved' },
+      {
+        ...(rating && { rating: parseInt(rating) }),
+        ...(title && { title: title.trim() }),
+        ...(comment && { comment: comment.trim() }),
+        ...(service && { service }),
+        status: 'approved'
+      },
       { new: true, runValidators: true }
     );
 
@@ -125,7 +150,7 @@ export const deleteReview = async (req, res) => {
     const review = await Review.findById(req.params.id);
     if (!review) return res.status(404).json({ error: 'Review not found' });
 
-    if (review.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Not authorized to delete this review' });
     }
 
@@ -136,7 +161,7 @@ export const deleteReview = async (req, res) => {
   }
 };
 
-// @desc    Get all reviews (admin)
+// @desc    Get ALL reviews regardless of status (admin)
 // @route   GET /api/reviews/admin/all
 // @access  Private/Admin
 export const getAllReviewsAdmin = async (req, res) => {
@@ -152,14 +177,14 @@ export const getAllReviewsAdmin = async (req, res) => {
   }
 };
 
-// @desc    Update review status (admin)
+// @desc    Approve / reject a review (admin)
 // @route   PATCH /api/reviews/:id/status
 // @access  Private/Admin
 export const updateReviewStatus = async (req, res) => {
   try {
     const { status } = req.body;
     if (!['pending', 'approved', 'rejected'].includes(status)) {
-      return res.status(400).json({ error: 'Invalid status' });
+      return res.status(400).json({ error: 'Invalid status value' });
     }
 
     const review = await Review.findByIdAndUpdate(
@@ -171,18 +196,6 @@ export const updateReviewStatus = async (req, res) => {
     if (!review) return res.status(404).json({ error: 'Review not found' });
 
     res.status(200).json({ success: true, data: review });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// @desc    Get logged-in user's review
-// @route   GET /api/reviews/my-review
-// @access  Private
-export const getMyReview = async (req, res) => {
-  try {
-    const review = await Review.findOne({ user: req.user._id });
-    res.status(200).json({ success: true, data: review || null });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

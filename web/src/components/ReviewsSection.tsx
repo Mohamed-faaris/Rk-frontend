@@ -294,8 +294,15 @@ const ReviewCard = ({
         className="absolute top-4 right-4 text-accent/15 group-hover:text-accent/25 transition-colors"
       />
 
+      {/* "Your Review" badge */}
+      {isOwn && (
+        <div className="absolute top-4 left-4 flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-accent/20 text-accent border border-accent/30 font-medium">
+          <span>✦</span> Your Review
+        </div>
+      )}
+
       {/* Stars + service badge */}
-      <div className="flex items-center justify-between mb-4">
+      <div className={`flex items-center justify-between ${isOwn ? 'mt-7' : ''} mb-4`}>
         <StarDisplay rating={review.rating} />
         <span className="text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent font-medium border border-accent/20">
           {serviceLabels[review.service] || "General"}
@@ -537,7 +544,7 @@ const ReviewsSection = () => {
             )}
 
             {/* ── Write Review Button ── */}
-            <div className="flex justify-center mb-12">
+            <div className="flex flex-col items-center gap-3 mb-12">
               <Button
                 id="write-review-btn"
                 onClick={handleWriteReview}
@@ -555,6 +562,17 @@ const ReviewsSection = () => {
                   </>
                 )}
               </Button>
+              {!user && (
+                <p className="text-sm text-muted-foreground">
+                  <span
+                    className="text-accent underline underline-offset-2 cursor-pointer hover:text-accent/80 transition-colors"
+                    onClick={() => navigate("/login")}
+                  >
+                    Log in
+                  </span>{" "}
+                  to share your experience
+                </p>
+              )}
             </div>
 
             {/* ── Loading ── */}
