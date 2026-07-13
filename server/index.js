@@ -190,6 +190,7 @@ import chatbotRouter from './routes/chatbot.js';
 import configRouter from './routes/config.js';
 import businessAnalyticsUpdateRouter from './routes/businessAnalyticsUpdate.js';
 import updatesNewsRouter from './routes/updatesNews.js';
+import reviewRouter from './routes/review.js';
 
 app.use('/api/auth', authRouter);
 app.use('/api/otp', otpRouter);
@@ -211,6 +212,7 @@ app.use('/api/chat', chatbotRouter);
 app.use('/api/config', configRouter);
 app.use('/api/business-analytics-updates', businessAnalyticsUpdateRouter);
 app.use('/api/updates-news', updatesNewsRouter);
+app.use('/api/reviews', reviewRouter);
 
 // Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../web/public/uploads')));
