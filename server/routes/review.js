@@ -13,21 +13,18 @@ import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Public routes
-router.get('/', getReviews);
+// ── Fully Public (no auth required) ─────────────────────────────────────────
+router.get('/', getReviews);            // Everyone sees all approved reviews
+router.get('/:id', getReview);          // Anyone can read a single review
 
-// Private routes (requires login)
-router.use(protect);
-router.get('/my-review', getMyReview);
-router.post('/', createReview);
-router.put('/:id', updateReview);
-router.delete('/:id', deleteReview);
+// ── Protected (login required) ───────────────────────────────────────────────
+router.get('/user/my-review', protect, getMyReview);      // Get own review
+router.post('/', protect, createReview);                  // Submit a review
+router.put('/:id', protect, updateReview);                // Edit own review
+router.delete('/:id', protect, deleteReview);             // Delete own review
 
-// Admin routes
-router.get('/admin/all', authorize('admin'), getAllReviewsAdmin);
-router.patch('/:id/status', authorize('admin'), updateReviewStatus);
-
-// Single review (public)
-router.get('/:id', getReview);
+// ── Admin only ───────────────────────────────────────────────────────────────
+router.get('/admin/all', protect, authorize('admin'), getAllReviewsAdmin);
+router.patch('/:id/status', protect, authorize('admin'), updateReviewStatus);
 
 export default router;
