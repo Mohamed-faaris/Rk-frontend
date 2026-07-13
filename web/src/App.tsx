@@ -31,7 +31,7 @@ const VerifyOTP = lazy(() => import("./pages/VerifyOTP"));
 const ManagementDashboard = lazy(() => import("./pages/ManagementDashboard"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfServicePage"));
-const ContactPage = lazy(() => import("./pages/ContactPage"));
+
 const BusinessInsightsPage = lazy(() => import("./pages/BusinessInsightsPage"));
 const FinanceAnalyticsPage = lazy(() => import("./pages/FinanceAnalyticsPage"));
 const ApplyForEmployee = lazy(() => import("./pages/ApplyForEmployee"));
@@ -132,7 +132,7 @@ const AppContent = () => {
         <Route path="/uiux-design" element={<Suspense fallback={<PageLoader />}><UIUXDesignPage /></Suspense>} />
         <Route path="/privacy-policy" element={<main><Suspense fallback={<PageLoader />}><PrivacyPolicyPage /></Suspense></main>} />
         <Route path="/terms-of-service" element={<main><Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense></main>} />
-        <Route path="/contact" element={<main><Suspense fallback={<PageLoader />}><ContactPage /></Suspense></main>} />
+
         <Route path="/business-insights" element={<main><Suspense fallback={<PageLoader />}><BusinessInsightsPage /></Suspense></main>} />
         <Route path="/apply-employee" element={<Suspense fallback={<PageLoader />}><ApplyForEmployee /></Suspense>} />
         <Route path="/apply-position/:positionId" element={<Suspense fallback={<PageLoader />}><ApplyForPosition /></Suspense>} />

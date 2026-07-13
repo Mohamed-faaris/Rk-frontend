@@ -352,7 +352,7 @@ const OrderDetailsPage = () => {
                 <Button
                   variant="outline"
                   className="w-full bg-transparent border-border text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent"
-                  onClick={() => navigate('/contact')}
+                  onClick={() => navigate('/#contact')}
                 >
                   Contact Support
                 </Button>

@@ -281,7 +281,7 @@ export default function ChatBot() {
     if (/contact|call|reach|email|phone|get in touch/.test(msg)) {
       return {
         response: `📞 You can reach us:\n\n📧 Email: rajkayal7281@gmail.com\n💬 Chat: Right here in SIRA!\n📋 Contact page: Best for project briefs`,
-        link: '/contact',
+        link: '/#contact',
         linkText: 'Contact Us',
       };
     }
@@ -290,7 +290,7 @@ export default function ChatBot() {
     if (/portfolio|case study|previous work|what have you done|examples|show me your work/.test(msg)) {
       return {
         response: 'You can contact us for recent project samples and delivery examples across branding, websites, and creative design.',
-        link: '/contact',
+        link: '/#contact',
         linkText: 'Request Project Samples',
       };
     }

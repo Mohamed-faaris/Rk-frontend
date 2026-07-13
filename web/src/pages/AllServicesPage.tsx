@@ -233,7 +233,7 @@ const AllServicesPage = () => {
           </p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild className="bg-[#D4AF37] font-semibold text-black hover:bg-[#C59B2F]">
-              <Link to="/contact">Get Free Consultation</Link>
+              <Link to="/#contact">Get Free Consultation</Link>
             </Button>
           </div>
         </div>

@@ -22,7 +22,7 @@ const Footer = () => {
       { name: "Tech Support Cell", href: "/services" },
     ],
     Resources: [
-      { name: "Contact", href: "/contact" },
+      { name: "Contact", href: "/#contact" },
       { name: "Join RKCH Team", href: "/apply-employee" },
     ],
     Company: [
