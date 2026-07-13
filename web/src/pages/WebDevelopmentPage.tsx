@@ -206,11 +206,11 @@ const WebDevelopmentPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
                     <Code2 className="w-6 h-6 text-accent" />
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-bold break-normal">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold break-normal">
                     Web Design & <span className="gradient-text">Development</span>
                   </h1>
                 </div>
-                <p className="text-xl text-muted-foreground break-normal">
+                <p className="text-base sm:text-xl text-muted-foreground break-normal">
                   Cutting-edge websites that combine stunning design with powerful functionality
                 </p>
               </div>
@@ -369,7 +369,7 @@ const WebDevelopmentPage = () => {
             </div>
 
             {/* Filters */}
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               <Button
                 variant={selectedFilter === "all" ? "default" : "outline"}
                 onClick={() => setSelectedFilter("all")}

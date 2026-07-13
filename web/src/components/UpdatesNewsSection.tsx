@@ -139,10 +139,10 @@ const UpdatesNewsSection = () => {
             </div>
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
               <div className="space-y-3 max-w-3xl">
-                <h2 className="fairy-display text-4xl md:text-5xl font-bold">
+                <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl font-bold">
                   <span className="gradient-text">Updates</span> & News
                 </h2>
-                <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
+                <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
                   Fresh studio announcements, project highlights, and company updates shared as a single featured slide on the homepage.
                 </p>
               </div>

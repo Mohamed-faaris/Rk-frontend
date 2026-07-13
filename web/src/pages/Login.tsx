@@ -129,12 +129,12 @@ export default function Login() {
               <div className="flex justify-center animate-scale-in">
                 <div className="relative">
                   <div className="absolute inset-0 bg-accent/20 blur-3xl rounded-full animate-pulse-slow" />
-                  <img src="/rklogofinal.webp" alt="RajKayal Logo" className="h-40 w-40 relative z-10 drop-shadow-[0_0_25px_rgba(253,185,19,0.6)]" />
+                  <img src="/rklogofinal.webp" alt="RajKayal Logo" className="h-24 w-24 sm:h-40 sm:w-40 relative z-10 drop-shadow-[0_0_25px_rgba(253,185,19,0.6)]" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <CardTitle className="text-3xl font-bold">
+                <CardTitle className="text-2xl sm:text-3xl font-bold">
                   Welcome <span className="gradient-text">Back</span>
                 </CardTitle>
                 <CardDescription className="text-base">

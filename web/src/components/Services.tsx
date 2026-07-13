@@ -53,10 +53,10 @@ const Services = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
+            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Our <span className="gradient-text">Services</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
+            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               Comprehensive digital solutions tailored to elevate your brand and achieve your goals.
             </p>
           </div>
@@ -78,7 +78,7 @@ const Services = () => {
           <div className="text-center">
             <Button
               onClick={() => navigate('/services')}
-              className="group relative overflow-hidden rounded-lg bg-accent px-8 py-6 text-lg font-bold text-accent-foreground shadow-gold transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg"
+              className="group relative overflow-hidden rounded-lg bg-accent px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-bold text-accent-foreground shadow-gold transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-[120%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-[120%]" />
               <span className="relative inline-flex items-center">

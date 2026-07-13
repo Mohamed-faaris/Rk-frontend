@@ -502,10 +502,10 @@ const ReviewsSection = () => {
 
             {/* ── Section Header ── */}
             <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-              <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
+              <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
                 Client <span className="gradient-text">Reviews</span>
               </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
+              <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
                 Real experiences from our valued clients
               </p>
             </div>
@@ -515,7 +515,7 @@ const ReviewsSection = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 items-center">
                 {/* Big Rating */}
                 <div className="lg:col-span-1 flex flex-col items-center lg:items-start">
-                  <div className="text-7xl font-black text-foreground leading-none mb-2">
+                  <div className="text-5xl sm:text-7xl font-black text-foreground leading-none mb-2">
                     {avgRating.toFixed(1)}
                   </div>
                   <StarDisplay rating={avgRating} size={20} />

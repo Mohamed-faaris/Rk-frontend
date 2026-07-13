@@ -206,7 +206,7 @@ const UIUXDesignPage = () => {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
                     <Palette className="w-6 h-6 text-accent" />
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-bold break-normal">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold break-normal">
                     UI/UX <span className="gradient-text">Design</span>
                   </h1>
                 </div>

@@ -72,18 +72,18 @@ const About = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
+            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               <span className="gradient-text">About</span> Our Company
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
+            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               A fresh creative studio bringing innovative ideas and modern digital solutions to life.
             </p>
           </div>
 
           {/* Main Content */}
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-            <div className="space-y-6">
-              <h3 className="text-3xl font-bold text-foreground break-normal">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-2xl sm:text-3xl font-bold text-foreground break-normal">
                 Starting Our Journey in Digital Excellence
               </h3>
               <p className="text-lg text-muted-foreground leading-relaxed break-normal">
@@ -129,11 +129,11 @@ const About = () => {
           </div>
 
           {/* Values */}
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-8">
             {values.map((value, index) => (
               <div
                 key={value.title}
-                className="group p-8 rounded-2xl bg-card border border-border hover:border-accent/50 transition-all duration-300 hover:shadow-gold"
+                className="group p-5 sm:p-6 md:p-8 rounded-2xl bg-card border border-border hover:border-accent/50 transition-all duration-300 hover:shadow-gold"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">

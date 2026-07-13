@@ -164,10 +164,10 @@ const Testimonials = () => {
         <div className="mx-auto max-w-6xl">
           {/* Section Header */}
           <div className="animate-fade-in-up mb-16 space-y-4 text-center">
-            <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
+            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
               Our <span className="gradient-text">Team</span>
             </h2>
-            <p className="mx-auto max-w-2xl break-normal text-xl text-muted-foreground">
+            <p className="mx-auto max-w-2xl break-normal text-base sm:text-xl text-muted-foreground">
               Meet the people leading RajKayal Creative Hub across leadership,
               engineering, operations, and growth.
             </p>

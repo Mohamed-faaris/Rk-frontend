@@ -127,15 +127,15 @@ const Contact = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="fairy-display text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
+            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
               Get in <span className="gradient-text">Touch</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
+            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
               Ready to start your next project? We'd love to hear from you.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Contact Form */}
             <div className="space-y-6">
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -270,7 +270,7 @@ const Contact = () => {
               </div>
 
               {/* Office Hours */}
-              <div className="p-6 rounded-lg bg-card border border-border">
+              <div className="p-4 sm:p-6 rounded-lg bg-card border border-border">
                 <h4 className="text-lg font-bold text-foreground mb-4 break-normal">
                   Office Hours
                 </h4>
