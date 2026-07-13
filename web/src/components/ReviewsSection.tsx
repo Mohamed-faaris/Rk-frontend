@@ -290,7 +290,7 @@ const ReviewCard = ({
   };
 
   return (
-    <div className="relative group flex flex-col h-full rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5">
+    <div className="relative group flex flex-col h-full w-full rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-accent/40 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5">
       {/* Quote icon */}
       <Quote
         size={32}
@@ -316,7 +316,7 @@ const ReviewCard = ({
       <h3 className="font-bold text-foreground text-base mb-2 line-clamp-1">{review.title}</h3>
 
       {/* Comment */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col mb-5">
         <p className={`text-muted-foreground text-sm leading-relaxed ${isExpanded ? '' : 'line-clamp-4'}`}>
           {review.comment}
         </p>
@@ -331,7 +331,7 @@ const ReviewCard = ({
       </div>
 
       {/* Reviewer info */}
-      <div className="mt-5 pt-4 border-t border-border/60 flex items-center justify-between">
+      <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-full bg-gradient-to-br from-accent/70 to-accent flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
             {initials}
@@ -646,7 +646,7 @@ const ReviewsSection = () => {
                     {reviews.map((review) => (
                       <div
                         key={review._id}
-                        className="flex-shrink-0"
+                        className="flex-shrink-0 flex"
                         style={{ width: `calc((100% - ${(cardsPerView.current - 1) * 24}px) / ${cardsPerView.current})` }}
                       >
                         <ReviewCard
