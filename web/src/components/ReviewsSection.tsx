@@ -304,10 +304,14 @@ const ReviewCard = ({
         </div>
       )}
 
-      {/* Stars + service badge */}
-      <div className={`flex items-center justify-between ${isOwn ? 'mt-7' : ''} mb-4`}>
+      {/* Stars */}
+      <div className={`${isOwn ? 'mt-7' : ''} mb-3`}>
         <StarDisplay rating={review.rating} />
-        <span className="text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent font-medium border border-accent/20">
+      </div>
+
+      {/* Service badge */}
+      <div className="mb-3">
+        <span className="inline-block text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent font-medium border border-accent/20">
           {serviceLabels[review.service] || "General"}
         </span>
       </div>
