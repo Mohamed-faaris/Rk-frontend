@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
@@ -18,6 +19,10 @@ export default function AdminDashboard() {
   const [contacts, setContacts] = useState<any[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [userStats, setUserStats] = useState<any>(null);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const [selectedContact, setSelectedContact] = useState<any>(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [isReplying, setIsReplying] = useState(false);
 
   // Load data on component mount
   useEffect(() => {
@@ -54,6 +59,24 @@ export default function AdminDashboard() {
       } catch (err: any) {
         setMessage(err.response?.data?.error || 'Failed to delete contact');
       }
+    }
+  };
+
+  const handleReply = async () => {
+    if (!selectedContact || !replyMessage.trim()) return;
+    
+    setIsReplying(true);
+    try {
+      await contactService.reply(selectedContact._id, replyMessage);
+      setIsReplyModalOpen(false);
+      setReplyMessage('');
+      setSelectedContact(null);
+      setMessage('Reply sent successfully');
+      loadContacts();
+    } catch (err: any) {
+      setMessage(err.response?.data?.error || 'Failed to send reply');
+    } finally {
+      setIsReplying(false);
     }
   };
 
@@ -172,6 +195,16 @@ export default function AdminDashboard() {
                       </SelectContent>
                     </Select>
                     <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedContact(contact);
+                        setIsReplyModalOpen(true);
+                      }}
+                    >
+                      Reply
+                    </Button>
+                    <Button
                       variant="destructive"
                       size="sm"
                       onClick={() => handleDelete(contact._id)}
@@ -288,6 +321,35 @@ export default function AdminDashboard() {
           </div>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={isReplyModalOpen} onOpenChange={setIsReplyModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reply to {selectedContact?.name}</DialogTitle>
+            <DialogDescription>
+              Sending a reply to {selectedContact?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              value={replyMessage}
+              onChange={(e) => setReplyMessage(e.target.value)}
+              placeholder="Type your reply here..."
+              className="min-h-[150px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setIsReplyModalOpen(false);
+              setReplyMessage('');
+              setSelectedContact(null);
+            }}>Cancel</Button>
+            <Button onClick={handleReply} disabled={isReplying || !replyMessage.trim()}>
+              {isReplying ? 'Sending...' : 'Send Reply'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );

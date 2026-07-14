@@ -45,6 +45,11 @@ export const contactService = {
     return response.data;
   },
 
+  reply: async (id: string, replyMessage: string) => {
+    const response = await api.post(`/contact/${id}/reply`, { replyMessage });
+    return response.data;
+  },
+
   delete: async (id: string) => {
     const response = await api.delete(`/contact/${id}`);
     return response.data;

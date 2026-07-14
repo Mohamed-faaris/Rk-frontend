@@ -538,11 +538,60 @@ export const sendOrderStatusUpdateEmail = async ({
   }
 };
 
+// Send contact message reply
+export const sendContactReplyEmail = async (email, name, originalSubject, replyMessage) => {
+  try {
+    const transporter = await createTransporter();
+
+    const mailOptions = {
+      from: env.EMAIL_FROM || '"RajKayal Creative Hub" <noreply@rajkayal.com>',
+      to: email,
+      subject: `Re: ${originalSubject} - RajKayal Creative Hub`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        </head>
+        <body style="font-family: Arial, sans-serif; background-color: #0f0f0f; color: #ffffff; margin: 0; padding: 0;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 30px 16px;">
+            <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 28px;">
+              <h2 style="margin: 0 0 12px; color: #D4AF37;">Reply to Your Inquiry</h2>
+              <p style="margin: 0 0 20px; color: #cfcfcf; line-height: 1.6;">
+                Hello ${name},
+              </p>
+
+              <div style="background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px; margin-bottom: 20px; color: #fff; line-height: 1.6; white-space: pre-wrap;">
+                ${replyMessage}
+              </div>
+
+              <p style="margin: 0 0 10px; color: #cfcfcf; line-height: 1.6;">
+                Best regards,<br/>
+                <strong>RajKayal Creative Hub Team</strong>
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Contact reply email sent to:', email, '| MessageId:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('❌ Error sending contact reply email:', error.message);
+    throw new Error('Failed to send reply email');
+  }
+};
+
 export default {
   sendOTPEmail,
   sendWelcomeEmail,
   sendApplicationAcceptedEmail,
   sendApplicationRejectedEmail,
   sendOrderStatusUpdateEmail,
+  sendContactReplyEmail,
   verifyEmailConnection
 };

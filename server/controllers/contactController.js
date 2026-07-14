@@ -130,3 +130,39 @@ export const deleteContact = async (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// @desc    Reply to contact message
+// @route   POST /api/contact/:id/reply
+// @access  Private/Admin
+import { sendContactReplyEmail } from '../utils/emailService.js';
+
+export const replyToContact = async (req, res, next) => {
+  try {
+    const { replyMessage } = req.body;
+    
+    if (!replyMessage) {
+      return res.status(400).json({ error: 'Please provide a reply message' });
+    }
+
+    const contact = await Contact.findById(req.params.id);
+
+    if (!contact) {
+      return res.status(404).json({ error: 'Contact message not found' });
+    }
+
+    // Send email
+    await sendContactReplyEmail(contact.email, contact.name, contact.subject, replyMessage);
+
+    // Update status to replied
+    contact.status = 'replied';
+    await contact.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Reply sent successfully',
+      data: contact
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
