@@ -115,6 +115,7 @@ const AppContent = () => {
   return (
     <>
       <TargetCursor 
+        key={location.pathname}
         spinDuration={2}
         hideDefaultCursor={true}
         parallaxOn={true}
