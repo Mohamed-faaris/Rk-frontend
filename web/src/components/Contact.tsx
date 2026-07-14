@@ -127,7 +127,7 @@ const Contact = () => {
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 space-y-4 animate-fade-in-up">
-            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal">
+            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal" style={{ textShadow: '0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(244, 197, 66, 0.2), 0 2px 10px rgba(0, 0, 0, 0.8)' }}>
               Get in <span className="gradient-text">Touch</span>
             </h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
