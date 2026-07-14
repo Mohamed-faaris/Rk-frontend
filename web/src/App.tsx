@@ -69,7 +69,6 @@ const AppContent = () => {
 
   const normalizedPath = location.pathname.replace(/\/+$/, "") || "/";
   const shouldHideChatbot = normalizedPath === "/login" || normalizedPath === "/register";
-  const isHeroPage = normalizedPath === "/";
 
   useEffect(() => {
     // Listen for auth popup events
@@ -126,9 +125,6 @@ const AppContent = () => {
         isOpen={authPopupOpen} 
         onClose={() => setAuthPopupOpen(false)}
       />
-      {!isHeroPage && (
-        <div className="fixed inset-0 -z-10 h-screen w-screen items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#d4af37_100%)]"></div>
-      )}
       <Routes>
         {/* Public Routes - No Login Required */}
         <Route path="/" element={<Index />} />

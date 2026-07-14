@@ -183,7 +183,7 @@ const UIUXDesignPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_14%_18%,rgba(212,175,55,0.14),transparent_40%),radial-gradient(circle_at_84%_12%,rgba(198,163,69,0.14),transparent_36%),linear-gradient(180deg,#070707_0%,#0d0d0d_100%)]" />
       

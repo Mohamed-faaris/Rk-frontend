@@ -103,7 +103,7 @@ const OrderServicePage = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-transparent">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <div className="flex items-center justify-center min-h-screen pt-20">
           <Card className="w-full max-w-md bg-card border-border">
@@ -124,7 +124,7 @@ const OrderServicePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 max-w-4xl pt-24 pb-12">
         {/* Header */}

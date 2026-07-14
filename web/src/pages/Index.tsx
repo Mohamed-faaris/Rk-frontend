@@ -18,12 +18,17 @@ const Index = () => {
         <Hero />
         <TechLogoStrip />
         <About />
-        <UpdatesNewsSection />
-        <Services />
-        <Portfolio />
-        <Testimonials />
-        <ReviewsSection />
-        <Contact />
+        <div className="relative isolate">
+          <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#d4af37_100%)]"></div>
+          <div className="homepage-sections-wrapper">
+            <UpdatesNewsSection />
+            <Services />
+            <Portfolio />
+            <Testimonials />
+            <ReviewsSection />
+            <Contact />
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

@@ -183,7 +183,7 @@ const Animation3DPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(212,175,55,0.13),transparent_40%),radial-gradient(circle_at_84%_10%,rgba(139,117,32,0.14),transparent_34%),linear-gradient(180deg,#070707_0%,#0b0b0b_100%)]" />
       

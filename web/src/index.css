@@ -232,4 +232,8 @@ All colors MUST be HSL.
       background-position: 0% 50%;
     }
   }
+
+  .homepage-sections-wrapper > * {
+    background-color: transparent !important;
+  }
 }

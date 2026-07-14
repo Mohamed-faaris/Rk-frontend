@@ -1354,7 +1354,7 @@ export default function ManagementDashboard() {
 
   if (user?.role !== 'admin' && user?.role !== 'ceo') {
     return (
-      <div className="min-h-screen bg-transparent flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
           <p className="text-muted-foreground mb-4">You need management privileges to access this page.</p>
@@ -1366,7 +1366,7 @@ export default function ManagementDashboard() {
 
   if (!isInitialized) {
     return (
-      <div className="min-h-screen bg-transparent flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Navbar />
         <div className="text-center">
           <p className="text-muted-foreground">Loading dashboard...</p>
@@ -1376,7 +1376,7 @@ export default function ManagementDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-transparent pt-20 pb-12">
+    <div className="min-h-screen bg-background pt-20 pb-12">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}

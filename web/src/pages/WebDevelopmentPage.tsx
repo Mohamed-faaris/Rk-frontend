@@ -183,7 +183,7 @@ const WebDevelopmentPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_12%_22%,rgba(212,175,55,0.14),transparent_40%),radial-gradient(circle_at_86%_8%,rgba(201,169,97,0.13),transparent_34%),linear-gradient(180deg,#070707_0%,#0c0c0c_100%)]" />
       

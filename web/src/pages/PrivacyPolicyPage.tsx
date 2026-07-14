@@ -81,7 +81,7 @@ const PrivacyPolicyPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       {/* Hero Section */}

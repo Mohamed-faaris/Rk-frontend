@@ -165,7 +165,7 @@ const AccountPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       <main className="pt-16 sm:pt-20 md:pt-24 pb-12 md:pb-16">

@@ -188,7 +188,7 @@ const BrandingIdentityPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_10%_20%,rgba(212,175,55,0.14),transparent_38%),radial-gradient(circle_at_80%_0%,rgba(246,215,122,0.1),transparent_35%),linear-gradient(180deg,#070707_0%,#0c0c0c_100%)]" />
 
