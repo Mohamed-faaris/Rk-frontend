@@ -69,7 +69,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 w-full">
             <Button
               size="lg"
-              className="bg-accent hover:bg-accent/90 shadow-gold group min-w-[200px]"
+              className="bg-accent hover:bg-accent/90 shadow-gold group min-w-[200px] cursor-target"
               asChild
             >
               <a href="#services" className="flex items-center justify-center">
@@ -80,7 +80,7 @@ const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="bg-transparent border-accent/50 text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent min-w-[200px]"
+              className="bg-transparent border-accent/50 text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent min-w-[200px] cursor-target"
               asChild
             >
               <a href="#contact" className="flex items-center justify-center">Get in Touch</a>

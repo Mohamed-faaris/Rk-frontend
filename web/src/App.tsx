@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute, AdminRoute, ManagementRoute, FinanceAnalyticsRoute } from "@/components/ProtectedRoute";
 import AuthPopupModal from "./components/AuthPopupModal";
+import TargetCursor from "./components/TargetCursor";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -113,6 +114,11 @@ const AppContent = () => {
 
   return (
     <>
+      <TargetCursor 
+        spinDuration={2}
+        hideDefaultCursor={true}
+        parallaxOn={true}
+      />
       <AuthPopupModal 
         isOpen={authPopupOpen} 
         onClose={() => setAuthPopupOpen(false)}
