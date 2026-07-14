@@ -104,7 +104,7 @@ const OrdersPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <div className="flex items-center justify-center min-h-screen pt-20">
           <div className="text-center">
@@ -117,7 +117,7 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       <div className="w-full px-3 sm:px-4 md:px-6 pt-16 sm:pt-20 md:pt-24 pb-8 md:pb-12">
         <div className="container mx-auto max-w-6xl">

@@ -146,7 +146,7 @@ const OrderDetailsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <div className="flex items-center justify-center min-h-screen pt-20">
           <div className="text-center">
@@ -160,7 +160,7 @@ const OrderDetailsPage = () => {
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <div className="flex items-center justify-center min-h-screen pt-20">
           <Card className="w-full max-w-md">
@@ -186,7 +186,7 @@ const OrderDetailsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       <div className="w-full px-3 sm:px-4 md:px-6 pt-16 sm:pt-20 md:pt-24 pb-12 md:pb-16">
         <div className="container mx-auto max-w-4xl">

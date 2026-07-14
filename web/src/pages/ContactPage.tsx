@@ -111,7 +111,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       
       <div className="fixed inset-0 z-0 top-[80px] pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(212,175,55,0.14),transparent_42%),radial-gradient(circle_at_85%_10%,rgba(139,117,32,0.18),transparent_38%),linear-gradient(180deg,#0a0a0a_0%,#0f0f0f_100%)]" />

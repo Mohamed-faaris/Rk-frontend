@@ -122,7 +122,7 @@ export default function EmployeeDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <main className="pt-24 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
@@ -139,7 +139,7 @@ export default function EmployeeDetailsPage() {
 
   if (!employee) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <main className="pt-24 pb-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
@@ -173,7 +173,7 @@ export default function EmployeeDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">

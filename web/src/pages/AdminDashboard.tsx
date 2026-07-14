@@ -126,7 +126,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       <div className="container mx-auto px-4 pt-20 md:pt-24 pb-8 md:pb-12">
         <div className="mb-4 md:mb-6">

@@ -121,7 +121,7 @@ const ApplyForPosition = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <main className="pt-24 pb-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
@@ -139,7 +139,7 @@ const ApplyForPosition = () => {
 
   if (!position) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <main className="pt-24 pb-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
@@ -163,7 +163,7 @@ const ApplyForPosition = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       <main className="pt-24 pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">

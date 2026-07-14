@@ -218,7 +218,7 @@ const BrandingDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <div className="container mx-auto px-4 py-20">
           <div className="flex justify-center items-center min-h-[400px]">
@@ -235,7 +235,7 @@ const BrandingDetailPage = () => {
 
   if (!item) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-transparent">
         <Navbar />
         <div className="container mx-auto px-4 py-20">
           <div className="text-center">
@@ -256,7 +256,7 @@ const BrandingDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-8 md:pt-28 md:pb-12">
