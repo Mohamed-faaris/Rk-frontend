@@ -1,3 +1,8 @@
+body[style*="cursor: none"],
+body[style*="cursor: none"] * {
+  cursor: none !important;
+}
+
 .target-cursor-wrapper {
   position: fixed;
   top: 0;
