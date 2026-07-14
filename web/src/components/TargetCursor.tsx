@@ -127,10 +127,10 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
   if (isMobile) return null;
 
   return (
-    <>
+    <div className="target-cursor-wrapper">
       <div ref={dotRef} className="target-cursor-dot" />
       <div ref={outerRef} className="target-cursor-outer" />
-    </>
+    </div>
   );
 };
 
