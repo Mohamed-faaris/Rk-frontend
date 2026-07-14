@@ -118,6 +118,7 @@ const AppContent = () => {
         spinDuration={2}
         hideDefaultCursor={true}
         parallaxOn={true}
+        targetSelector=".cursor-target, button, a, [role='button']"
       />
       <AuthPopupModal 
         isOpen={authPopupOpen} 
