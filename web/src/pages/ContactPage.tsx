@@ -114,10 +114,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="fixed inset-0 z-0 top-[80px] pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(212,175,55,0.14),transparent_42%),radial-gradient(circle_at_85%_10%,rgba(139,117,32,0.18),transparent_38%),linear-gradient(180deg,#0a0a0a_0%,#0f0f0f_100%)]" />
-      
-      {/* Overlay for content readability */}
-      <div className="fixed inset-0 bg-black/25 dark:bg-black/40 z-[5] top-[80px] pointer-events-none" />
+      {/* Background gradients removed for pure black background */}
 
       <div className="relative container mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-0 px-3 sm:px-4 md:px-6 lg:px-8 z-20">
         {/* Page Header with Back Button */}

@@ -505,11 +505,7 @@ const ReviewsSection = () => {
         id="reviews"
         className="relative py-24 md:py-32 bg-background overflow-hidden"
       >
-        {/* Background gradient blobs */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-accent/5 blur-3xl" />
-          <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-accent/5 blur-3xl" />
-        </div>
+        {/* Background gradient blobs removed for pure black background */}
 
         {/* Top fade from previous section */}
         <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-secondary/30 to-transparent pointer-events-none" />
@@ -642,7 +638,7 @@ const ReviewsSection = () => {
                 {/* Cards viewport */}
                 <div className="overflow-hidden">
                   <div
-                    className="flex gap-6 transition-transform duration-500 ease-out"
+                    className="flex items-start gap-6 transition-transform duration-500 ease-out"
                     style={{
                       transform: `translateX(calc(-${currentIndex} * (100% / ${cardsPerView.current} + 24px / ${cardsPerView.current})))`,
                     }}
