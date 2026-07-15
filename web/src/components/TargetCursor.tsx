@@ -13,7 +13,7 @@ export interface TargetCursorProps {
 const TargetCursor: React.FC<TargetCursorProps> = ({
   targetSelector = '.cursor-target, button, a, [role="button"]',
   hideDefaultCursor = true,
-  cursorColor = '#ffffff',
+  cursorColor = '#FFD700',
 }) => {
   const outerRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
@@ -48,18 +48,9 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     const moveHandler = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      
-      // Check if we are over ReviewsSection or Contact
-      const targetElement = document.elementFromPoint(mouseX, mouseY);
-      const isOverSpecialSection = targetElement?.closest('#reviews, #contact');
 
-      if (isOverSpecialSection) {
-        gsap.to(dot, { backgroundColor: '#000000', duration: 0.2 });
-        gsap.to(outer, { borderColor: '#d4af37', duration: 0.2 });
-      } else {
-        gsap.to(dot, { backgroundColor: cursorColor, duration: 0.2 });
-        gsap.to(outer, { borderColor: cursorColor, duration: 0.2 });
-      }
+      gsap.to(dot, { backgroundColor: cursorColor, duration: 0.2 });
+      gsap.to(outer, { borderColor: cursorColor, duration: 0.2 });
 
       gsap.to(dot, { x: mouseX, y: mouseY, duration: 0.1, ease: 'power3.out', overwrite: 'auto' });
       gsap.to(outer, { x: mouseX, y: mouseY, duration: 0.3, ease: 'power3.out', overwrite: 'auto' });
