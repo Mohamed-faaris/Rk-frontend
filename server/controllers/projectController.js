@@ -334,6 +334,9 @@ export const getProjectStats = async (req, res) => {
 
     const totalBudget = await Project.aggregate([
       {
+        $match: { status: { $ne: 'Cancelled' } }
+      },
+      {
         $group: {
           _id: null,
           total: { $sum: '$budget' },

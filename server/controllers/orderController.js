@@ -470,6 +470,18 @@ export const cancelOrder = async (req, res, next) => {
     // Delete the original order
     await Order.findByIdAndDelete(req.params.id);
 
+    try {
+      await Project.findOneAndUpdate(
+        { sourceOrder: req.params.id },
+        { 
+          status: 'Cancelled',
+          paid: 0 
+        }
+      );
+    } catch (projectSyncError) {
+      console.error('Project status sync failed on cancel:', projectSyncError.message);
+    }
+
     res.status(200).json({
       success: true,
       message: 'Order canceled successfully',
