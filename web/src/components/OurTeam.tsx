@@ -13,7 +13,7 @@ import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
 import yogeshImage from "@/assets/YOGESH M.webp";
 import "@/styles/team-cards.scss";
 
-const Testimonials = () => {
+const OurTeam = () => {
   const [activeCard, setActiveCard] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -312,4 +312,4 @@ const Testimonials = () => {
   );
 };
 
-export default Testimonials;
+export default OurTeam;
