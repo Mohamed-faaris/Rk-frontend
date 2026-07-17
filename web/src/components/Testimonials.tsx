@@ -7,7 +7,7 @@ import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
 import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
 import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
 import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
-import pallaviImage from "@/assets/PALLAVI P.webp";
+import pallaviImage from "@/assets/PALLAVI_OLD.jpg";
 import vivehaImage from "@/assets/VIVEHA V.png";
 import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
 import yogeshImage from "@/assets/YOGESH M.webp";
@@ -100,7 +100,8 @@ const Testimonials = () => {
       ],
       icon: Palette,
       image: pallaviImage,
-      imagePosition: "center 18%",
+      imagePosition: "center 10%",
+      imageScale: 1.15,
       fullName: "Ms PALLAVI P",
       title: "Project Manager",
       location: "Tamil Nadu, India",
