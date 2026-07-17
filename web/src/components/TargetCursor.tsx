@@ -38,9 +38,9 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     const outer = outerRef.current;
     const dot = dotRef.current;
 
-    // Initial position
-    gsap.set(outer, { x: window.innerWidth / 2, y: window.innerHeight / 2 });
-    gsap.set(dot, { x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    // Initial position with perfect centering
+    gsap.set(outer, { x: window.innerWidth / 2, y: window.innerHeight / 2, xPercent: -50, yPercent: -50 });
+    gsap.set(dot, { x: window.innerWidth / 2, y: window.innerHeight / 2, xPercent: -50, yPercent: -50 });
 
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
@@ -71,46 +71,23 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     window.addEventListener('mousedown', mouseDownHandler);
     window.addEventListener('mouseup', mouseUpHandler);
 
-    // Hover effect
-    const hoverElements = document.querySelectorAll(targetSelector);
-    
-    const enterHandler = () => outer.classList.add('pointer-blur');
-    const leaveHandler = () => outer.classList.remove('pointer-blur');
+    // Use event delegation for hover effects to handle dynamic elements robustly
+    const mouseOverHandler = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (target && target.closest && target.closest(targetSelector)) {
+        outer.classList.add('pointer-blur');
+      } else {
+        outer.classList.remove('pointer-blur');
+      }
+    };
 
-    hoverElements.forEach(el => {
-      el.addEventListener('mouseenter', enterHandler);
-      el.addEventListener('mouseleave', leaveHandler);
-    });
-    
-    // MutationObserver to attach events to dynamic elements
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        mutation.addedNodes.forEach(node => {
-          if (node instanceof Element) {
-            if (node.matches(targetSelector)) {
-              node.addEventListener('mouseenter', enterHandler);
-              node.addEventListener('mouseleave', leaveHandler);
-            }
-            node.querySelectorAll(targetSelector).forEach(el => {
-              el.addEventListener('mouseenter', enterHandler);
-              el.addEventListener('mouseleave', leaveHandler);
-            });
-          }
-        });
-      });
-    });
-    
-    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('mouseover', mouseOverHandler);
 
     return () => {
       window.removeEventListener('mousemove', moveHandler);
       window.removeEventListener('mousedown', mouseDownHandler);
       window.removeEventListener('mouseup', mouseUpHandler);
-      hoverElements.forEach(el => {
-        el.removeEventListener('mouseenter', enterHandler);
-        el.removeEventListener('mouseleave', leaveHandler);
-      });
-      observer.disconnect();
+      window.removeEventListener('mouseover', mouseOverHandler);
       document.body.style.cursor = originalCursor;
     };
   }, [targetSelector, hideDefaultCursor, cursorColor, isMobile]);
