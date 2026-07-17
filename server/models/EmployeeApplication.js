@@ -32,7 +32,7 @@ const employeeApplicationSchema = new mongoose.Schema({
   position: {
     type: String,
     required: [true, 'Please select a position'],
-    enum: ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Other']
+    enum: ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Internship', 'Other']
   },
   department: {
     type: String,
@@ -89,7 +89,7 @@ const employeeApplicationSchema = new mongoose.Schema({
   workPreference: {
     type: String,
     required: true,
-    enum: ['Full-time', 'Part-time', 'Contract', 'Remote', 'On-site', 'Hybrid'],
+    enum: ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote', 'On-site', 'Hybrid'],
     default: 'Full-time'
   },
   status: {
@@ -98,6 +98,18 @@ const employeeApplicationSchema = new mongoose.Schema({
     default: 'pending'
   },
   adminNotes: {
+    type: String,
+    trim: true
+  },
+  isStudent: {
+    type: Boolean,
+    default: false
+  },
+  studyYear: {
+    type: String,
+    trim: true
+  },
+  batchYear: {
     type: String,
     trim: true
   },

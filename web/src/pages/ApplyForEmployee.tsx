@@ -42,15 +42,18 @@ const ApplyForEmployee = () => {
     linkedin: '',
     resume: '',
     coverLetter: '',
-    workPreference: 'Full-time'
+    workPreference: 'Full-time',
+    isStudent: false,
+    studyYear: '',
+    batchYear: ''
   });
   const statusQuery = new URLSearchParams(location.search).get('status');
   const applicationStatus = statusQuery === 'accepted' || statusQuery === 'rejected' ? statusQuery : null;
 
-  const positions = ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Other'];
+  const positions = ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Internship', 'Other'];
   const departments = ['Development', 'Design', '3D Animation', 'UI/UX', 'Management', 'Marketing', 'Sales', 'HR', 'Operations'];
   const experiences = ['0-1 years', '1-3 years', '3-5 years', '5-10 years', '10+ years'];
-  const workPreferences = ['Full-time', 'Part-time', 'Contract', 'Remote', 'On-site', 'Hybrid'];
+  const workPreferences = ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote', 'On-site', 'Hybrid'];
 
   // Removed login redirect - show popup on form submit if not authenticated
 
@@ -60,6 +63,18 @@ const ApplyForEmployee = () => {
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleIsStudentChange = (value: string) => {
+    const isStudent = value === 'Yes';
+    setFormData(prev => ({
+      ...prev,
+      isStudent,
+      position: isStudent ? 'Internship' : prev.position,
+      workPreference: isStudent ? 'Internship' : prev.workPreference,
+      studyYear: isStudent ? prev.studyYear : '',
+      batchYear: isStudent ? prev.batchYear : '',
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -210,6 +225,54 @@ const ApplyForEmployee = () => {
                         disabled={isLoading}
                       />
                     </div>
+                  </div>
+
+                  {/* Student Details */}
+                  <div className="space-y-4 pt-4 border-t border-border mt-4">
+                    <h3 className="text-base md:text-lg font-semibold">Student Information</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Are you a student? *</label>
+                        <Select value={formData.isStudent ? 'Yes' : 'No'} onValueChange={handleIsStudentChange}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Yes or No" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Yes">Yes</SelectItem>
+                            <SelectItem value="No">No</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    {formData.isStudent && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-sm font-medium mb-2 block">Which year are you studying? *</label>
+                          <Input
+                            type="text"
+                            name="studyYear"
+                            value={formData.studyYear}
+                            onChange={handleChange}
+                            placeholder="e.g., 3rd Year, Final Year"
+                            required={formData.isStudent}
+                            disabled={isLoading}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium mb-2 block">Batch Year *</label>
+                          <Input
+                            type="text"
+                            name="batchYear"
+                            value={formData.batchYear}
+                            onChange={handleChange}
+                            placeholder="e.g., 2021-2025"
+                            required={formData.isStudent}
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
