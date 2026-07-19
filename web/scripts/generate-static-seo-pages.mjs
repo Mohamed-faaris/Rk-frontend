@@ -59,7 +59,6 @@ const servicesMarkup = `
             <a href="/" style="color:#f8e6a2;">Home</a>
             <a href="/services-overview" style="color:#f8e6a2;">Services Overview</a>
             <a href="/branding-identity" style="color:#f8e6a2;">Branding</a>
-            <a href="/web-development" style="color:#f8e6a2;">Web Development</a>
             <a href="/uiux-design" style="color:#f8e6a2;">UI/UX Design</a>
             <a href="/contact" style="color:#f8e6a2;">Contact</a>
           </div>
@@ -80,11 +79,6 @@ const servicesMarkup = `
               <h3 style="margin-top:0;color:#f8e6a2;">Logo and branding</h3>
               <p style="line-height:1.7;color:#d7d7d7;">Logo packages start from ₹800, while deeper brand identity packages can scale up based on applications, guidelines, and collateral.</p>
               <a href="/branding-identity" style="color:#f6d77a;">Explore branding services</a>
-            </article>
-            <article style="border:1px solid rgba(212,175,55,.18);border-radius:18px;padding:18px;background:#111;">
-              <h3 style="margin-top:0;color:#f8e6a2;">Website design and development</h3>
-              <p style="line-height:1.7;color:#d7d7d7;">Landing pages, business sites, blogs, and custom builds are priced by page count, functionality, content readiness, and deployment scope.</p>
-              <a href="/web-development" style="color:#f6d77a;">Explore web development</a>
             </article>
             <article style="border:1px solid rgba(212,175,55,.18);border-radius:18px;padding:18px;background:#111;">
               <h3 style="margin-top:0;color:#f8e6a2;">UI/UX and digital assets</h3>
