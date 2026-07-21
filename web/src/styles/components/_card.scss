@@ -4,10 +4,9 @@
     display: grid;
     gap: 2rem;
     /* 3 columns on desktop (9 members → 3×3, perfect) */
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
     justify-items: center;
-    max-width: 960px;
-    margin-inline: auto;
   }
 
   .card {
@@ -322,9 +321,9 @@
   /* ── Tablet: 2 columns, centre the last odd card ── */
   @media (max-width: 900px) {
     .team-card-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
-      max-width: 640px;
+      justify-content: center;
     }
 
     /* Centre the last card when there is an odd number */
@@ -336,10 +335,10 @@
 
   @media (max-width: 768px) {
     .team-card-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, 1fr);
+      justify-content: center;
       justify-items: center;
       gap: 1.05rem;
-      max-width: none;
     }
 
     .card {
