@@ -80,6 +80,9 @@ const Portfolio = () => {
                   <img 
                     src={rkchblogsImage} 
                     alt="Business Insights Blog" 
+                    width="800"
+                    height="450"
+                    loading="lazy"
                     className="w-full h-full object-contain"
                   />
                 </div>

@@ -184,6 +184,8 @@ const OurTeam = () => {
                         src={member.image}
                         alt={member.name}
                         className="card__img"
+                        width="160"
+                        height="160"
                         loading="lazy"
                         decoding="async"
                         style={{
@@ -236,6 +238,8 @@ const OurTeam = () => {
                           src={member.image}
                           alt={`${member.name} profile`}
                           className="info__img"
+                          width="160"
+                          height="160"
                           loading="lazy"
                           decoding="async"
                           style={{

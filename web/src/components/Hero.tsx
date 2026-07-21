@@ -37,7 +37,7 @@ const Hero = () => {
           {/* RK Badge Featured */}
           <div className="flex justify-center items-center animate-fade-in w-full px-4">
             <div className="relative flex items-center justify-center">
-              <img src="/rklogofinal.webp" alt="RajKayal Logo" className="h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] drop-shadow-[0_0_14px_rgba(255,215,0,0.45)]" />
+              <img src="/rklogofinal.webp" width="448" height="448" alt="RajKayal Logo" className="h-40 w-40 sm:h-56 sm:w-56 md:h-72 md:w-72 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] drop-shadow-[0_0_14px_rgba(255,215,0,0.45)]" />
             </div>
           </div>
 
