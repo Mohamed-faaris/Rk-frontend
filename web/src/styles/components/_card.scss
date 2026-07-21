@@ -202,7 +202,7 @@
     padding: 2.2rem 1.25rem 2.8rem;
     border-radius: 1rem 1rem 9.2rem 9.2rem;
     min-height: calc(100% + 2px);
-    clip-path: circle(16px at calc(100% - 42px) 40px);
+    clip-path: circle(0px at calc(100% - 42px) 40px);
     transition: clip-path 0.4s ease-in-out;
     will-change: clip-path;
     overflow: hidden;
@@ -411,7 +411,7 @@
     .info {
       padding: 1.75rem 0.95rem 2rem;
       border-radius: 1rem 1rem 6rem 6rem;
-      clip-path: circle(18px at calc(100% - 36px) 34px);
+      clip-path: circle(0px at calc(100% - 36px) 34px);
     }
 
     .info.is-open {
