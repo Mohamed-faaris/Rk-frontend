@@ -2,9 +2,12 @@
 .team-cards {
   .team-card-grid {
     display: grid;
-    gap: 1.75rem;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    /* 3 columns on desktop (9 members → 3×3, perfect) */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     justify-items: center;
+    max-width: 960px;
+    margin-inline: auto;
   }
 
   .card {
@@ -316,12 +319,27 @@
     }
   }
 
+  /* ── Tablet: 2 columns, centre the last odd card ── */
+  @media (max-width: 900px) {
+    .team-card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      max-width: 640px;
+    }
+
+    /* Centre the last card when there is an odd number */
+    .card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      max-width: 282px;
+    }
+  }
+
   @media (max-width: 768px) {
     .team-card-grid {
-      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       justify-items: center;
       gap: 1.05rem;
+      max-width: none;
     }
 
     .card {
@@ -330,6 +348,11 @@
       min-height: 405px;
       padding: 1.7rem 0.95rem 1.95rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
+    }
+
+    .card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      max-width: 320px;
     }
 
     .card__border {
@@ -418,9 +441,9 @@
       width: 34px;
       height: 34px;
     }
-
   }
 
+  /* ── Mobile: single column ── */
   @media (max-width: 480px) {
     .team-card-grid {
       grid-template-columns: minmax(0, 1fr);
@@ -433,6 +456,12 @@
       min-height: 390px;
       padding: 1.55rem 0.85rem 1.8rem;
       border-radius: 1rem 1rem 5rem 5rem;
+    }
+
+    /* Reset the odd-card centering (not needed in single col) */
+    .card:last-child:nth-child(odd) {
+      grid-column: auto;
+      max-width: 330px;
     }
 
     .card__border {

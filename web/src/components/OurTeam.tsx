@@ -162,7 +162,7 @@ const OurTeam = () => {
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
       <div className="container mx-auto relative z-10 px-4">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-5xl w-full">
           {/* Section Header */}
           <div className="animate-fade-in-up mb-16 space-y-4 text-center">
             <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
