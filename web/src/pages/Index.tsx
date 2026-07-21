@@ -17,6 +17,7 @@ const SectionFallback = () => (
     <div className="animate-pulse w-8 h-8 rounded-full border-2 border-accent border-t-transparent" />
   </div>
 );
+const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
