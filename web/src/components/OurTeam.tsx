@@ -110,14 +110,14 @@ const OurTeam = () => {
     {
       id: "viveha",
       name: "Ms VIVEHA V",
-      role: "designing head",
+      role: "Designing Head",
       bio: "Leads visual design direction and ensures every brand touchpoint stays consistent and impactful.",
       skills: ["Design Leadership", "Visual Direction", "Brand Consistency"],
       icon: Palette,
       image: vivehaImage,
       imagePosition: "center 18%",
       fullName: "Ms VIVEHA V",
-      title: "designing head",
+      title: "Designing Head",
       location: "Tamil Nadu, India",
       socials: [],
     },
@@ -156,34 +156,89 @@ const OurTeam = () => {
   return (
     <section
       id="testimonials"
-      className="team-cards relative bg-secondary/30 py-24 shadow-sm dark:bg-background md:py-32"
+      className="team-cards relative py-24 shadow-sm dark:bg-background md:py-32"
     >
       {/* Smooth fade from previous section */}
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
-      <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10">
-        <div style={{ maxWidth: '980px', marginInline: 'auto' }}>
-          {/* Section Header */}
-          <div className="animate-fade-in-up mb-16 space-y-4 text-center">
-            <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
-              Our <span className="gradient-text">Team</span>
-            </h2>
-            <p className="mx-auto max-w-2xl break-normal text-base sm:text-xl text-muted-foreground">
-              Meet the people leading RajKayal Creative Hub across leadership,
-              engineering, operations, and growth.
-            </p>
-          </div>
+      {/* ── Centred wrapper — NOT using Tailwind container (its margin:0 reset breaks centering) ── */}
+      <div className="team-section-inner">
+        {/* Section Header */}
+        <div className="team-section-header">
+          <h2 className="fairy-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold break-normal text-foreground">
+            Our <span className="gradient-text">Team</span>
+          </h2>
+          <p className="text-base sm:text-xl text-muted-foreground">
+            Meet the people leading RajKayal Creative Hub across leadership,
+            engineering, operations, and growth.
+          </p>
+        </div>
 
-          <div className="team-card-grid">
-            {teamMembers.map((member) => (
-              <div key={member.id} className="card">
-                <div className="card__border">
-                  <div className="card__perfil">
+        {/* ── Card grid — pure flex-wrap so odd counts always centre ── */}
+        <div className="team-card-grid">
+          {teamMembers.map((member) => (
+            <div key={member.id} className="card">
+              <div className="card__border">
+                <div className="card__perfil">
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="card__img"
+                      width="160"
+                      height="160"
+                      loading="lazy"
+                      decoding="async"
+                      style={{
+                        objectPosition: member.imagePosition,
+                        transform: member.imageScale
+                          ? `scale(${member.imageScale})`
+                          : undefined,
+                      }}
+                    />
+                  ) : (
+                    <member.icon className="card__img" aria-hidden="true" />
+                  )}
+                </div>
+              </div>
+
+              <h3 className="card__name" title={member.name}>
+                {member.name}
+              </h3>
+              <span className="card__profession break-normal">
+                {member.role}
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveCard((current) =>
+                    current === member.id ? null : member.id,
+                  )
+                }
+                className="card__info-toggle"
+                aria-expanded={activeCard === member.id}
+                aria-controls={`${member.id}-info`}
+                aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
+              >
+                {activeCard === member.id ? (
+                  <X size={18} />
+                ) : (
+                  <Info size={18} />
+                )}
+              </button>
+
+              <div
+                id={`${member.id}-info`}
+                className={`info ${activeCard === member.id ? "is-open" : ""}`}
+              >
+                <div className="info__border">
+                  <div className="info__perfil">
                     {member.image ? (
                       <img
                         src={member.image}
-                        alt={member.name}
-                        className="card__img"
+                        alt={`${member.name} profile`}
+                        className="info__img"
                         width="160"
                         height="160"
                         loading="lazy"
@@ -196,120 +251,65 @@ const OurTeam = () => {
                         }}
                       />
                     ) : (
-                      <member.icon className="card__img" aria-hidden="true" />
+                      <member.icon className="info__img" aria-hidden="true" />
                     )}
                   </div>
                 </div>
 
-                <h3 className="card__name" title={member.name}>
-                  {member.name}
-                </h3>
-                <span className="card__profession break-normal">
-                  {member.role}
-                </span>
+                <div className="info__data">
+                  <h4 className="info__name" title={member.fullName}>
+                    {member.fullName}
+                  </h4>
+                  <p className="info__profession break-normal">
+                    {member.title}
+                  </p>
+                  <p className="info__location break-normal">
+                    {member.location}
+                  </p>
+                  <p className="info__bio break-normal">{member.bio}</p>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setActiveCard((current) =>
-                      current === member.id ? null : member.id,
-                    )
-                  }
-                  className="card__info-toggle"
-                  aria-expanded={activeCard === member.id}
-                  aria-controls={`${member.id}-info`}
-                  aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
-                >
-                  {activeCard === member.id ? (
-                    <X size={18} />
-                  ) : (
-                    <Info size={18} />
-                  )}
-                </button>
+                <div className="info__skills">
+                  {member.skills.map((skill) => (
+                    <span key={skill} className="info__skill break-normal">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
 
-                <div
-                  id={`${member.id}-info`}
-                  className={`info ${activeCard === member.id ? "is-open" : ""}`}
-                >
-                  <div className="info__border">
-                    <div className="info__perfil">
-                      {member.image ? (
-                        <img
-                          src={member.image}
-                          alt={`${member.name} profile`}
-                          className="info__img"
-                          width="160"
-                          height="160"
-                          loading="lazy"
-                          decoding="async"
-                          style={{
-                            objectPosition: member.imagePosition,
-                            transform: member.imageScale
-                              ? `scale(${member.imageScale})`
-                              : undefined,
-                          }}
-                        />
-                      ) : (
-                        <member.icon className="info__img" aria-hidden="true" />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="info__data">
-                    <h4 className="info__name" title={member.fullName}>
-                      {member.fullName}
-                    </h4>
-                    <p className="info__profession break-normal">
-                      {member.title}
-                    </p>
-                    <p className="info__location break-normal">
-                      {member.location}
-                    </p>
-                    <p className="info__bio break-normal">{member.bio}</p>
-                  </div>
-
-                  <div className="info__skills">
-                    {member.skills.map((skill) => (
-                      <span key={skill} className="info__skill break-normal">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="info__social">
-                    {member.socials.map((social) => {
-                      const Icon = social.icon;
-                      return (
-                        <a
-                          key={social.label}
-                          href={social.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="info__social-link"
-                          aria-label={`${member.name} ${social.label}`}
-                        >
-                          <span className="info__social-icon">
-                            <Icon size={14} />
-                          </span>
-                        </a>
-                      );
-                    })}
-                  </div>
+                <div className="info__social">
+                  {member.socials.map((social) => {
+                    const Icon = social.icon;
+                    return (
+                      <a
+                        key={social.label}
+                        href={social.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="info__social-link"
+                        aria-label={`${member.name} ${social.label}`}
+                      >
+                        <span className="info__social-icon">
+                          <Icon size={14} />
+                        </span>
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          {/* Join Team CTA */}
-          <div className="mt-14 text-center">
-            <Button
-              onClick={() => navigate("/apply-employee")}
-              className="bg-accent hover:bg-accent/90 shadow-gold px-8 py-3 text-base font-semibold"
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              Apply to Join RKCH Team
-            </Button>
-          </div>
+        {/* Join Team CTA */}
+        <div className="team-cta">
+          <Button
+            onClick={() => navigate("/apply-employee")}
+            className="bg-accent hover:bg-accent/90 shadow-gold px-8 py-3 text-base font-semibold"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Apply to Join RKCH Team
+          </Button>
         </div>
       </div>
     </section>
