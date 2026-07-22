@@ -9,11 +9,11 @@
 
   .team-section-inner {
     width: 100%;
-    max-width: 980px;
+    max-width: 1040px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
     position: relative;
     z-index: 10;
   }
@@ -31,16 +31,17 @@
   }
 
   /*
-    Flex-wrap grid: cards wrap naturally.
-    justify-content: center means every row —
-    including the last orphaned one — is centred.
+    CSS Grid: exactly 3 equal columns.
+    Cards in the last row are centred automatically
+    because the wrapper itself is centred and all
+    columns have the same fixed width.
   */
   .team-card-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 282px);
     gap: 2rem;
     justify-content: center;
-    align-items: flex-start;
+    align-items: start;
   }
 
   .team-cta {
@@ -380,6 +381,7 @@
     }
 
     .team-card-grid {
+      grid-template-columns: repeat(2, 260px);
       gap: 1.25rem;
     }
 
@@ -468,11 +470,12 @@
     }
 
     .team-card-grid {
+      grid-template-columns: minmax(0, min(320px, 88vw));
       gap: 1rem;
     }
 
     .card {
-      width: min(320px, 88vw);
+      width: 100%;
       min-height: 370px;
       padding: 1.55rem 0.85rem 1.8rem;
       border-radius: 1rem 1rem 5.5rem 5.5rem;
