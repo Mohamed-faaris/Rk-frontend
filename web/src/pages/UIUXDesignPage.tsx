@@ -165,7 +165,7 @@ const UIUXDesignPage = () => {
       await uiuxProjectService.delete(id);
       toast({
         title: "Success",
-        description: "Project deleted successfully",
+        description: "Project Deleted successfully",
       });
       loadProjects();
     } catch (error) {
