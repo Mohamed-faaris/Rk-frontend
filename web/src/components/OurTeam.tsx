@@ -12,6 +12,7 @@ import vivehaImage from "@/assets/VIVEHA V.png";
 import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
 import yogeshImage from "@/assets/YOGESH M.webp";
 import "@/styles/team-cards.scss";
+import ProfileCard from "./ProfileCard";
 
 const OurTeam = () => {
   const [activeCard, setActiveCard] = useState<string | null>(null);
