@@ -9,9 +9,8 @@
 
   .team-section-inner {
     width: 100%;
-    max-width: 980px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 1200px;
+    margin: 0 auto;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     position: relative;
@@ -24,29 +23,25 @@
 
     p {
       max-width: 42rem;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 0.75rem;
+      margin: 0.75rem auto 0;
     }
   }
 
-  /*
-    Flex-wrap grid: cards wrap naturally.
-    justify-content: center means every row —
-    including the last orphaned one — is centred.
-  */
   .team-card-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(320px, 1fr));
+    gap: 40px;
     justify-content: center;
-    align-items: flex-start;
+    justify-items: center;
+    align-items: start;
+    width: 100%;
   }
 
   .team-cta {
     margin-top: 3.5rem;
     display: flex;
     justify-content: center;
+    width: 100%;
   }
 
   /* ─────────────────────────────────────────
@@ -55,9 +50,9 @@
 
   .card {
     position: relative;
-    width: 282px;
-    flex-shrink: 0;
-    min-height: 392px;
+    width: 100%;
+    max-width: 320px;
+    height: 520px;
     background: var(--gradient-color);
     border-radius: 1rem 1rem 8.7rem 8.7rem;
     padding: 2rem 1.2rem 2.6rem;
@@ -372,22 +367,33 @@
      RESPONSIVE
   ───────────────────────────────────────── */
 
-  /* Tablet (≤ 768 px) — 2 cols, cards a little narrower */
-  @media (max-width: 768px) {
+  /* Laptop (1024px to 1279px) */
+  @media (max-width: 1279px) {
+    .team-card-grid {
+      grid-template-columns: repeat(3, minmax(300px, 320px));
+      gap: 32px;
+    }
+  }
+
+  /* Tablet (≤ 1023 px) — 2 cols */
+  @media (max-width: 1023px) {
     .team-section-inner {
       padding-left: 1rem;
       padding-right: 1rem;
     }
 
     .team-card-grid {
-      gap: 1.25rem;
+      grid-template-columns: repeat(2, minmax(300px, 320px));
+      gap: 32px;
     }
 
     .card {
-      width: 260px;
-      min-height: 380px;
+      /* Card dimensions stay exactly as user requested, max 320px width, 520px height */
+      width: 100%;
+      max-width: 320px;
+      height: 520px;
       padding: 1.7rem 0.95rem 1.95rem;
-      border-radius: 1rem 1rem 6rem 6rem;
+      border-radius: 1rem 1rem 8.7rem 8.7rem;
     }
 
     .card__border {
@@ -410,7 +416,7 @@
 
     .info {
       padding: 1.75rem 0.95rem 2rem;
-      border-radius: 1rem 1rem 6rem 6rem;
+      border-radius: 1rem 1rem 8.7rem 8.7rem;
       clip-path: circle(0px at calc(100% - 36px) 34px);
     }
 
@@ -418,7 +424,7 @@
       inset: -8px -6px -8px;
       width: calc(100% + 12px);
       padding: 2.05rem 1.1rem 2.25rem;
-      border-radius: 1rem 1rem 7rem 7rem;
+      border-radius: 1rem 1rem 9.7rem 9.7rem;
       min-height: calc(100% + 16px);
       clip-path: circle(190% at calc(100% - 36px) 34px);
     }
@@ -454,28 +460,30 @@
         inset: -8px -6px -8px;
         width: calc(100% + 12px);
         padding: 2.05rem 1.1rem 2.25rem;
-        border-radius: 1rem 1rem 7rem 7rem;
+        border-radius: 1rem 1rem 9.7rem 9.7rem;
         min-height: calc(100% + 16px);
         clip-path: circle(190% at calc(100% - 36px) 34px);
       }
     }
   }
 
-  /* Small mobile (≤ 480 px) — single col, wider card */
-  @media (max-width: 480px) {
+  /* Mobile (≤ 639 px) — single col */
+  @media (max-width: 639px) {
     .team-section-header {
       margin-bottom: 2.5rem;
     }
 
     .team-card-grid {
-      gap: 1rem;
+      grid-template-columns: minmax(280px, 320px);
+      gap: 24px;
     }
 
     .card {
-      width: min(320px, 88vw);
-      min-height: 370px;
+      width: 100%;
+      max-width: 320px;
+      height: 520px;
       padding: 1.55rem 0.85rem 1.8rem;
-      border-radius: 1rem 1rem 5.5rem 5.5rem;
+      border-radius: 1rem 1rem 8.7rem 8.7rem;
     }
 
     .card__border {
@@ -490,14 +498,14 @@
 
     .info {
       padding: 1.6rem 0.85rem 1.9rem;
-      border-radius: 1rem 1rem 5.5rem 5.5rem;
+      border-radius: 1rem 1rem 8.7rem 8.7rem;
     }
 
     .info.is-open {
       inset: -6px -5px -6px;
       width: calc(100% + 10px);
       padding: 1.85rem 0.95rem 2.05rem;
-      border-radius: 1rem 1rem 6rem 6rem;
+      border-radius: 1rem 1rem 9.7rem 9.7rem;
     }
 
     @media (hover: hover) {
@@ -505,7 +513,7 @@
         inset: -6px -5px -6px;
         width: calc(100% + 10px);
         padding: 1.85rem 0.95rem 2.05rem;
-        border-radius: 1rem 1rem 6rem 6rem;
+        border-radius: 1rem 1rem 9.7rem 9.7rem;
       }
     }
   }
