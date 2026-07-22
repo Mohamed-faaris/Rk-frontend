@@ -21,18 +21,17 @@ const Navbar = () => {
     return null;
   }
 
-  const items = useMemo<PillNavItem[]>(
-    () => [
-      { label: 'Home', href: '/#home' },
-      { label: 'About', href: '/#about' },
-      { label: 'Updates', href: '/#updates-news' },
-      { label: 'Services', href: '/services' },
-      { label: 'Projects', href: '/#portfolio' },
-      { label: 'Our Team', href: '/#testimonials' },
-      { label: 'Contact', href: '/#contact' },
-    ],
-    [],
-  );
+    const items = useMemo<PillNavItem[]>(
+      () => [
+        { label: 'Home', href: '/#home' },
+        { label: 'About', href: '/#about' },
+        { label: 'Updates', href: '/#updates-news' },
+        { label: 'Services', href: '/services' },
+        { label: 'Projects', href: '/#portfolio' },
+        { label: 'Contact', href: '/#contact' },
+      ],
+      [],
+    );
 
   const activeHref = useMemo(() => {
     const match = items.find((item) => item.href === location.pathname);
