@@ -174,8 +174,8 @@ const OurTeam = () => {
           </p>
         </div>
 
-        {/* ── Card grid — pure flex-wrap so odd counts always centre ── */}
-        <div className="team-card-grid">
+        {/* ── Card flex container for perfect centering ── */}
+        <div className="flex flex-wrap justify-center items-start gap-8 w-full max-w-6xl mx-auto mt-6 mb-8">
           {teamMembers.map((member) => (
             <div key={member.id} className="card">
               <div className="card__border">
