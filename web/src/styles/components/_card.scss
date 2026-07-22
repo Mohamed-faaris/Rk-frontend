@@ -11,15 +11,14 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-inline: 24px;
     position: relative;
     z-index: 10;
   }
 
   .team-section-header {
     text-align: center;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2.5rem;
 
     p {
       max-width: 42rem;
@@ -29,19 +28,23 @@
 
   .team-card-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(320px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(3, minmax(240px, 280px));
     justify-content: center;
     justify-items: center;
     align-items: start;
+    gap: 32px;
     width: 100%;
   }
 
   .team-cta {
-    margin-top: 3.5rem;
+    margin-top: 5rem !important;
+    padding-bottom: 6rem;
     display: flex;
     justify-content: center;
     width: 100%;
+    clear: both;
+    position: relative;
+    z-index: 20;
   }
 
   /* ─────────────────────────────────────────
@@ -51,11 +54,11 @@
   .card {
     position: relative;
     width: 100%;
-    max-width: 320px;
-    height: 520px;
+    max-width: 280px;
+    height: 440px;
     background: var(--gradient-color);
-    border-radius: 1rem 1rem 8.7rem 8.7rem;
-    padding: 2rem 1.2rem 2.6rem;
+    border-radius: 1rem 1rem 7.5rem 7.5rem;
+    padding: 1.6rem 1rem 2.2rem;
     text-align: center;
     border: 1px solid hsl(45, 35%, 28%);
     box-shadow: 0 16px 38px hsla(0, 0%, 0%, 0.5);
@@ -97,10 +100,10 @@
   /* ── Info toggle button ── */
   .card__info-toggle {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 2rem;
-    height: 2rem;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 1.75rem;
+    height: 1.75rem;
     border: 1px solid hsl(45, 28%, 36%);
     color: hsl(45, 78%, 72%);
     background: hsla(0, 0%, 8%, 0.72);
@@ -134,8 +137,8 @@
   }
 
   .card__border {
-    width: 112px;
-    height: 112px;
+    width: 96px;
+    height: 96px;
     background-color: var(--first-color-light);
     border-radius: 50%;
     margin: 0 auto 1rem;
@@ -144,8 +147,8 @@
   }
 
   .card__perfil {
-    width: 94px;
-    height: 94px;
+    width: 80px;
+    height: 80px;
     background-color: var(--first-color-lighten);
     border-radius: 50%;
     overflow: hidden;
@@ -194,10 +197,10 @@
     width: 100%;
     background-color: hsl(0, 0%, 8%);
     border: 1px solid hsl(45, 35%, 24%);
-    padding: 2.2rem 1.25rem 2.8rem;
-    border-radius: 1rem 1rem 9.2rem 9.2rem;
+    padding: 1.8rem 1rem 2.4rem;
+    border-radius: 1rem 1rem 8rem 8rem;
     min-height: calc(100% + 2px);
-    clip-path: circle(0px at calc(100% - 42px) 40px);
+    clip-path: circle(0px at calc(100% - 36px) 34px);
     transition: clip-path 0.4s ease-in-out;
     will-change: clip-path;
     overflow: hidden;
@@ -213,8 +216,8 @@
   }
 
   .info__border {
-    width: 64px;
-    height: 64px;
+    width: 54px;
+    height: 54px;
     background-color: var(--first-color-light);
     border-radius: 50%;
     margin: 0 auto 1rem;
@@ -226,8 +229,8 @@
   }
 
   .info__perfil {
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
     background-color: var(--first-color-lighten);
     border-radius: 50%;
     overflow: hidden;
@@ -323,12 +326,12 @@
 
   /* Open state */
   .info.is-open {
-    inset: -12px -10px -12px;
-    width: calc(100% + 20px);
-    padding: 2.75rem 1.6rem 3.45rem;
-    border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
-    min-height: calc(100% + 24px);
-    clip-path: circle(170% at calc(100% - 42px) 40px);
+    inset: -10px -8px -10px;
+    width: calc(100% + 16px);
+    padding: 2.4rem 1.4rem 3rem;
+    border-radius: 1rem 1rem 10rem 10rem;
+    min-height: calc(100% + 20px);
+    clip-path: circle(170% at calc(100% - 36px) 34px);
   }
 
   .info.is-open .info__border,
@@ -347,12 +350,12 @@
     }
 
     .card:hover .info {
-      inset: -12px -10px -12px;
-      width: calc(100% + 20px);
-      padding: 2.75rem 1.6rem 3.45rem;
-      border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
-      min-height: calc(100% + 24px);
-      clip-path: circle(170% at calc(100% - 42px) 40px);
+      inset: -10px -8px -10px;
+      width: calc(100% + 16px);
+      padding: 2.4rem 1.4rem 3rem;
+      border-radius: 1rem 1rem 10rem 10rem;
+      min-height: calc(100% + 20px);
+      clip-path: circle(170% at calc(100% - 36px) 34px);
     }
 
     .card:hover .info__border,
@@ -367,154 +370,22 @@
      RESPONSIVE
   ───────────────────────────────────────── */
 
-  /* Laptop (1024px to 1279px) */
-  @media (max-width: 1279px) {
+  /* Tablet (768px to 1199px) — 2 cols */
+  @media (max-width: 1199px) {
     .team-card-grid {
-      grid-template-columns: repeat(3, minmax(300px, 320px));
-      gap: 32px;
+      grid-template-columns: repeat(2, minmax(240px, 280px)) !important;
+      gap: 32px !important;
     }
   }
 
-  /* Tablet (≤ 1023 px) — 2 cols */
-  @media (max-width: 1023px) {
-    .team-section-inner {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
-    .team-card-grid {
-      grid-template-columns: repeat(2, minmax(300px, 320px));
-      gap: 32px;
-    }
-
-    .card {
-      /* Card dimensions stay exactly as user requested, max 320px width, 520px height */
-      width: 100%;
-      max-width: 320px;
-      height: 520px;
-      padding: 1.7rem 0.95rem 1.95rem;
-      border-radius: 1rem 1rem 8.7rem 8.7rem;
-    }
-
-    .card__border {
-      width: 100px;
-      height: 100px;
-      margin-bottom: 0.85rem;
-    }
-
-    .card__perfil {
-      width: 84px;
-      height: 84px;
-    }
-
-    .card__info-toggle {
-      top: 1.1rem;
-      right: 1.1rem;
-      width: 2.25rem;
-      height: 2.25rem;
-    }
-
-    .info {
-      padding: 1.75rem 0.95rem 2rem;
-      border-radius: 1rem 1rem 8.7rem 8.7rem;
-      clip-path: circle(0px at calc(100% - 36px) 34px);
-    }
-
-    .info.is-open {
-      inset: -8px -6px -8px;
-      width: calc(100% + 12px);
-      padding: 2.05rem 1.1rem 2.25rem;
-      border-radius: 1rem 1rem 9.7rem 9.7rem;
-      min-height: calc(100% + 16px);
-      clip-path: circle(190% at calc(100% - 36px) 34px);
-    }
-
-    .info__border {
-      width: 56px;
-      height: 56px;
-      margin-bottom: 0.8rem;
-    }
-
-    .info__perfil {
-      width: 46px;
-      height: 46px;
-    }
-
-    .info__bio {
-      font-size: 0.68rem;
-      line-height: 1.45;
-    }
-
-    .info__skills {
-      gap: 0.3rem;
-      margin-bottom: 0.85rem;
-    }
-
-    .info__skill {
-      font-size: 0.6rem;
-      padding: 0.14rem 0.44rem;
-    }
-
-    @media (hover: hover) {
-      .card:hover .info {
-        inset: -8px -6px -8px;
-        width: calc(100% + 12px);
-        padding: 2.05rem 1.1rem 2.25rem;
-        border-radius: 1rem 1rem 9.7rem 9.7rem;
-        min-height: calc(100% + 16px);
-        clip-path: circle(190% at calc(100% - 36px) 34px);
-      }
-    }
-  }
-
-  /* Mobile (≤ 639 px) — single col */
-  @media (max-width: 639px) {
+  /* Mobile (< 768 px) — 1 col */
+  @media (max-width: 767px) {
     .team-section-header {
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.5rem !important;
     }
-
     .team-card-grid {
-      grid-template-columns: minmax(280px, 320px);
-      gap: 24px;
-    }
-
-    .card {
-      width: 100%;
-      max-width: 320px;
-      height: 520px;
-      padding: 1.55rem 0.85rem 1.8rem;
-      border-radius: 1rem 1rem 8.7rem 8.7rem;
-    }
-
-    .card__border {
-      width: 92px;
-      height: 92px;
-    }
-
-    .card__perfil {
-      width: 76px;
-      height: 76px;
-    }
-
-    .info {
-      padding: 1.6rem 0.85rem 1.9rem;
-      border-radius: 1rem 1rem 8.7rem 8.7rem;
-    }
-
-    .info.is-open {
-      inset: -6px -5px -6px;
-      width: calc(100% + 10px);
-      padding: 1.85rem 0.95rem 2.05rem;
-      border-radius: 1rem 1rem 9.7rem 9.7rem;
-    }
-
-    @media (hover: hover) {
-      .card:hover .info {
-        inset: -6px -5px -6px;
-        width: calc(100% + 10px);
-        padding: 1.85rem 0.95rem 2.05rem;
-        border-radius: 1rem 1rem 9.7rem 9.7rem;
-      }
+      grid-template-columns: minmax(240px, 280px) !important;
+      gap: 24px !important;
     }
   }
 
