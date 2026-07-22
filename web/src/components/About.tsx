@@ -102,7 +102,7 @@ const About = () => {
               <span className="gradient-text">About</span> Our Company
             </h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto break-normal">
-              RajKayal Creative Hub — a passionate creative &amp; technology studio
+              RajKayal Creative Hub — a passionate creative &amp; technology Company
               building digital experiences that make brands stand out.
             </p>
           </div>
