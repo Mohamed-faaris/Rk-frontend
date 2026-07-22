@@ -174,8 +174,8 @@ const OurTeam = () => {
           </p>
         </div>
 
-        {/* ── Card grid container for perfect centering ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-fit mx-auto mt-6 mb-8">
+        {/* ── Card grid container ── */}
+        <div className="team-grid">
           {teamMembers.map((member) => (
             <div key={member.id} className="card">
               <div className="card__border">
@@ -302,7 +302,7 @@ const OurTeam = () => {
         </div>
 
         {/* Join Team CTA */}
-        <div className="team-cta">
+        <div className="join-btn">
           <Button
             onClick={() => navigate("/apply-employee")}
             className="bg-accent hover:bg-accent/90 shadow-gold px-8 py-3 text-base font-semibold"
