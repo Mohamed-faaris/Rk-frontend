@@ -176,128 +176,26 @@ const OurTeam = () => {
 
         {/* ── Card grid container ── */}
         <div className="team-grid">
-          {teamMembers.map((member) => (
-            <div key={member.id} className="card">
-              <div className="card__border">
-                <div className="card__perfil">
-                  {member.image ? (
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className="card__img"
-                      width="160"
-                      height="160"
-                      loading="lazy"
-                      decoding="async"
-                      style={{
-                        objectPosition: member.imagePosition,
-                        transform: member.imageScale
-                          ? `scale(${member.imageScale})`
-                          : undefined,
-                      }}
-                    />
-                  ) : (
-                    <member.icon className="card__img" aria-hidden="true" />
-                  )}
-                </div>
-              </div>
-
-              <h3 className="card__name" title={member.name}>
-                {member.name}
-              </h3>
-              <span className="card__profession break-normal">
-                {member.role}
-              </span>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setActiveCard((current) =>
-                    current === member.id ? null : member.id,
-                  )
-                }
-                className="card__info-toggle"
-                aria-expanded={activeCard === member.id}
-                aria-controls={`${member.id}-info`}
-                aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
-              >
-                {activeCard === member.id ? (
-                  <X size={18} />
-                ) : (
-                  <Info size={18} />
-                )}
-              </button>
-
-              <div
-                id={`${member.id}-info`}
-                className={`info ${activeCard === member.id ? "is-open" : ""}`}
-              >
-                <div className="info__border">
-                  <div className="info__perfil">
-                    {member.image ? (
-                      <img
-                        src={member.image}
-                        alt={`${member.name} profile`}
-                        className="info__img"
-                        width="160"
-                        height="160"
-                        loading="lazy"
-                        decoding="async"
-                        style={{
-                          objectPosition: member.imagePosition,
-                          transform: member.imageScale
-                            ? `scale(${member.imageScale})`
-                            : undefined,
-                        }}
-                      />
-                    ) : (
-                      <member.icon className="info__img" aria-hidden="true" />
-                    )}
-                  </div>
-                </div>
-
-                <div className="info__data">
-                  <h4 className="info__name" title={member.fullName}>
-                    {member.fullName}
-                  </h4>
-                  <p className="info__profession break-normal">
-                    {member.title}
-                  </p>
-                  <p className="info__location break-normal">
-                    {member.location}
-                  </p>
-                  <p className="info__bio break-normal">{member.bio}</p>
-                </div>
-
-                <div className="info__skills">
-                  {member.skills.map((skill) => (
-                    <span key={skill} className="info__skill break-normal">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="info__social">
-                  {member.socials.map((social) => {
-                    const Icon = social.icon;
-                    return (
-                      <a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="info__social-link"
-                        aria-label={`${member.name} ${social.label}`}
-                      >
-                        <span className="info__social-icon">
-                          <Icon size={14} />
-                        </span>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            <ProfileCard
+              key={member.id}
+              name={member.name}
+              title={member.role}
+              handle={member.id}
+              status={member.location}
+              contactText="View Profile"
+              avatarUrl={member.image || ""}
+              miniAvatarUrl={member.image || ""}
+              imagePosition={member.imagePosition}
+              imageScale={member.imageScale}
+              showUserInfo={true}
+              enableTilt={true}
+              enableMobileTilt={false}
+              onContactClick={() => navigate("/apply-employee")}
+              behindGlowEnabled={true}
+              innerGradient="linear-gradient(145deg,#1c1913 0%,#2c2411 100%)"
+              behindGlowColor="rgba(215, 175, 80, 0.5)"
+              className="w-full"
+            />
           ))}
         </div>
 
