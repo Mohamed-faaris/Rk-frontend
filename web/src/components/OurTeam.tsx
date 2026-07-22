@@ -156,7 +156,7 @@ const OurTeam = () => {
   return (
     <section
       id="testimonials"
-      className="team-cards relative py-24 shadow-sm dark:bg-background md:py-32"
+      className="team-cards relative py-16 shadow-sm dark:bg-background md:py-20"
     >
       {/* Smooth fade from previous section */}
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
