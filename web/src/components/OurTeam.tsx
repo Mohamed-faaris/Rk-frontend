@@ -156,12 +156,12 @@ const OurTeam = () => {
   return (
     <section
       id="testimonials"
-      className="team-cards relative py-16 shadow-sm dark:bg-background md:py-20"
+      className="team-cards relative shadow-sm dark:bg-background"
     >
       {/* Smooth fade from previous section */}
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
-      {/* ── Centred wrapper — NOT using Tailwind container (its margin:0 reset breaks centering) ── */}
+      {/* ── Centred wrapper ── */}
       <div className="team-section-inner">
         {/* Section Header */}
         <div className="team-section-header">
