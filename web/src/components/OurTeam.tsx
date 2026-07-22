@@ -176,6 +176,7 @@ const OurTeam = () => {
 
         {/* ── Card grid container ── */}
         <div className="team-grid">
+          {teamMembers.map((member) => (
             <ProfileCard
               key={member.id}
               name={member.name}
