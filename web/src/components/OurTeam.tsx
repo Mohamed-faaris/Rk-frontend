@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Briefcase, Code2, FileText, Info, MapPin, Palette, X } from "lucide-react";
+import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
@@ -161,6 +161,7 @@ const OurTeam = () => {
       {/* Smooth fade from previous section */}
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-transparent to-background pointer-events-none" />
 
+      {/* ── Centred wrapper — NOT using Tailwind container (its margin:0 reset breaks centering) ── */}
       <div className="team-section-inner">
         {/* Section Header */}
         <div className="team-section-header">
@@ -173,36 +174,71 @@ const OurTeam = () => {
           </p>
         </div>
 
-        {/* ── Card grid: CSS Grid for perfect ordering and alignment ── */}
+        {/* ── Card grid — pure flex-wrap so odd counts always centre ── */}
         <div className="team-card-grid">
-          {teamMembers.map((member) => {
-            const isOpen = activeCard === member.id;
-            return (
-              <div key={member.id} className={`card ${isOpen ? "card--active" : ""}`}>
-                {/* Info toggle button */}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setActiveCard((current) =>
-                      current === member.id ? null : member.id
-                    )
-                  }
-                  className="card__info-toggle"
-                  aria-expanded={isOpen}
-                  aria-controls={`${member.id}-info`}
-                  aria-label={`${isOpen ? "Hide" : "Show"} more information for ${member.name}`}
-                >
-                  {isOpen ? <X size={16} /> : <Info size={16} />}
-                </button>
+          {teamMembers.map((member) => (
+            <div key={member.id} className="card">
+              <div className="card__border">
+                <div className="card__perfil">
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="card__img"
+                      width="160"
+                      height="160"
+                      loading="lazy"
+                      decoding="async"
+                      style={{
+                        objectPosition: member.imagePosition,
+                        transform: member.imageScale
+                          ? `scale(${member.imageScale})`
+                          : undefined,
+                      }}
+                    />
+                  ) : (
+                    <member.icon className="card__img" aria-hidden="true" />
+                  )}
+                </div>
+              </div>
 
-                {/* Profile Image Frame */}
-                <div className="card__border">
-                  <div className="card__perfil">
+              <h3 className="card__name" title={member.name}>
+                {member.name}
+              </h3>
+              <span className="card__profession break-normal">
+                {member.role}
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveCard((current) =>
+                    current === member.id ? null : member.id,
+                  )
+                }
+                className="card__info-toggle"
+                aria-expanded={activeCard === member.id}
+                aria-controls={`${member.id}-info`}
+                aria-label={`${activeCard === member.id ? "Hide" : "Show"} more information for ${member.name}`}
+              >
+                {activeCard === member.id ? (
+                  <X size={18} />
+                ) : (
+                  <Info size={18} />
+                )}
+              </button>
+
+              <div
+                id={`${member.id}-info`}
+                className={`info ${activeCard === member.id ? "is-open" : ""}`}
+              >
+                <div className="info__border">
+                  <div className="info__perfil">
                     {member.image ? (
                       <img
                         src={member.image}
-                        alt={member.name}
-                        className="card__img"
+                        alt={`${member.name} profile`}
+                        className="info__img"
                         width="160"
                         height="160"
                         loading="lazy"
@@ -215,113 +251,54 @@ const OurTeam = () => {
                         }}
                       />
                     ) : (
-                      <member.icon className="card__icon-fallback" aria-hidden="true" />
+                      <member.icon className="info__img" aria-hidden="true" />
                     )}
                   </div>
                 </div>
 
-                {/* Main Card Content */}
-                <div className="card__content">
-                  <h3 className="card__name" title={member.name}>
-                    {member.name}
-                  </h3>
-                  <div className="card__profession-wrapper">
-                    <span className="card__profession">{member.role}</span>
-                  </div>
-
-                  {/* Skills Pills on Card Front */}
-                  <div className="card__skills-preview">
-                    {member.skills.slice(0, 3).map((skill) => (
-                      <span key={skill} className="card__skill-tag">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+                <div className="info__data">
+                  <h4 className="info__name" title={member.fullName}>
+                    {member.fullName}
+                  </h4>
+                  <p className="info__profession break-normal">
+                    {member.title}
+                  </p>
+                  <p className="info__location break-normal">
+                    {member.location}
+                  </p>
+                  <p className="info__bio break-normal">{member.bio}</p>
                 </div>
 
-                {/* Details Overlay — Kept strictly within card bounds */}
-                <div
-                  id={`${member.id}-info`}
-                  className={`info ${isOpen ? "is-open" : ""}`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setActiveCard(null)}
-                    className="info__close-btn"
-                    aria-label="Close details"
-                  >
-                    <X size={16} />
-                  </button>
+                <div className="info__skills">
+                  {member.skills.map((skill) => (
+                    <span key={skill} className="info__skill break-normal">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
 
-                  <div className="info__content">
-                    <div className="info__border">
-                      <div className="info__perfil">
-                        {member.image ? (
-                          <img
-                            src={member.image}
-                            alt={`${member.name} profile`}
-                            className="info__img"
-                            width="120"
-                            height="120"
-                            loading="lazy"
-                            decoding="async"
-                            style={{
-                              objectPosition: member.imagePosition,
-                              transform: member.imageScale
-                                ? `scale(${member.imageScale})`
-                                : undefined,
-                            }}
-                          />
-                        ) : (
-                          <member.icon className="info__icon-fallback" aria-hidden="true" />
-                        )}
-                      </div>
-                    </div>
-
-                    <h4 className="info__name" title={member.fullName}>
-                      {member.fullName}
-                    </h4>
-                    <p className="info__profession">{member.title}</p>
-                    
-                    <div className="info__location">
-                      <MapPin size={13} className="info__location-icon" />
-                      <span>{member.location}</span>
-                    </div>
-
-                    <p className="info__bio">{member.bio}</p>
-
-                    <div className="info__skills">
-                      {member.skills.map((skill) => (
-                        <span key={skill} className="info__skill">
-                          {skill}
+                <div className="info__social">
+                  {member.socials.map((social) => {
+                    const Icon = social.icon;
+                    return (
+                      <a
+                        key={social.label}
+                        href={social.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="info__social-link"
+                        aria-label={`${member.name} ${social.label}`}
+                      >
+                        <span className="info__social-icon">
+                          <Icon size={14} />
                         </span>
-                      ))}
-                    </div>
-
-                    {member.socials && member.socials.length > 0 && (
-                      <div className="info__social">
-                        {member.socials.map((social) => {
-                          const Icon = social.icon;
-                          return (
-                            <a
-                              key={social.label}
-                              href={social.href}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="info__social-link"
-                              aria-label={`${member.name} ${social.label}`}
-                            >
-                              <Icon size={14} />
-                            </a>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
         {/* Join Team CTA */}
