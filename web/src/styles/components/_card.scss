@@ -3,17 +3,15 @@
 
   /* ─────────────────────────────────────────
      LAYOUT WRAPPERS
-     All margin/centering lives here, OUTSIDE
-     the _base.scss * reset scope.
   ───────────────────────────────────────── */
 
   .team-section-inner {
     width: 100%;
-    max-width: 980px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
     position: relative;
     z-index: 10;
   }
@@ -30,17 +28,14 @@
     }
   }
 
-  /*
-    Flex-wrap grid: cards wrap naturally.
-    justify-content: center means every row —
-    including the last orphaned one — is centred.
-  */
+  /* ─────────────────────────────────────────
+     RESPONSIVE CSS GRID FOR PERFECT ORDERING
+  ───────────────────────────────────────── */
   .team-card-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .team-cta {
@@ -50,329 +45,342 @@
   }
 
   /* ─────────────────────────────────────────
-     CARD
+     CARD DESIGN & STYLING
   ───────────────────────────────────────── */
 
   .card {
     position: relative;
-    width: 282px;
-    flex-shrink: 0;
-    min-height: 392px;
-    background: var(--gradient-color);
-    border-radius: 1rem 1rem 8.7rem 8.7rem;
-    padding: 2rem 1.2rem 2.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    background: linear-gradient(160deg, rgba(32, 28, 20, 0.9) 0%, rgba(18, 16, 12, 0.95) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 1.25rem;
+    padding: 2.25rem 1.25rem 1.75rem;
     text-align: center;
-    border: 1px solid hsl(45, 35%, 28%);
-    box-shadow: 0 16px 38px hsla(0, 0%, 0%, 0.5);
-    overflow: visible;
-  }
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.3s ease;
+    overflow: hidden; /* STAYS IN BOUNDS — No grid popping! */
 
-  .card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, hsla(45, 80%, 72%, 0.18) 0%, hsla(40, 70%, 55%, 0.08) 36%, transparent 72%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .card::after {
-    content: "";
-    position: absolute;
-    inset: 8% 8% 10%;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.34;
-    background:
-      radial-gradient(circle at 18% 20%, hsla(48, 90%, 72%, 0.85) 0 1.6px, transparent 2.3px),
-      radial-gradient(circle at 78% 25%, hsla(43, 92%, 68%, 0.76) 0 1.8px, transparent 2.6px),
-      radial-gradient(circle at 34% 70%, hsla(50, 95%, 75%, 0.72) 0 1.3px, transparent 2px),
-      radial-gradient(circle at 68% 76%, hsla(46, 84%, 70%, 0.78) 0 1.7px, transparent 2.5px),
-      radial-gradient(circle at 52% 44%, hsla(45, 96%, 80%, 0.62) 0 1.2px, transparent 1.9px),
-      radial-gradient(circle at 84% 60%, hsla(49, 92%, 75%, 0.62) 0 1.5px, transparent 2.2px);
-    transition: opacity 0.28s ease, transform 0.28s ease;
-  }
-
-  .card > * {
-    position: relative;
-    z-index: 1;
+    &:hover {
+      transform: translateY(-6px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.2);
+    }
   }
 
   /* ── Info toggle button ── */
   .card__info-toggle {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid hsl(45, 28%, 36%);
-    color: hsl(45, 78%, 72%);
-    background: hsla(0, 0%, 8%, 0.72);
-    display: inline-flex;
+    top: 1rem;
+    right: 1rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #D4AF37;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.25rem;
-    border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 6px 16px hsla(0, 0%, 0%, 0.35);
     backdrop-filter: blur(4px);
-    transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
-    z-index: 2;
+    transition: all 0.25s ease;
+    z-index: 5;
 
     &:hover,
     &:focus-visible {
-      background: hsla(45, 25%, 18%, 0.9);
-      border-color: hsl(45, 38%, 48%);
-      transform: translateY(-1px);
+      background: rgba(212, 175, 55, 0.25);
+      color: #FFFFFF;
+      border-color: rgba(212, 175, 55, 0.7);
+      transform: scale(1.08);
       outline: none;
     }
   }
 
-  /* ── Profile image ── */
+  /* ── Profile image container & ring ── */
+  .card__border {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.8), rgba(120, 90, 20, 0.3), rgba(212, 175, 55, 0.6));
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    display: grid;
+    place-items: center;
+    transition: transform 0.3s ease;
+
+    .card:hover & {
+      transform: scale(1.03);
+    }
+  }
+
+  .card__perfil {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    background: hsl(40, 30%, 12%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .card__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 18%;
     display: block;
   }
 
-  .card__border {
-    width: 112px;
-    height: 112px;
-    background-color: var(--first-color-light);
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    display: grid;
-    place-items: center;
+  .card__icon-fallback {
+    width: 2.2rem;
+    height: 2.2rem;
+    color: #D4AF37;
   }
 
-  .card__perfil {
-    width: 94px;
-    height: 94px;
-    background-color: var(--first-color-lighten);
-    border-radius: 50%;
-    overflow: hidden;
+  /* ── Main card content ── */
+  .card__content {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-  }
-
-  .card__name,
-  .card__profession {
-    color: var(--white-color);
+    width: 100%;
+    flex-grow: 1;
   }
 
   .card__name {
-    display: block;
-    font-size: clamp(0.62rem, 1.05vw, 0.92rem);
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    line-height: 1.25;
-    letter-spacing: 0.01em;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
     text-align: center;
-    /* long names wrap instead of overflowing */
     word-break: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    padding-inline: 0.25rem;
+  }
+
+  .card__profession-wrapper {
+    margin-bottom: 0.85rem;
   }
 
   .card__profession {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 500;
+    font-size: 0.72rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-align: center;
-    color: hsl(45, 62%, 64%);
+    letter-spacing: 0.06em;
+    color: #D4AF37;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    display: inline-block;
+  }
+
+  .card__skills-preview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+
+  .card__skill-tag {
+    font-size: 0.68rem;
+    color: rgba(240, 230, 210, 0.85);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
   }
 
   /* ─────────────────────────────────────────
-     INFO OVERLAY
+     DETAILS OVERLAY — STRICTLY SCOPED WITHIN CARD
   ───────────────────────────────────────── */
 
   .info {
     position: absolute;
-    inset: -1px 0 -1px;
+    inset: 0;
     width: 100%;
-    background-color: hsl(0, 0%, 8%);
-    border: 1px solid hsl(45, 35%, 24%);
-    padding: 2.2rem 1.25rem 2.8rem;
-    border-radius: 1rem 1rem 9.2rem 9.2rem;
-    min-height: calc(100% + 2px);
-    clip-path: circle(0px at calc(100% - 42px) 40px);
-    transition: clip-path 0.4s ease-in-out;
-    will-change: clip-path;
+    height: 100%;
+    background: rgba(14, 12, 9, 0.96);
+    backdrop-filter: blur(16px);
+    padding: 2rem 1.25rem 1.5rem;
+    border-radius: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+    overflow-y: auto;
+  }
+
+  .info.is-open,
+  .card--active .info {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .info__close-btn {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .info__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: auto 0;
+  }
+
+  .info .info__border {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.8), rgba(120, 90, 20, 0.3));
+    margin-bottom: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .info .info__perfil {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
     overflow: hidden;
-    z-index: 3;
+    background: hsl(40, 30%, 12%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .info__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 18%;
-    display: block;
   }
 
-  .info__border {
-    width: 64px;
-    height: 64px;
-    background-color: var(--first-color-light);
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    display: grid;
-    place-items: center;
-    transform: translateX(-3rem);
-    transition: transform 0.8s;
-    will-change: transform;
-  }
-
-  .info__perfil {
-    width: 52px;
-    height: 52px;
-    background-color: var(--first-color-lighten);
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .info__data {
-    display: grid;
-    row-gap: 0.25rem;
-    margin-bottom: 1rem;
-    transform: translateX(-4rem);
-    transition: transform 1s;
-    will-change: transform;
+  .info__icon-fallback {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #D4AF37;
   }
 
   .info__name {
-    font-size: clamp(0.68rem, 1vw, 0.9rem);
-    color: var(--title-color);
-    font-weight: 600;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.2rem;
     line-height: 1.25;
-    letter-spacing: 0.01em;
-    text-align: center;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
   }
 
-  .info__profession,
-  .info__location,
-  .info__bio {
-    font-size: var(--smaller-font-size);
-    color: var(--text-color);
-    text-align: center;
+  .info__profession {
+    font-size: 0.75rem;
+    color: #D4AF37;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
   }
 
-  .info__bio {
-    line-height: 1.5;
-    margin-top: 0.25rem;
+  .info__location {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
     font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 0.75rem;
+  }
+
+  .info__location-icon {
+    color: #D4AF37;
+  }
+
+  .info__bio {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(240, 235, 220, 0.85);
+    margin-bottom: 0.85rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 
   .info__skills {
     display: flex;
-    justify-content: center;
-    gap: 0.4rem;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
-    transform: translateX(-4.5rem);
-    transition: transform 1.1s;
-    will-change: transform;
+    justify-content: center;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
   }
 
   .info__skill {
     font-size: 0.65rem;
     padding: 0.2rem 0.55rem;
     border-radius: 999px;
-    background-color: hsl(45, 38%, 18%);
-    color: hsl(45, 68%, 68%);
-    border: 1px solid hsl(45, 34%, 30%);
+    background: rgba(212, 175, 55, 0.15);
+    color: #E5C158;
+    border: 1px solid rgba(212, 175, 55, 0.3);
   }
 
   .info__social {
     display: flex;
     justify-content: center;
-    column-gap: 1rem;
-    transform: translateX(-5rem);
-    transition: transform 1.2s;
-    will-change: transform;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
   }
 
   .info__social-link {
     width: 32px;
     height: 32px;
-    background-color: var(--first-color-light);
     border-radius: 50%;
-    display: grid;
-    place-items: center;
-    transition: transform 0.3s;
-    border: 1px solid hsl(45, 30%, 28%);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #D4AF37;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 
-    &:hover { transform: translateY(-0.25rem); }
-  }
-
-  .info__social-icon {
-    display: inline-flex;
-    background: var(--gradient-color);
-    padding: 0.25rem;
-    border-radius: 50%;
-    color: var(--white-color);
-  }
-
-  /* Open state */
-  .info.is-open {
-    inset: -12px -10px -12px;
-    width: calc(100% + 20px);
-    padding: 2.75rem 1.6rem 3.45rem;
-    border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
-    min-height: calc(100% + 24px);
-    clip-path: circle(170% at calc(100% - 42px) 40px);
-  }
-
-  .info.is-open .info__border,
-  .info.is-open .info__data,
-  .info.is-open .info__skills,
-  .info.is-open .info__social {
-    transform: translateX(0);
-  }
-
-  /* ── Hover (pointer: fine only) ── */
-  @media (hover: hover) {
-    .card:hover::after,
-    .card:focus-within::after {
-      opacity: 0.56;
-      transform: translateY(-4px) scale(1.015);
-    }
-
-    .card:hover .info {
-      inset: -12px -10px -12px;
-      width: calc(100% + 20px);
-      padding: 2.75rem 1.6rem 3.45rem;
-      border-radius: 1.1rem 1.1rem 11.8rem 11.8rem;
-      min-height: calc(100% + 24px);
-      clip-path: circle(170% at calc(100% - 42px) 40px);
-    }
-
-    .card:hover .info__border,
-    .card:hover .info__data,
-    .card:hover .info__skills,
-    .card:hover .info__social {
-      transform: translateX(0);
+    &:hover {
+      background: rgba(212, 175, 55, 0.25);
+      color: #FFFFFF;
+      transform: translateY(-2px);
     }
   }
 
   /* ─────────────────────────────────────────
-     RESPONSIVE
+     RESPONSIVE BREAKPOINTS
   ───────────────────────────────────────── */
 
-  /* Tablet (≤ 768 px) — 2 cols, cards a little narrower */
   @media (max-width: 768px) {
     .team-section-inner {
       padding-left: 1rem;
@@ -380,148 +388,35 @@
     }
 
     .team-card-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.25rem;
     }
 
     .card {
-      width: 260px;
       min-height: 380px;
-      padding: 1.7rem 0.95rem 1.95rem;
-      border-radius: 1rem 1rem 6rem 6rem;
+      padding: 1.75rem 1rem 1.5rem;
     }
 
     .card__border {
-      width: 100px;
-      height: 100px;
-      margin-bottom: 0.85rem;
+      width: 96px;
+      height: 96px;
     }
 
-    .card__perfil {
-      width: 84px;
-      height: 84px;
-    }
-
-    .card__info-toggle {
-      top: 1.1rem;
-      right: 1.1rem;
-      width: 2.25rem;
-      height: 2.25rem;
-    }
-
-    .info {
-      padding: 1.75rem 0.95rem 2rem;
-      border-radius: 1rem 1rem 6rem 6rem;
-      clip-path: circle(0px at calc(100% - 36px) 34px);
-    }
-
-    .info.is-open {
-      inset: -8px -6px -8px;
-      width: calc(100% + 12px);
-      padding: 2.05rem 1.1rem 2.25rem;
-      border-radius: 1rem 1rem 7rem 7rem;
-      min-height: calc(100% + 16px);
-      clip-path: circle(190% at calc(100% - 36px) 34px);
-    }
-
-    .info__border {
-      width: 56px;
-      height: 56px;
-      margin-bottom: 0.8rem;
-    }
-
-    .info__perfil {
-      width: 46px;
-      height: 46px;
-    }
-
-    .info__bio {
-      font-size: 0.68rem;
-      line-height: 1.45;
-    }
-
-    .info__skills {
-      gap: 0.3rem;
-      margin-bottom: 0.85rem;
-    }
-
-    .info__skill {
-      font-size: 0.6rem;
-      padding: 0.14rem 0.44rem;
-    }
-
-    @media (hover: hover) {
-      .card:hover .info {
-        inset: -8px -6px -8px;
-        width: calc(100% + 12px);
-        padding: 2.05rem 1.1rem 2.25rem;
-        border-radius: 1rem 1rem 7rem 7rem;
-        min-height: calc(100% + 16px);
-        clip-path: circle(190% at calc(100% - 36px) 34px);
-      }
+    .card__name {
+      font-size: 1rem;
     }
   }
 
-  /* Small mobile (≤ 480 px) — single col, wider card */
   @media (max-width: 480px) {
-    .team-section-header {
-      margin-bottom: 2.5rem;
-    }
-
     .team-card-grid {
-      gap: 1rem;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
     }
 
     .card {
-      width: min(320px, 88vw);
-      min-height: 370px;
-      padding: 1.55rem 0.85rem 1.8rem;
-      border-radius: 1rem 1rem 5.5rem 5.5rem;
-    }
-
-    .card__border {
-      width: 92px;
-      height: 92px;
-    }
-
-    .card__perfil {
-      width: 76px;
-      height: 76px;
-    }
-
-    .info {
-      padding: 1.6rem 0.85rem 1.9rem;
-      border-radius: 1rem 1rem 5.5rem 5.5rem;
-    }
-
-    .info.is-open {
-      inset: -6px -5px -6px;
-      width: calc(100% + 10px);
-      padding: 1.85rem 0.95rem 2.05rem;
-      border-radius: 1rem 1rem 6rem 6rem;
-    }
-
-    @media (hover: hover) {
-      .card:hover .info {
-        inset: -6px -5px -6px;
-        width: calc(100% + 10px);
-        padding: 1.85rem 0.95rem 2.05rem;
-        border-radius: 1rem 1rem 6rem 6rem;
-      }
-    }
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .card::after,
-    .info,
-    .info__border,
-    .info__data,
-    .info__skills,
-    .info__social,
-    .card__info-toggle,
-    .info__social-link {
-      transition-duration: 0.01ms;
-      animation: none;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 }
