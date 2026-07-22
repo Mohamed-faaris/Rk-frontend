@@ -1,17 +1,4 @@
-import {
-  Target,
-  Eye,
-  Rocket,
-  Palette,
-  Globe,
-  ShoppingCart,
-  Video,
-  Code2,
-  Megaphone,
-  Wrench,
-  CreditCard,
-  Camera,
-} from "lucide-react";
+import { Target, Eye, Rocket } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { logger } from "@/lib/logger";
 
@@ -74,18 +61,6 @@ const About = () => {
       description:
         "We combine creative excellence with technical precision. Every project starts with understanding your goals, and ends only when you're proud of what you've launched.",
     },
-  ];
-
-  const services = [
-    { icon: CreditCard,  label: "ID Card Designs" },
-    { icon: Palette,     label: "Logo Design" },
-    { icon: Megaphone,   label: "Advertisement Designs" },
-    { icon: Camera,      label: "Photoshop Services" },
-    { icon: Globe,       label: "Website Design & Development" },
-    { icon: ShoppingCart,label: "E-Commerce Development" },
-    { icon: Video,       label: "Video Editing" },
-    { icon: Code2,       label: "Software Development" },
-    { icon: Wrench,      label: "Web Maintenance & Tech Services" },
   ];
 
   return (
@@ -154,7 +129,7 @@ const About = () => {
           </div>
 
           {/* ── Vision · Mission · Approach ── */}
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-8 mb-16 md:mb-20">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-8">
             {pillars.map((pillar, index) => (
               <div
                 key={pillar.title}
@@ -170,33 +145,6 @@ const About = () => {
                 <p className="text-muted-foreground leading-relaxed break-normal">
                   {pillar.description}
                 </p>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Services We Provide ── */}
-          <div className="text-center mb-10 space-y-3">
-            <h3 className="text-2xl sm:text-3xl font-bold text-foreground break-normal">
-              Services We <span className="gradient-text">Provide</span>
-            </h3>
-            <p className="text-muted-foreground max-w-xl mx-auto break-normal">
-              From creative design to full-stack development — one studio, everything you need.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6">
-            {services.map((service, index) => (
-              <div
-                key={service.label}
-                className="group flex items-center gap-3 p-4 sm:p-5 rounded-2xl bg-card border border-border hover:border-accent/50 hover:shadow-gold transition-all duration-300 cursor-default"
-                style={{ animationDelay: `${index * 60}ms` }}
-              >
-                <div className="w-10 h-10 shrink-0 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                  <service.icon className="w-5 h-5 text-accent" />
-                </div>
-                <span className="text-sm sm:text-base font-medium text-foreground leading-snug break-normal">
-                  {service.label}
-                </span>
               </div>
             ))}
           </div>
