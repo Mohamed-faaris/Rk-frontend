@@ -28,6 +28,7 @@ const Navbar = () => {
         { label: 'Updates', href: '/#updates-news' },
         { label: 'Services', href: '/services' },
         { label: 'Projects', href: '/#portfolio' },
+        { label: 'Our Team', href: '/#testimonials' },
         { label: 'Contact', href: '/#contact' },
       ],
       [],

@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 const UpdatesNewsSection = lazy(() => import("@/components/UpdatesNewsSection"));
 const Services = lazy(() => import("@/components/Services"));
 const Portfolio = lazy(() => import("@/components/Portfolio"));
+const OurTeam = lazy(() => import("@/components/OurTeam"));
 const Contact = lazy(() => import("@/components/Contact"));
 const ReviewsSection = lazy(() => import("@/components/ReviewsSection"));
 
@@ -83,6 +84,7 @@ const Index = () => {
               <UpdatesNewsSection />
               <Services />
               <Portfolio />
+              <OurTeam />
               <ReviewsSection />
               <Contact />
             </Suspense>
