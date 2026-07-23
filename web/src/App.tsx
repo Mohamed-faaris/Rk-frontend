@@ -142,11 +142,23 @@ const AppContent = () => {
         <Route path="/terms-of-service" element={<main><Suspense fallback={<PageLoader />}><TermsOfServicePage /></Suspense></main>} />
 
         <Route path="/business-insights" element={<main><Suspense fallback={<PageLoader />}><BusinessInsightsPage /></Suspense></main>} />
-        <Route path="/apply-employee" element={<Suspense fallback={<PageLoader />}><ApplyForEmployee /></Suspense>} />
-        <Route path="/apply-position/:positionId" element={<Suspense fallback={<PageLoader />}><ApplyForPosition /></Suspense>} />
         <Route path="/employee/:id" element={<Suspense fallback={<PageLoader />}><EmployeeDetailsPage /></Suspense>} />
 
         {/* Protected Routes - Login Required */}
+        <Route path="/apply-employee" element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <ApplyForEmployee />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+        <Route path="/apply-position/:positionId" element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
+              <ApplyForPosition />
+            </Suspense>
+          </ProtectedRoute>
+        } />
         <Route path="/account" element={
           <ProtectedRoute>
             <Suspense fallback={<PageLoader />}>
