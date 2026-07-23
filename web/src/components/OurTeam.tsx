@@ -189,7 +189,7 @@ const OurTeam = () => {
               miniAvatarUrl={member.image || ""}
               imagePosition={member.imagePosition}
               imageScale={member.imageScale}
-              showUserInfo={true}
+              showUserInfo={false}
               enableTilt={true}
               enableMobileTilt={false}
               onContactClick={() => navigate("/apply-employee")}
