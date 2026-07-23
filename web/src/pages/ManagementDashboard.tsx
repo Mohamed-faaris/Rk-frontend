@@ -1615,6 +1615,7 @@ export default function ManagementDashboard() {
                           <SelectItem value="Marketing" className="text-xs md:text-sm">Marketing</SelectItem>
                           <SelectItem value="Sales" className="text-xs md:text-sm">Sales</SelectItem>
                           <SelectItem value="HR" className="text-xs md:text-sm">HR</SelectItem>
+                          <SelectItem value="Internship" className="text-xs md:text-sm">Internship</SelectItem>
                           <SelectItem value="Other" className="text-xs md:text-sm">Other</SelectItem>
                         </SelectContent>
                       </Select>
