@@ -9,8 +9,8 @@ import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
 import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
 import pallaviImage from "@/assets/PALLAVI_OLD.jpg";
 import vivehaImage from "@/assets/VIVEHA V.png";
-import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J .webp";
-import yogeshImage from "@/assets/YOGESH M.webp";
+import viswaGuruPrasathImage from "@/assets/VISWA GURU PRASATH J.jpg";
+import yogeshImage from "@/assets/YOGESH M.jpg";
 import "@/styles/team-cards.scss";
 import ProfileCard from "./ProfileCard";
 
