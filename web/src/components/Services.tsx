@@ -1,4 +1,4 @@
-import { ArrowRight, MousePointer2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, MousePointer2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SpecularButton from "@/components/ui/SpecularButton";
 import { useNavigate } from "react-router-dom";
@@ -122,28 +122,7 @@ const Services = () => {
     return () => clearTimeout(t);
   }, [activeIdx]);
 
-  // Scroll-wheel handler — triggers card swap
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
 
-    const handleWheel = (e: WheelEvent) => {
-      // Only act when cursor is over the section
-      if (isCoolingDown.current) return;
-      isCoolingDown.current = true;
-
-      if (e.deltaY > 0) {
-        cardSwapRef.current?.swapNext();
-      } else {
-        cardSwapRef.current?.swapPrev();
-      }
-
-      setTimeout(() => { isCoolingDown.current = false; }, 950);
-    };
-
-    section.addEventListener('wheel', handleWheel, { passive: true });
-    return () => section.removeEventListener('wheel', handleWheel);
-  }, []);
 
   const svc = serviceCards[displayIdx];
   const Icon = svc.icon;
@@ -246,16 +225,28 @@ const Services = () => {
                 </ul>
               </div>
 
-              {/* Progress + scroll hint (always visible, no transition) */}
+              {/* Progress + Navigation */}
               <div className="mb-8">
-                {/* Counter */}
+                {/* Counter & Buttons */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-muted-foreground font-mono">
                     {String(displayIdx + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
                   </span>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <MousePointer2 className="w-3 h-3" />
-                    <span>Scroll to explore</span>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => cardSwapRef.current?.swapPrev()} 
+                      className="p-1.5 rounded-full hover:bg-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
+                      aria-label="Previous Service"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => cardSwapRef.current?.swapNext()} 
+                      className="p-1.5 rounded-full hover:bg-foreground/10 transition-colors text-muted-foreground hover:text-foreground"
+                      aria-label="Next Service"
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
                 {/* Progress bar */}
