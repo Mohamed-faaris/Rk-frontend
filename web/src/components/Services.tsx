@@ -261,26 +261,16 @@ const Services = () => {
               {/* Dot indicators */}
               <div className="flex items-center gap-2 mb-8">
                 {serviceCards.map((_, i) => (
-                  <button
+                  <div
                     key={i}
-                    onClick={() => {
-                      const diff = i - activeIdx;
-                      if (diff === 0) return;
-                      // Step through one swap at a time for animation continuity
-                      if (diff > 0) cardSwapRef.current?.swapNext();
-                      else cardSwapRef.current?.swapPrev();
-                    }}
                     style={{
                       width: i === displayIdx ? 20 : 6,
                       height: 6,
                       borderRadius: 3,
                       background: i === displayIdx ? svc.accent : 'rgba(255,255,255,0.2)',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: 0,
                       transition: 'all 0.3s ease',
                     }}
-                    aria-label={`Go to ${serviceCards[i].title}`}
+                    aria-label={`Service ${i + 1}`}
                   />
                 ))}
               </div>

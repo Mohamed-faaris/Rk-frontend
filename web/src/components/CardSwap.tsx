@@ -134,6 +134,10 @@ const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(({
     // ── Forward swap (front → back) ──────────────────────────────────────
     const swap = () => {
       if (order.current.length < 2) return;
+      if (tlRef.current && tlRef.current.isActive()) return;
+
+      clearInterval(intervalRef.current);
+      intervalRef.current = window.setInterval(swap, delay);
 
       const [front, ...rest] = order.current;
       const elFront = refs[front].current!;
@@ -177,6 +181,10 @@ const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(({
     // ── Backward swap (back → front) ─────────────────────────────────────
     const swapBack = () => {
       if (order.current.length < 2) return;
+      if (tlRef.current && tlRef.current.isActive()) return;
+
+      clearInterval(intervalRef.current);
+      intervalRef.current = window.setInterval(swap, delay);
 
       const arr = order.current;
       const last = arr[arr.length - 1];
@@ -219,8 +227,7 @@ const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(({
     swapNextRef.current = swap;
     swapPrevRef.current = swapBack;
 
-    swap();
-    intervalRef.current = window.setInterval(swap, delay);
+    swap(); // Initiates the first swap and sets the interval
 
     if (pauseOnHover) {
       const node = container.current!;
