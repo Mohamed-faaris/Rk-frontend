@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
 import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
-import namasivayenImage from "@/assets/NAMASIVAYEN N S.webp";
+import namasivayenImage from "@/assets/NAMASIVAYEN N S.png";
 import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
 import pallaviImage from "@/assets/PALLAVI_OLD.jpg";
 import vivehaImage from "@/assets/VIVEHA V.png";
