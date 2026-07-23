@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SpecularButton from "@/components/ui/SpecularButton";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
 import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
 import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
@@ -204,14 +205,23 @@ const OurTeam = () => {
         </div>
 
         {/* Join Team CTA */}
-        <div className="join-btn">
-          <Button
+        <div className="join-btn flex justify-center mt-8">
+          <SpecularButton
             onClick={() => navigate("/apply-employee")}
-            className="bg-accent hover:bg-accent/90 shadow-gold px-8 py-3 text-base font-semibold"
+            size="lg"
+            tint="#d7af50"
+            tintOpacity={0.1}
+            baseColor="#1c1913"
+            textColor="#f5f5f5"
+            lineColor="#d7af50"
+            className="group"
+            autoAnimate={true}
           >
-            <FileText className="w-4 h-4 mr-2" />
-            Apply to Join RKCH Team
-          </Button>
+            <span className="relative inline-flex items-center font-bold font-sans">
+              <FileText className="w-4 h-4 mr-2" />
+              Apply to Join RKCH Team
+            </span>
+          </SpecularButton>
         </div>
       </div>
     </section>

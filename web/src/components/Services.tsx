@@ -1,5 +1,6 @@
 import { ArrowRight, MousePointer2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SpecularButton from "@/components/ui/SpecularButton";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import CardSwap, { Card, CardSwapHandle } from "@/components/CardSwap";
@@ -294,16 +295,22 @@ const Services = () => {
               </div>
 
               {/* CTA */}
-              <Button
+              <SpecularButton
                 onClick={() => navigate('/services')}
-                className="group relative overflow-hidden rounded-lg bg-accent px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-bold text-accent-foreground shadow-gold transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg"
+                size="lg"
+                tint="#d7af50"
+                tintOpacity={0.1}
+                baseColor="#1c1913"
+                textColor="#f5f5f5"
+                lineColor="#d7af50"
+                className="mt-4 group"
+                autoAnimate={true}
               >
-                <span className="pointer-events-none absolute inset-0 -translate-x-[120%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-[120%]" />
-                <span className="relative inline-flex items-center">
+                <span className="relative inline-flex items-center font-bold font-sans">
                   Let's Order Now!
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-110" />
                 </span>
-              </Button>
+              </SpecularButton>
             </div>
 
             {/* ── Right: CardSwap ──────────────────────────────────────── */}
