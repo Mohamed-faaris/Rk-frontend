@@ -569,3 +569,55 @@
     border-radius: 50px;
   }
 }
+
+/* Bio & Skills Hover Overlay */
+.pc-hover-info {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 40px 24px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 6;
+  text-align: center;
+  pointer-events: none;
+  border-radius: var(--card-radius);
+}
+
+.pc-card:hover .pc-hover-info,
+.pc-card.active .pc-hover-info {
+  opacity: 1;
+}
+
+.pc-bio {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.pc-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.pc-skill-tag {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}

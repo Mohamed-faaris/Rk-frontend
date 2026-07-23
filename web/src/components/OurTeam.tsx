@@ -197,6 +197,8 @@ const OurTeam = () => {
               innerGradient="linear-gradient(145deg,#1c1913 0%,#2c2411 100%)"
               behindGlowColor="rgba(215, 175, 80, 0.5)"
               className="w-full"
+              bio={member.bio}
+              skills={member.skills}
             />
           ))}
         </div>

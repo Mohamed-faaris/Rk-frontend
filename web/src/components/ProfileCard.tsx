@@ -23,6 +23,8 @@ interface ProfileCardProps {
   contactText?: string;
   showUserInfo?: boolean;
   onContactClick?: () => void;
+  bio?: string;
+  skills?: string[];
 }
 
 const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
@@ -61,7 +63,9 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   status = 'Online',
   contactText = 'Contact',
   showUserInfo = true,
-  onContactClick
+  onContactClick,
+  bio,
+  skills
 }) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
@@ -387,6 +391,19 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 </div>
               )}
             </div>
+            {/* Hover overlay for bio and skills */}
+            {(bio || (skills && skills.length > 0)) && (
+              <div className="pc-hover-info">
+                {bio && <p className="pc-bio">{bio}</p>}
+                {skills && skills.length > 0 && (
+                  <div className="pc-skills">
+                    {skills.map((skill, i) => (
+                      <span key={i} className="pc-skill-tag">{skill}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="pc-content">
               <div className="pc-details">
                 <h3>{name}</h3>
