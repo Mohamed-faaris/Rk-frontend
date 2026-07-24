@@ -87,6 +87,7 @@
 .pc-card-shell {
   position: relative;
   z-index: 1;
+  container-type: inline-size;
 }
 
 .pc-card * {
@@ -360,10 +361,10 @@
   transition: all 0.2s ease;
 }
 
+/* ── pc-content (name/details layer) ────────────────────────────── */
 .pc-content:not(.pc-avatar-content) {
   max-height: 100%;
   overflow: hidden;
-  text-align: center;
   position: relative;
   transform: translate3d(
     calc(var(--pointer-from-left) * -6px + 3px),
@@ -371,52 +372,76 @@
     0.1px
   );
   z-index: 5;
-  /* Removed mix-blend-mode: luminosity — caused names to be invisible on light photos */
 }
 
+/* ── Full-width bottom gradient overlay ─────────────────────────── */
 .pc-details {
-  width: 100%;
   position: absolute;
-  bottom: 5.5rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   z-index: 10;
-  /* Dark pill background for guaranteed readability */
-  background: linear-gradient(135deg, rgba(20, 14, 4, 0.82) 0%, rgba(44, 30, 8, 0.78) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(215, 175, 80, 0.2);
-  border-radius: 14px;
-  padding: 10px 16px 8px;
-  margin: 0 16px;
-  width: calc(100% - 32px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(215,175,80,0.1);
+  /* Deep fade-up gradient — blends seamlessly with the photo */
+  background: linear-gradient(
+    to top,
+    rgba(8, 5, 1, 0.97) 0%,
+    rgba(15, 10, 2, 0.92) 30%,
+    rgba(22, 15, 3, 0.75) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  padding: 48px 20px 22px;
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+  /* Thin gold accent line at the bottom edge */
+  border-bottom: 2px solid rgba(215, 175, 80, 0.35);
+  box-sizing: border-box;
+}
+
+/* Gold divider line above name */
+.pc-details::before {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: linear-gradient(90deg, #d7af50, rgba(215,175,80,0.3));
+  border-radius: 2px;
+  margin-bottom: 8px;
 }
 
 .pc-details h3 {
-  font-weight: 700;
-  margin: 0;
-  font-size: min(4svh, 1.6rem);
-  line-height: 1.2;
-  margin-bottom: 0.25rem;
-  background-image: linear-gradient(to bottom, #ffffff, #d7af50);
-  background-size: 1em 1.5em;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  /* Single line — shrink font automatically to fit */
+  font-size: clamp(0.85rem, 3.2cqw, 1.3rem);
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  /* White-to-gold gradient text */
+  background-image: linear-gradient(95deg, #ffffff 20%, #d7af50 100%);
   -webkit-text-fill-color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
-  filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.9));
+  filter: drop-shadow(0px 1px 4px rgba(0,0,0,1));
+  letter-spacing: 0.01em;
 }
 
 .pc-details p {
   font-weight: 600;
-  position: relative;
-  white-space: normal;
-  font-size: 0.85rem;
-  margin: 0 auto;
+  font-size: 0.78rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   width: 100%;
-  color: rgba(215, 175, 80, 0.9);
-  text-shadow: 0px 1px 2px rgba(0,0,0,0.9);
+  color: rgba(215, 175, 80, 0.85);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: 0px 1px 3px rgba(0,0,0,0.9);
 }
 
 @keyframes glow-bg {
@@ -452,15 +477,15 @@
   }
 
   .pc-details {
-    top: 2em;
+    padding: 36px 16px 18px;
   }
 
   .pc-details h3 {
-    font-size: min(4svh, 2.5em);
+    font-size: clamp(0.8rem, 4vw, 1.15rem);
   }
 
   .pc-details p {
-    font-size: 14px;
+    font-size: 0.72rem;
   }
 
   .pc-user-info {
@@ -498,16 +523,15 @@
   }
 
   .pc-details {
-    top: 1.5em;
+    padding: 30px 14px 16px;
   }
 
   .pc-details h3 {
-    font-size: min(3.5svh, 2em);
+    font-size: clamp(0.78rem, 4.5vw, 1.05rem);
   }
 
   .pc-details p {
-    font-size: 12px;
-    top: -8px;
+    font-size: 0.68rem;
   }
 
   .pc-user-info {
