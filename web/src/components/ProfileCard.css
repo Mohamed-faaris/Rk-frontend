@@ -371,7 +371,7 @@
     0.1px
   );
   z-index: 5;
-  mix-blend-mode: luminosity;
+  /* Removed mix-blend-mode: luminosity — caused names to be invisible on light photos */
 }
 
 .pc-details {
@@ -380,32 +380,43 @@
   bottom: 5.5rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
   z-index: 10;
+  /* Dark pill background for guaranteed readability */
+  background: linear-gradient(135deg, rgba(20, 14, 4, 0.82) 0%, rgba(44, 30, 8, 0.78) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(215, 175, 80, 0.2);
+  border-radius: 14px;
+  padding: 10px 16px 8px;
+  margin: 0 16px;
+  width: calc(100% - 32px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(215,175,80,0.1);
 }
 
 .pc-details h3 {
   font-weight: 700;
   margin: 0;
-  font-size: min(4svh, 1.8rem);
+  font-size: min(4svh, 1.6rem);
   line-height: 1.2;
   margin-bottom: 0.25rem;
-  background-image: linear-gradient(to bottom, #fff, #d7af50);
+  background-image: linear-gradient(to bottom, #ffffff, #d7af50);
   background-size: 1em 1.5em;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
-  text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+  filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.9));
 }
 
 .pc-details p {
   font-weight: 600;
   position: relative;
   white-space: normal;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   margin: 0 auto;
-  width: 90%;
-  color: #fff;
-  text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+  width: 100%;
+  color: rgba(215, 175, 80, 0.9);
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.9);
 }
 
 @keyframes glow-bg {
