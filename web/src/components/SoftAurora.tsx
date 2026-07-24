@@ -185,7 +185,8 @@ export default function SoftAurora({
     const container = containerRef.current;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-    const dprCap = isCoarsePointer ? 1 : 1.5;
+    // Mobile: render at half DPR (quarter the pixels) to avoid GPU overload
+    const dprCap = isCoarsePointer ? 0.5 : 1.5;
     const shouldUseMouseInteraction =
       enableMouseInteraction && !prefersReducedMotion && !isCoarsePointer;
 
@@ -206,6 +207,9 @@ export default function SoftAurora({
     let animationFrameId: number | null = null;
     let isDisposed = false;
     let isInViewport = true;
+    let frameCount = 0;
+    // On mobile, skip every other frame (~30fps) to halve GPU work
+    const frameSkip = isCoarsePointer ? 2 : 1;
 
     function handleMouseMove(e: MouseEvent) {
       const rect = gl.canvas.getBoundingClientRect();
@@ -266,6 +270,11 @@ export default function SoftAurora({
     function update(time: number) {
       if (isDisposed) return;
       animationFrameId = requestAnimationFrame(update);
+
+      // Frame throttle on mobile: only render every Nth frame
+      frameCount++;
+      if (frameCount % frameSkip !== 0) return;
+
       program.uniforms.uTime.value = time * 0.001;
 
       if (shouldUseMouseInteraction) {

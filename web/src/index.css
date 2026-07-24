@@ -173,6 +173,15 @@ All colors MUST be HSL.
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  /* Disable backdrop-filter on touch devices — major perf drain */
+  @media (pointer: coarse) {
+    .glass-effect {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(10, 10, 10, 0.85);
+    }
+  }
   
   .gradient-text {
     background: var(--gradient-gold);
@@ -235,5 +244,43 @@ All colors MUST be HSL.
 
   .homepage-sections-wrapper > * {
     background-color: transparent !important;
+  }
+
+  /* ── content-visibility: skip rendering off-screen sections ── */
+  .team-cards,
+  #testimonials,
+  #portfolio,
+  #contact,
+  footer {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 600px;
+  }
+}
+
+/* ── Prefers-reduced-motion: kill all decorative animations ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Mobile scroll performance ── */
+@media (pointer: coarse) {
+  html {
+    /* Smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Larger tap targets on mobile */
+  button,
+  a,
+  [role='button'] {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

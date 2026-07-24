@@ -73,8 +73,17 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   const enterTimerRef = useRef<number | null>(null);
   const leaveRafRef = useRef<number | null>(null);
 
+  // Detect touch/coarse-pointer device — skip ALL tilt logic on mobile
+  const isCoarsePointer = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(pointer: coarse)').matches;
+  }, []);
+
+  // Never create tilt engine on touch devices (saves multiple rAF loops)
+  const effectiveEnableTilt = enableTilt && !isCoarsePointer;
+
   const tiltEngine = useMemo(() => {
-    if (!enableTilt) return null;
+    if (!effectiveEnableTilt) return null;
 
     let rafId: number | null = null;
     let running = false;
@@ -183,7 +192,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
         lastTs = 0;
       }
     };
-  }, [enableTilt]);
+  }, [effectiveEnableTilt]);
 
   const getOffsets = (evt: PointerEvent, el: HTMLElement) => {
     const rect = el.getBoundingClientRect();
@@ -261,7 +270,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   );
 
   useEffect(() => {
-    if (!enableTilt || !tiltEngine) return;
+    if (!effectiveEnableTilt || !tiltEngine) return;
 
     const shell = shellRef.current;
     if (!shell) return;
@@ -311,7 +320,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
       shell.classList.remove('entering');
     };
   }, [
-    enableTilt,
+    effectiveEnableTilt,
     enableMobileTilt,
     tiltEngine,
     handlePointerMove,
