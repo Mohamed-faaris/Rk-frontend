@@ -20,7 +20,7 @@ const employeeSchema = new mongoose.Schema({
   position: {
     type: String,
     required: true,
-    enum: ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Other']
+    enum: ['Developer', 'Designer', '3D Artist', 'UI/UX Designer', 'Project Manager', 'Marketing', 'Sales', 'HR', 'Internship', 'Other']
   },
   department: {
     type: String,
