@@ -277,6 +277,7 @@ export default function ManagementDashboard() {
 
   // Form data
   const [employeeForm, setEmployeeForm] = useState({
+    employeeId: '',
     name: '',
     email: '',
     phone: '',
@@ -1082,6 +1083,7 @@ export default function ManagementDashboard() {
   const handleEditEmployee = (employee: any) => {
     setEditingEmployee(employee);
     setEmployeeForm({
+      employeeId: employee.employeeId || '',
       name: employee.name,
       email: employee.email,
       phone: employee.phone,
@@ -1113,6 +1115,7 @@ export default function ManagementDashboard() {
 
   const resetEmployeeForm = () => {
     setEmployeeForm({
+      employeeId: '',
       name: '',
       email: '',
       phone: '',
@@ -1273,8 +1276,9 @@ export default function ManagementDashboard() {
 
       addSection('Employees (Sorted by Name)');
       addTable(
-        ['Name', 'Email', 'Phone', 'Position', 'Department', 'Salary', 'Status'],
+        ['ID', 'Name', 'Email', 'Phone', 'Position', 'Department', 'Salary', 'Status'],
         employeesData.map((e: any) => [
+          String(e.employeeId || e._id?.slice(-8)?.toUpperCase() || '-'),
           String(e.name || '-'),
           String(e.email || '-'),
           String(e.phone || '-'),
@@ -1567,6 +1571,17 @@ export default function ManagementDashboard() {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 py-3 md:py-4">
                     <div className="space-y-2">
+                      <Label htmlFor="employeeId" className="text-xs md:text-sm">Employee ID</Label>
+                      <Input
+                        id="employeeId"
+                        value={employeeForm.employeeId}
+                        onChange={(e) => setEmployeeForm({ ...employeeForm, employeeId: e.target.value })}
+                        placeholder="EMP-001"
+                        className="text-xs md:text-sm h-8 md:h-10"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="name" className="text-xs md:text-sm">Full Name *</Label>
                       <Input
                         id="name"
@@ -1689,6 +1704,7 @@ export default function ManagementDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="text-xs md:text-sm">ID</TableHead>
                         <TableHead className="text-xs md:text-sm">Name</TableHead>
                         <TableHead className="text-xs md:text-sm hidden sm:table-cell">Email</TableHead>
                         <TableHead className="text-xs md:text-sm">Position</TableHead>
@@ -1708,6 +1724,7 @@ export default function ManagementDashboard() {
                       ) : (
                         employees.map((employee: any) => (
                           <TableRow key={employee._id}>
+                            <TableCell className="font-mono text-xs md:text-sm text-muted-foreground">{employee.employeeId || (employee._id ? employee._id.slice(-8).toUpperCase() : '-')}</TableCell>
                             <TableCell className="font-medium text-xs md:text-sm">{employee.name}</TableCell>
                             <TableCell className="text-muted-foreground text-xs md:text-sm hidden sm:table-cell">{employee.email}</TableCell>
                             <TableCell className="text-xs md:text-sm">{employee.position}</TableCell>
