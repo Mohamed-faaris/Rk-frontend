@@ -348,8 +348,8 @@ export const acceptApplication = async (req, res, next) => {
       email: application.email,
       phone: application.phone,
       position: application.position,
-      department: application.department,
-      salary: salary || application.expectedSalary,
+      department: application.department || 'Management', // fallback just in case
+      salary: salary || application.expectedSalary || 0,
       joiningDate: joiningDate || new Date(),
       status: 'Active',
       skills: application.skills ? application.skills.split(',').map(skill => skill.trim()) : [],
