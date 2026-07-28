@@ -34,7 +34,9 @@ const employeeSchema = new mongoose.Schema({
   },
   salary: {
     type: Number,
-    required: true
+    required: function() {
+      return this.position !== 'Internship';
+    }
   },
   joiningDate: {
     type: Date,

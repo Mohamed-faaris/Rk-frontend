@@ -1657,7 +1657,7 @@ export default function ManagementDashboard() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="salary">Salary *</Label>
+                      <Label htmlFor="salary">Salary {employeeForm.position !== 'Internship' && '*'}</Label>
                       <Input
                         id="salary"
                         type="number"
@@ -2008,7 +2008,7 @@ export default function ManagementDashboard() {
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                               <div className="space-y-2">
-                                                <Label htmlFor="salary">Salary (₹)</Label>
+                                                <Label htmlFor="salary">Salary (₹) {editingApplication?.position === 'Internship' && '(Optional)'}</Label>
                                                 <Input
                                                   id="salary"
                                                   type="number"
