@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 const SITE_URL = "https://rkch.tech";
-const DEFAULT_TITLE = "RajKayal Creative Hub | Design & Development Studio";
+const DEFAULT_TITLE = "RajKayal Creative Hub | Design & Development Company";
 const DEFAULT_DESCRIPTION = "RajKayal Creative Hub delivers branding, web design, UI/UX, animation, and custom software services for businesses that need polished digital experiences.";
 const DEFAULT_IMAGE_PATH = "/rklogofinal.webp";
 const DEFAULT_IMAGE_WIDTH = "256";
@@ -73,6 +73,7 @@ const applyDefaults = () => {
 
   document.title = DEFAULT_TITLE;
   upsertMeta("name", "description", DEFAULT_DESCRIPTION);
+  upsertMeta("property", "og:site_name", "RajKayal Creative Hub");
   upsertMeta("property", "og:title", DEFAULT_TITLE);
   upsertMeta("property", "og:description", DEFAULT_DESCRIPTION);
   upsertMeta("property", "og:type", "website");
@@ -109,6 +110,7 @@ const Seo = ({
       upsertMeta("name", "keywords", keywords);
     }
     upsertMeta("name", "robots", "index, follow");
+    upsertMeta("property", "og:site_name", "RajKayal Creative Hub");
     upsertMeta("property", "og:title", title);
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:type", ogType);

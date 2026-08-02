@@ -43,7 +43,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="RajKayal Creative Hub | Design & Development Studio"
+        title="RajKayal Creative Hub | Design & Development Company"
         description="RajKayal Creative Hub delivers branding, web design, UI/UX, 3D animation, and custom software services for businesses that need polished digital experiences."
         canonicalPath="/"
         imagePath="/rklogofinal.webp"
@@ -68,7 +68,7 @@ const Index = () => {
       <main id="main-content" className="relative z-10">
         {/* Hidden SEO description for crawlers — not visible to users */}
         <p className="sr-only">
-          RajKayal Creative Hub is a premium design and development studio based in Tamil Nadu, India. We offer
+          RajKayal Creative Hub is a premium design and development company based in Tamil Nadu, India. We offer
           branding and identity design, website design and development, UI/UX design, social media creatives,
           3D animation, video editing, and custom software solutions. Our team works with businesses, startups,
           schools, colleges, and local brands to deliver polished digital experiences. Explore our services,

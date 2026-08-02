@@ -15,7 +15,7 @@ const servicesStructuredData = {
       '@type': 'Organization',
       name: 'RajKayal Creative Hub',
       url: siteUrl,
-      logo: `${siteUrl}/rklogofinal.png`,
+      logo: `${siteUrl}/rklogofinal.webp`,
     },
     {
       '@type': 'CollectionPage',
