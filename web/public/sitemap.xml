@@ -2,29 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://rkch.tech/</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/services</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/services-overview</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/branding-identity</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/3d-animation</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/uiux-design</loc>
-  </url>
-  <url>
-    <loc>https://rkch.tech/contact</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/privacy-policy</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
   <url>
     <loc>https://rkch.tech/terms-of-service</loc>
+    <lastmod>2026-08-02</lastmod>
+  </url>
+  <url>
+    <loc>https://rkch.tech/business-insights</loc>
+    <lastmod>2026-08-02</lastmod>
   </url>
 </urlset>
