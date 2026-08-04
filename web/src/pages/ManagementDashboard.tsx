@@ -287,6 +287,15 @@ export default function ManagementDashboard() {
     status: 'Active'
   });
 
+  const formatEmployeeSalary = (value: any) => {
+    if (value === null || value === undefined || value === '') {
+      return 'Not specified';
+    }
+
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? `₹${numericValue.toLocaleString()}` : 'Not specified';
+  };
+
   const [projectForm, setProjectForm] = useState({
     title: '',
     description: '',
@@ -645,7 +654,7 @@ export default function ManagementDashboard() {
           // Employee was created, show confirmation within the same dialog
           logger.debug('Employee created:', result.data.employee);
           setNewEmployeeData(result.data.employee);
-          setEmployeeConfirmationForm({ salary: result.data.employee.salary.toString() });
+          setEmployeeConfirmationForm({ salary: result.data.employee.salary != null ? result.data.employee.salary.toString() : '' });
           // Don't close the application dialog - show confirmation within it
           setSuccess('Employee created successfully. Please confirm the details below.');
         } else {
@@ -1089,7 +1098,7 @@ export default function ManagementDashboard() {
       phone: employee.phone,
       position: employee.position,
       department: employee.department,
-      salary: employee.salary.toString(),
+      salary: employee.salary != null ? employee.salary.toString() : '',
       status: employee.status
     });
     setEmployeeDialog(true);
@@ -1734,7 +1743,7 @@ export default function ManagementDashboard() {
                             <TableCell className="text-muted-foreground text-xs md:text-sm hidden sm:table-cell">{employee.email}</TableCell>
                             <TableCell className="text-xs md:text-sm">{employee.position}</TableCell>
                             <TableCell className="text-xs md:text-sm hidden md:table-cell">{employee.department}</TableCell>
-                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">₹{employee.salary.toLocaleString()}</TableCell>
+                            <TableCell className="text-xs md:text-sm hidden lg:table-cell">{formatEmployeeSalary(employee.salary)}</TableCell>
                             <TableCell>
                               <Badge className={`${getStatusColor(employee.status)} text-xs md:text-sm`}>
                                 {employee.status}
