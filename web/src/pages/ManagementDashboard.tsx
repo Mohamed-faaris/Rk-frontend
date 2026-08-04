@@ -484,7 +484,7 @@ export default function ManagementDashboard() {
 
   const loadEmployees = async () => {
     try {
-      const response = await employeeService.getAll();
+      const response = await employeeService.getAll({ position: 'Internship' });
       setEmployees(response.data || []);
     } catch (err: any) {
       logger.error('Load employees error:', err);
@@ -1549,7 +1549,7 @@ export default function ManagementDashboard() {
           {/* Employees Tab */}
           <TabsContent value="employees" className="space-y-4 md:space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4">
-              <h2 className="text-xl md:text-2xl font-bold">Employee Management</h2>
+              <h2 className="text-xl md:text-2xl font-bold">Intern Management</h2>
               <Dialog open={employeeDialog} onOpenChange={(open) => {
                 setEmployeeDialog(open);
                 if (!open) resetEmployeeForm();
@@ -1557,15 +1557,15 @@ export default function ManagementDashboard() {
                 <DialogTrigger asChild>
                   <Button className="bg-accent hover:bg-accent/90 w-full sm:w-auto text-xs md:text-sm py-1 md:py-2 px-2 md:px-4 h-8 md:h-10">
                     <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                    <span className="hidden sm:inline">Add Employee</span>
+                    <span className="hidden sm:inline">Add Intern</span>
                     <span className="sm:hidden">Add</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl w-[95vw] md:w-full max-h-[90vh] overflow-y-auto bg-card border-border">
                   <DialogHeader>
-                    <DialogTitle>{editingEmployee ? 'Edit Employee' : 'Add New Employee'}</DialogTitle>
+                    <DialogTitle>{editingEmployee ? 'Edit Intern' : 'Add New Intern'}</DialogTitle>
                     <DialogDescription>
-                      Fill in the employee details below
+                      Fill in the intern details below. The intern ID is assigned automatically by department.
                     </DialogDescription>
                   </DialogHeader>
                   
@@ -1576,9 +1576,14 @@ export default function ManagementDashboard() {
                         id="employeeId"
                         value={employeeForm.employeeId}
                         onChange={(e) => setEmployeeForm({ ...employeeForm, employeeId: e.target.value })}
-                        placeholder="EMP-001"
+                        placeholder="IDV001 / IDS001 / IOP001"
+                        readOnly={employeeForm.position === 'Internship'}
+                        disabled={employeeForm.position === 'Internship'}
                         className="text-xs md:text-sm h-8 md:h-10"
                       />
+                      <p className="text-[11px] text-muted-foreground">
+                        Development, Design, and Operations interns receive department-based IDs automatically.
+                      </p>
                     </div>
 
                     <div className="space-y-2">
@@ -1718,7 +1723,7 @@ export default function ManagementDashboard() {
                       {employees.length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={7} className="text-center text-muted-foreground py-6 md:py-8 text-xs md:text-sm">
-                            No employees found. Add your first employee to get started.
+                            No interns found. Add your first intern to get started.
                           </TableCell>
                         </TableRow>
                       ) : (
