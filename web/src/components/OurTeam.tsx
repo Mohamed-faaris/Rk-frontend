@@ -4,7 +4,7 @@ import { Briefcase, Code2, FileText, Info, Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SpecularButton from "@/components/ui/SpecularButton";
 import sivasuriyanRajaImage from "@/assets/SivasuriyanRaja.png";
-import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .webp";
+import mohamedAbuBakkarImage from "@/assets/MOHAMED ABU BAKKAR M .png";
 import mohamedFaarisImage from "@/assets/MOHAMED FAARIS K M.webp";
 import namasivayenImage from "@/assets/NAMASIVAYEN N S.png";
 import nithishKumarImage from "@/assets/NITHISH KUMAR V.webp";
