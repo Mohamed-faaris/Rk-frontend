@@ -12,11 +12,13 @@ import dotenv from 'dotenv';
 const serverEnvPath = resolve(__dirname, '.env');
 const rootEnvPath = resolve(__dirname, '../.env');
 
-if (existsSync(serverEnvPath)) {
-  dotenv.config({ path: serverEnvPath });
-} else if (existsSync(rootEnvPath)) {
+if (existsSync(rootEnvPath)) {
   dotenv.config({ path: rootEnvPath });
-} else {
+}
+if (existsSync(serverEnvPath)) {
+  dotenv.config({ path: serverEnvPath, override: true });
+}
+if (!existsSync(rootEnvPath) && !existsSync(serverEnvPath)) {
   dotenv.config(); // fallback: load from CWD
 }
 
