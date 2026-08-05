@@ -262,7 +262,9 @@ if (MODE === 'api') {
 const PORT = env.PORT;
 
 // Check if we're running directly (not as a Vercel function)
-const isDirectExecution = import.meta.url === `file://${process.argv[1]}`;
+const isDirectExecution = process.argv[1]
+  ? fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
+  : false;
 
 if (isDirectExecution) {
   const server = app.listen(PORT, '0.0.0.0', async () => {

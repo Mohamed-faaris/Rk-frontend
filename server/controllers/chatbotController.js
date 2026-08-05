@@ -1,5 +1,6 @@
 import ChatMessage from '../models/ChatMessage.js';
 import User from '../models/User.js';
+import { env } from '../env.js';
 
 const serviceCatalog = [
   {
@@ -371,6 +372,135 @@ const findSpecialtyMatch = (message) => {
   return highestScore > 0 ? bestMatch : null;
 };
 
+const buildServiceCatalogContext = () => serviceCatalog
+  .map((category) => {
+    const pricingSummary = category.services
+      .slice(0, 2)
+      .map((service) => `${service.name}: ${service.price}`)
+      .join(' | ');
+
+    return `- ${category.name}: ${category.description}. Typical starting options: ${pricingSummary}`;
+  })
+  .join('\n');
+
+const buildSpecialtyContext = () => specialtyServices
+  .map((service) => `- ${service.name}: ${service.description}`)
+  .join('\n');
+
+const buildLLMPrompt = (userMessage, recentHistory = [], category) => {
+  const historyBlock = recentHistory
+    .slice(-6)
+    .map((entry) => `${entry.sender === 'user' ? 'User' : 'Assistant'}: ${entry.message}`)
+    .join('\n');
+
+  return [
+    'You are SIRA, the AI assistant for RK Creative Hub.',
+    'You help visitors choose services, explain pricing, timelines, and guide them to the correct page.',
+    'Be warm, concise, helpful, and practical. Avoid making claims that are not supported by the catalog.',
+    'If the user asks for pricing, use the approximate ranges from the service catalog when available.',
+    'If you are unsure, say that you can help them with the next step or suggest the contact page.',
+    '',
+    'Service catalog context:',
+    buildServiceCatalogContext(),
+    '',
+    'Specialty services context:',
+    buildSpecialtyContext(),
+    '',
+    'Recent conversation history:',
+    historyBlock || '(No prior conversation)',
+    '',
+    `Current category hint: ${category || 'general'}`,
+    '',
+    `User message: ${userMessage}`
+  ].join('\n');
+};
+
+const generateLLMResponse = async (userMessage, recentHistory = [], category) => {
+  const provider = (env.CHATBOT_LLM_PROVIDER || '').toLowerCase();
+  const ollamaBaseUrl = env.OLLAMA_BASE_URL?.trim();
+  const ollamaApiKey = env.OLLAMA_API_KEY?.trim();
+  const ollamaModel = env.OLLAMA_MODEL?.trim();
+  const openAiApiKey = env.OPENAI_API_KEY?.trim();
+  const openAiModel = env.OPENAI_MODEL?.trim();
+
+  const prompt = buildLLMPrompt(userMessage, recentHistory, category);
+
+  try {
+    if (provider === 'ollama' || ollamaBaseUrl) {
+      const baseUrl = (ollamaBaseUrl || 'http://localhost:11434').replace(/\/$/, '');
+      const response = await fetch(`${baseUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(ollamaApiKey ? { Authorization: `Bearer ${ollamaApiKey}` } : {})
+        },
+        body: JSON.stringify({
+          model: ollamaModel || 'llama3.1',
+          stream: false,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are SIRA, the helpful AI assistant for RK Creative Hub. Respond in a friendly and concise way. Mention services and pricing only from the provided catalog context. If the user asks for a direct quote, say that pricing is approximate and depends on scope.'
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Ollama API error: ${response.status} ${errorText}`);
+      }
+
+      const data = await response.json();
+      const content = data?.message?.content?.trim() || data?.response?.trim();
+      return content || null;
+    }
+
+    if (openAiApiKey) {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${openAiApiKey}`
+        },
+        body: JSON.stringify({
+          model: openAiModel || 'gpt-4o-mini',
+          temperature: 0.7,
+          max_tokens: 280,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are SIRA, the helpful AI assistant for RK Creative Hub. Respond in a friendly and concise way. Mention services and pricing only from the provided catalog context. If the user asks for a direct quote, say that pricing is approximate and depends on scope.'
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`OpenAI API error: ${response.status} ${errorText}`);
+      }
+
+      const data = await response.json();
+      const content = data?.choices?.[0]?.message?.content?.trim();
+      return content || null;
+    }
+
+    return null;
+  } catch (err) {
+    console.error('LLM chatbot generation failed:', err);
+    return null;
+  }
+};
+
 const getBotResponseWithLinks = (userMessage, category = 'general') => {
   const lowerMessage = userMessage.toLowerCase().trim();
   const matchedCategory = findBestCatalogMatch(lowerMessage);
@@ -520,8 +650,18 @@ const sendMessage = async (req, res) => {
 
     await userMsg.save();
 
-    // Generate bot response with enhanced logic and links
-    const { response: botResponseText, link, linkText } = getBotResponseWithLinks(message, category);
+    const recentHistory = await ChatMessage.find({
+      sessionId,
+      userId: authenticatedUserId
+    })
+      .sort({ timestamp: 1 })
+      .limit(10);
+
+    const fallbackResponse = getBotResponseWithLinks(message, category);
+    const llmResponse = await generateLLMResponse(message, recentHistory, category);
+    const botResponseText = llmResponse || fallbackResponse.response;
+    const link = fallbackResponse.link;
+    const linkText = fallbackResponse.linkText;
 
     // Save bot message
     const botMsg = new ChatMessage({

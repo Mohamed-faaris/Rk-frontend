@@ -44,6 +44,12 @@ const envSchema = z.object({
   FACEBOOK_APP_SECRET: z.string().optional().or(z.literal('')),
   FACEBOOK_GRAPH_VERSION: z.string().default('v20.0'),
   SKIP_OTP: z.string().optional().or(z.literal('')),
+  CHATBOT_LLM_PROVIDER: z.string().default('auto'),
+  OLLAMA_BASE_URL: z.string().optional().or(z.literal('')),
+  OLLAMA_API_KEY: z.string().optional().or(z.literal('')),
+  OLLAMA_MODEL: z.string().default('llama3.1'),
+  OPENAI_API_KEY: z.string().optional().or(z.literal('')),
+  OPENAI_MODEL: z.string().default('gpt-4o-mini'),
 });
 
 const parsed = envSchema.safeParse(process.env);
