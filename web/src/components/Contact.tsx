@@ -111,6 +111,12 @@ const Contact = () => {
       href: "tel:+91 8754616454",
     },
     {
+      icon: Phone,
+      label: "Alternative Phone",
+      value: "+91 9345223552",
+      href: "tel:+91 9345223552",
+    },
+    {
       icon: MapPin,
       label: "Trichy, Tamil Nadu, India",
       value: "Trichy, Tamil Nadu, India",

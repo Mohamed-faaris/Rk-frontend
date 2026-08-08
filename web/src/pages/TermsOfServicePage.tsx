@@ -245,7 +245,7 @@ const TermsOfServicePage = () => {
                   <strong>Email:</strong> <a href="mailto:rajkayal7281@gmail.com" className="text-accent hover:underline break-normal">rajkayal7281@gmail.com</a>
                 </p>
                 <p className="text-foreground">
-                  <strong>Phone:</strong> <a href="tel:+918754616454" className="text-accent hover:underline">+91 8754616454</a>
+                  <strong>Phone:</strong> <a href="tel:+918754616454" className="text-accent hover:underline">+91 8754616454</a>, <a href="tel:+919345223552" className="text-accent hover:underline">+91 9345223552</a>
                 </p>
                 <p className="text-foreground break-normal">
                   <strong>Location:</strong> Trichy, Tamil Nadu, India
